@@ -19,9 +19,8 @@
   --red-suit: #8b1515;
   --green-suit: #1a4820;
   --shadow: rgba(22,15,6,0.5);
-  /* Larger play cards for iframe / table play */
-  --card-w: 152px;
-  --card-h: 212px;
+  --card-w: 168px;
+  --card-h: 236px;
   --card-radius: 10px;
 }
 
@@ -40,13 +39,11 @@ body {
   overflow-x: hidden;
 }
 
-/* ── LAYOUT ── */
 .screen { display: none; min-height: 100vh; }
 .screen.active { display: flex; flex-direction: column; }
 
 #screen-game.screen.active { min-height: 100vh; }
 
-/* ── MASTHEAD ── */
 .masthead {
   text-align: center;
   padding: 24px 20px 16px;
@@ -81,7 +78,6 @@ body {
   margin-top: 4px;
 }
 
-/* ── STATUS BAR ── */
 .status-bar {
   display: flex;
   justify-content: center;
@@ -105,7 +101,6 @@ body {
   font-size: 0.85rem;
 }
 
-/* ── PHASE BANNER ── */
 .phase-banner {
   text-align: center;
   padding: 10px;
@@ -117,34 +112,34 @@ body {
   background: rgba(200,148,26,0.08);
   border-bottom: 1px solid rgba(200,148,26,0.2);
   flex-shrink: 0;
-  box-shadow: inset 0 -1px 0 rgba(200,148,26,0.15);
 }
 
-/* ── GAME: two columns (scorecard | play) ── */
+/* === TWO-COLUMN GAME SHELL (verify this exists in your file) === */
 .game-body {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
   width: 100%;
+  max-width: none;
 }
 
 .history-full {
   padding: 12px 20px 0;
-  max-width: 1200px;
-  margin: 0 auto;
   width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .game-columns {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(270px, 34%) 1fr;
+  grid-template-columns: minmax(280px, 36%) minmax(0, 1fr);
   gap: 20px;
   padding: 12px 20px 20px;
-  max-width: 1200px;
-  margin: 0 auto;
   width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   align-items: start;
   min-height: 0;
 }
@@ -152,10 +147,9 @@ body {
 .game-col-scorecard {
   position: sticky;
   top: 8px;
-  align-self: start;
-  max-height: calc(100vh - 180px);
+  max-height: calc(100vh - 160px);
   overflow-y: auto;
-  padding-right: 4px;
+  min-width: 0;
 }
 
 .game-col-play {
@@ -163,21 +157,45 @@ body {
   flex-direction: column;
   gap: 18px;
   min-width: 0;
-}
-
-.game-col-scorecard .scorecard-wrap {
-  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
-  border-color: rgba(200,148,26,0.35);
-}
-
-.game-col-play {
   background: rgba(242,232,204,0.02);
   border: 1px solid rgba(200,148,26,0.12);
   border-radius: 4px;
   padding: 16px;
 }
 
-/* ── HAND AREA ── */
+.game-col-scorecard .scorecard-wrap {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+}
+
+/* During scoring: hand preview + category grid side by side */
+.scoring-panel-inner {
+  display: grid;
+  grid-template-columns: minmax(220px, auto) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.scoring-hand-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.scoring-hand-col .hand-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+
+.scoring-cats-col .scoring-grid {
+  max-height: min(70vh, 520px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
 .hand-area {
   display: flex;
   flex-direction: column;
@@ -200,7 +218,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* ── CARD ── */
 .card {
   width: var(--card-w);
   height: var(--card-h);
@@ -218,9 +235,11 @@ body {
 .card img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   display: block;
   pointer-events: none;
+  background: radial-gradient(ellipse at center, #2a1f12 0%, #0d0904 100%);
 }
 
 .card .card-fallback {
@@ -290,7 +309,6 @@ body {
   border-color: rgba(200,148,26,0.6);
 }
 
-/* ── EXCHANGE CONTROLS ── */
 .exchange-controls {
   display: flex;
   flex-direction: column;
@@ -312,7 +330,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* ── BUTTONS ── */
 .btn {
   padding: 10px 28px;
   font-family: 'Cinzel', serif;
@@ -356,7 +373,6 @@ body {
   color: var(--parchment-dark);
 }
 
-/* ── DISCARD AREA ── */
 .discard-area {
   display: flex;
   flex-direction: column;
@@ -378,15 +394,13 @@ body {
   min-height: 40px;
 }
 .discard-pile .card {
-  --card-w: 56px;
-  --card-h: 78px;
+  --card-w: 58px;
+  --card-h: 81px;
   --card-radius: 6px;
-  border-radius: var(--card-radius);
   cursor: default;
 }
 .discard-pile .card:hover { transform: none; }
 
-/* ── SCORING PANEL ── */
 .scoring-panel {
   background: rgba(242,232,204,0.05);
   border: 1px solid rgba(200,148,26,0.2);
@@ -399,7 +413,7 @@ body {
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   text-align: center;
 }
 
@@ -407,14 +421,13 @@ body {
   display: flex;
   gap: 10px;
   justify-content: center;
-  margin-bottom: 14px;
   flex-wrap: wrap;
 }
 
 .hand-preview .card {
-  --card-w: 118px;
-  --card-h: 165px;
-  --card-radius: 8px;
+  --card-w: 148px;
+  --card-h: 208px;
+  --card-radius: 10px;
   cursor: default;
 }
 .hand-preview .card:hover { transform: none; }
@@ -485,7 +498,6 @@ body {
   background: rgba(200,148,26,0.08);
 }
 
-/* ── SCORECARD ── */
 .scorecard-wrap {
   background: rgba(242,232,204,0.04);
   border: 1px solid rgba(200,148,26,0.2);
@@ -544,7 +556,6 @@ body {
   border-top: 1px solid rgba(200,148,26,0.3);
 }
 
-/* ── GAME HISTORY ── */
 .history-row {
   display: flex;
   gap: 8px;
@@ -568,7 +579,6 @@ body {
 }
 .history-pill.done { color: var(--gold-dim); }
 
-/* ── LOG ── */
 .game-log {
   background: rgba(22,15,6,0.6);
   border: 1px solid rgba(200,148,26,0.15);
@@ -590,7 +600,6 @@ body {
   border-left-color: var(--gold);
 }
 
-/* ── FATED DECISION ── */
 .fated-wrap {
   flex: 1;
   display: flex;
@@ -711,7 +720,6 @@ body {
   max-width: 400px;
 }
 
-/* ── RESULTS SCREEN ── */
 .results-wrap {
   flex: 1;
   display: flex;
@@ -774,7 +782,6 @@ body {
   line-height: 1.7;
 }
 
-/* ── TITLE SCREEN ── */
 .title-wrap {
   flex: 1;
   display: flex;
@@ -832,7 +839,6 @@ body {
   font-size: 0.75rem;
 }
 
-/* ── EXCHANGE INDICATOR ── */
 .exchange-indicator {
   display: flex;
   gap: 8px;
@@ -848,13 +854,11 @@ body {
 .ex-dot.done { background: var(--gold); border-color: var(--gold); }
 .ex-dot.active { background: var(--gold-light); border-color: var(--gold-light); box-shadow: 0 0 6px var(--gold-light); }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 820px) {
+@media (max-width: 900px) {
   .game-columns {
     grid-template-columns: 1fr;
   }
@@ -862,20 +866,23 @@ body {
     position: relative;
     top: auto;
     max-height: none;
-    order: -1;
+    order: 2;
   }
   .game-col-play {
-    padding: 12px;
+    order: 1;
+  }
+  .scoring-panel-inner {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 500px) {
-  :root { --card-w: 108px; --card-h: 151px; }
+  :root { --card-w: 112px; --card-h: 157px; }
   .scoring-grid { grid-template-columns: 1fr; }
   .results-game-grid { grid-template-columns: repeat(2, 1fr); }
   .hand-preview .card {
-    --card-w: 92px;
-    --card-h: 129px;
+    --card-w: 100px;
+    --card-h: 140px;
   }
 }
 </style>
@@ -929,13 +936,13 @@ body {
     </div>
     <div class="game-columns">
       <aside class="game-col-scorecard">
-        <div class="scorecard-wrap" id="scorecardWrap" style="display:none;">
+        <div class="scorecard-wrap" id="scorecardWrap">
           <div class="sc-header">✦ Score Sheet — Game <span id="scGameNum">1</span> ✦</div>
           <table class="sc-table" id="scTable"></table>
         </div>
       </aside>
       <div class="game-col-play">
-        <div class="hand-area">
+        <div class="hand-area" id="handArea">
           <div class="hand-label" id="handLabel">Your Hand</div>
           <div class="hand" id="playerHand"></div>
           <div class="exchange-indicator" id="exchangeIndicator">
@@ -955,8 +962,15 @@ body {
 
         <div class="scoring-panel" id="scoringPanel" style="display:none;">
           <h3>✦ Choose a Category ✦</h3>
-          <div class="hand-preview" id="scoringHandPreview"></div>
-          <div class="scoring-grid" id="scoringGrid"></div>
+          <div class="scoring-panel-inner">
+            <div class="scoring-hand-col">
+              <div class="hand-label">Final hand</div>
+              <div class="hand-preview" id="scoringHandPreview"></div>
+            </div>
+            <div class="scoring-cats-col">
+              <div class="scoring-grid" id="scoringGrid"></div>
+            </div>
+          </div>
         </div>
 
         <div class="discard-area" id="discardArea">
@@ -1127,6 +1141,11 @@ function calcGameTotal(sc) {
   return { basics, fi, basics_total: basics+fi, manifest_total: manif, game_total: basics+fi+manif };
 }
 
+function setHandAreaVisible(show) {
+  const el = document.getElementById('handArea');
+  if (el) el.style.display = show ? '' : 'none';
+}
+
 function startGame() {
   initState();
   showScreen('game');
@@ -1139,6 +1158,7 @@ function dealHand() {
   G.deck = buildDeck();
   G.discardPile = [];
   G.hand = G.deck.splice(0, 5);
+  setHandAreaVisible(true);
   updateStatusBar();
   updatePhase();
   renderHand();
@@ -1146,7 +1166,7 @@ function dealHand() {
   renderDiscardPile();
   renderScorecard();
   updateHistory();
-  if (G.currentHand > 0) document.getElementById('scorecardWrap').style.display = '';
+  document.getElementById('scorecardWrap').style.display = '';
   log(`Hand ${G.currentHand+1} dealt.`);
 }
 
@@ -1199,7 +1219,7 @@ function advancePhase() {
   } else if (G.phase === 'exchange2') {
     G.phase = 'scoring';
     updatePhase();
-    renderHand();
+    setHandAreaVisible(false);
     document.getElementById('exchangeControls').style.display = 'none';
     document.getElementById('scoringPanel').style.display = '';
     renderScoringPanel();
@@ -1211,6 +1231,7 @@ function recordScore(key, score) {
   G.scorecard[key] = score;
   log(`Recorded ${key.toUpperCase()}: ${score}`);
   document.getElementById('scoringPanel').style.display = 'none';
+  setHandAreaVisible(true);
 
   G.currentHand++;
   updateStatusBar();
@@ -1259,6 +1280,9 @@ function endGame() {
     : ascend < 0 ? 'Ascend is negative. You must Descend — or accept a loss.'
     : descend < 0 ? 'Descend is negative. You must Ascend — or accept a loss.'
     : 'Choose your path. Closest to zero wins. A negative total is a loss.';
+
+  pa.onclick = () => choosePath('ascend');
+  pd.onclick = () => choosePath('descend');
 
   showScreen('fated');
 }
@@ -1341,13 +1365,14 @@ function showScreen(name) {
 function makeCardEl(card, opts = {}) {
   const el = document.createElement('div');
   el.className = `card ${card.color}-card${opts.selected ? ' selected' : ''}${opts.noHover ? ' no-hover' : ''}`;
-  if (opts.small) el.style.cssText = '--card-w:56px;--card-h:78px;--card-radius:6px;';
-  if (opts.medium) el.style.cssText = '--card-w:118px;--card-h:165px;--card-radius:8px;';
+  if (opts.small) el.style.cssText = '--card-w:58px;--card-h:81px;--card-radius:6px;';
+  if (opts.medium) el.style.cssText = '--card-w:148px;--card-h:208px;--card-radius:10px;';
 
   const img = document.createElement('img');
   img.src = card.img;
   img.alt = card.name;
   img.loading = 'lazy';
+  img.decoding = 'async';
   img.onerror = () => {
     img.style.display = 'none';
     const fb = document.createElement('div');
