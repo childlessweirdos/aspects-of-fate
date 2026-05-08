@@ -19,11 +19,15 @@
   --red-suit: #8b1515;
   --green-suit: #1a4820;
   --shadow: rgba(22,15,6,0.5);
-  --card-w: 130px;
-  --card-h: 182px;
+  /* Larger play cards for iframe / table play */
+  --card-w: 152px;
+  --card-h: 212px;
+  --card-radius: 10px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
 
 body {
   background: #0a0703;
@@ -40,12 +44,15 @@ body {
 .screen { display: none; min-height: 100vh; }
 .screen.active { display: flex; flex-direction: column; }
 
+#screen-game.screen.active { min-height: 100vh; }
+
 /* ── MASTHEAD ── */
 .masthead {
   text-align: center;
   padding: 24px 20px 16px;
   border-bottom: 1px solid rgba(200,148,26,0.2);
   position: relative;
+  flex-shrink: 0;
 }
 .masthead::before, .masthead::after {
   content: '✦';
@@ -83,6 +90,7 @@ body {
   background: rgba(200,148,26,0.06);
   border-bottom: 1px solid rgba(200,148,26,0.15);
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 .stat {
   font-family: 'Cinzel', serif;
@@ -108,10 +116,66 @@ body {
   color: var(--gold-light);
   background: rgba(200,148,26,0.08);
   border-bottom: 1px solid rgba(200,148,26,0.2);
+  flex-shrink: 0;
+  box-shadow: inset 0 -1px 0 rgba(200,148,26,0.15);
 }
 
-/* ── MAIN CONTENT ── */
-.main { flex: 1; display: flex; flex-direction: column; padding: 20px; gap: 20px; max-width: 900px; margin: 0 auto; width: 100%; }
+/* ── GAME: two columns (scorecard | play) ── */
+.game-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+
+.history-full {
+  padding: 12px 20px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.game-columns {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(270px, 34%) 1fr;
+  gap: 20px;
+  padding: 12px 20px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  align-items: start;
+  min-height: 0;
+}
+
+.game-col-scorecard {
+  position: sticky;
+  top: 8px;
+  align-self: start;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.game-col-play {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.game-col-scorecard .scorecard-wrap {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  border-color: rgba(200,148,26,0.35);
+}
+
+.game-col-play {
+  background: rgba(242,232,204,0.02);
+  border: 1px solid rgba(200,148,26,0.12);
+  border-radius: 4px;
+  padding: 16px;
+}
 
 /* ── HAND AREA ── */
 .hand-area {
@@ -131,7 +195,7 @@ body {
 
 .hand {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   justify-content: center;
   flex-wrap: wrap;
 }
@@ -140,7 +204,7 @@ body {
 .card {
   width: var(--card-w);
   height: var(--card-h);
-  border-radius: 8px;
+  border-radius: var(--card-radius);
   border: 2px solid rgba(200,148,26,0.3);
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s;
@@ -201,7 +265,6 @@ body {
 .card.red-card .card-color-bar { background: var(--red-suit); }
 .card.green-card .card-color-bar { background: var(--green-suit); }
 
-/* Selected state */
 .card.selected {
   border-color: var(--gold);
   box-shadow: 0 0 0 2px var(--gold), 0 8px 24px rgba(200,148,26,0.5);
@@ -315,9 +378,10 @@ body {
   min-height: 40px;
 }
 .discard-pile .card {
-  --card-w: 50px;
-  --card-h: 70px;
-  border-radius: 4px;
+  --card-w: 56px;
+  --card-h: 78px;
+  --card-radius: 6px;
+  border-radius: var(--card-radius);
   cursor: default;
 }
 .discard-pile .card:hover { transform: none; }
@@ -341,15 +405,16 @@ body {
 
 .hand-preview {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
   margin-bottom: 14px;
   flex-wrap: wrap;
 }
 
 .hand-preview .card {
-  --card-w: 70px;
-  --card-h: 98px;
+  --card-w: 118px;
+  --card-h: 165px;
+  --card-radius: 8px;
   cursor: default;
 }
 .hand-preview .card:hover { transform: none; }
@@ -485,7 +550,7 @@ body {
   gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 12px;
+  padding: 4px 0 8px;
 }
 
 .history-pill {
@@ -789,16 +854,34 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
 
 /* ── RESPONSIVE ── */
+@media (max-width: 820px) {
+  .game-columns {
+    grid-template-columns: 1fr;
+  }
+  .game-col-scorecard {
+    position: relative;
+    top: auto;
+    max-height: none;
+    order: -1;
+  }
+  .game-col-play {
+    padding: 12px;
+  }
+}
+
 @media (max-width: 500px) {
-  :root { --card-w: 100px; --card-h: 140px; }
+  :root { --card-w: 108px; --card-h: 151px; }
   .scoring-grid { grid-template-columns: 1fr; }
   .results-game-grid { grid-template-columns: repeat(2, 1fr); }
+  .hand-preview .card {
+    --card-w: 92px;
+    --card-h: 129px;
+  }
 }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ TITLE SCREEN ═══════════════ -->
 <div id="screen-title" class="screen active">
   <div class="masthead">
     <h1>Aspects of Fate</h1>
@@ -825,7 +908,6 @@ body {
   </div>
 </div>
 
-<!-- ═══════════════ GAME SCREEN ═══════════════ -->
 <div id="screen-game" class="screen">
   <div class="masthead">
     <h1>Aspects of Fate</h1>
@@ -839,56 +921,55 @@ body {
     <div class="stat">Running Fated <span id="st-fated">—</span></div>
   </div>
 
-  <div class="phase-banner" id="phaseBanner">✦ INITIAL DEAL ✦</div>
+  <div class="phase-banner" id="phaseBanner" role="status" aria-live="polite">✦ INITIAL DEAL ✦</div>
 
-  <div class="main">
-    <!-- History -->
-    <div class="history-row" id="gameHistory"></div>
+  <div class="game-body">
+    <div class="history-full">
+      <div class="history-row" id="gameHistory"></div>
+    </div>
+    <div class="game-columns">
+      <aside class="game-col-scorecard">
+        <div class="scorecard-wrap" id="scorecardWrap" style="display:none;">
+          <div class="sc-header">✦ Score Sheet — Game <span id="scGameNum">1</span> ✦</div>
+          <table class="sc-table" id="scTable"></table>
+        </div>
+      </aside>
+      <div class="game-col-play">
+        <div class="hand-area">
+          <div class="hand-label" id="handLabel">Your Hand</div>
+          <div class="hand" id="playerHand"></div>
+          <div class="exchange-indicator" id="exchangeIndicator">
+            <div class="ex-dot active" id="ex1"></div>
+            <div class="ex-dot" id="ex2"></div>
+          </div>
+        </div>
 
-    <!-- Hand -->
-    <div class="hand-area">
-      <div class="hand-label" id="handLabel">Your Hand</div>
-      <div class="hand" id="playerHand"></div>
-      <div class="exchange-indicator" id="exchangeIndicator">
-        <div class="ex-dot active" id="ex1"></div>
-        <div class="ex-dot" id="ex2"></div>
+        <div class="exchange-controls" id="exchangeControls">
+          <div class="exchange-hint" id="exchangeHint">Tap cards to mark for exchange, then confirm.</div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btnExchange" onclick="confirmExchange()">Exchange Selected</button>
+            <button class="btn btn-ghost" type="button" onclick="clearExchangeSelection()">Clear</button>
+            <button class="btn btn-ghost" onclick="holdAll()">Hold All</button>
+          </div>
+        </div>
+
+        <div class="scoring-panel" id="scoringPanel" style="display:none;">
+          <h3>✦ Choose a Category ✦</h3>
+          <div class="hand-preview" id="scoringHandPreview"></div>
+          <div class="scoring-grid" id="scoringGrid"></div>
+        </div>
+
+        <div class="discard-area" id="discardArea">
+          <div class="discard-label">Discard Pile</div>
+          <div class="discard-pile" id="discardPile"></div>
+        </div>
+
+        <div class="game-log" id="gameLog"></div>
       </div>
     </div>
-
-    <!-- Exchange controls -->
-    <div class="exchange-controls" id="exchangeControls">
-      <div class="exchange-hint" id="exchangeHint">Tap cards to mark for exchange, then confirm.</div>
-      <div class="btn-row">
-        <button class="btn btn-primary" id="btnExchange" onclick="confirmExchange()">Exchange Selected</button>
-        <button class="btn btn-ghost" onclick="holdAll()">Hold All</button>
-      </div>
-    </div>
-
-    <!-- Scoring panel (hidden until scoring phase) -->
-    <div class="scoring-panel" id="scoringPanel" style="display:none;">
-      <h3>✦ Choose a Category ✦</h3>
-      <div class="hand-preview" id="scoringHandPreview"></div>
-      <div class="scoring-grid" id="scoringGrid"></div>
-    </div>
-
-    <!-- Discard pile -->
-    <div class="discard-area" id="discardArea">
-      <div class="discard-label">Discard Pile</div>
-      <div class="discard-pile" id="discardPile"></div>
-    </div>
-
-    <!-- Scorecard -->
-    <div class="scorecard-wrap" id="scorecardWrap" style="display:none;">
-      <div class="sc-header">✦ Score Sheet — Game <span id="scGameNum">1</span> ✦</div>
-      <table class="sc-table" id="scTable"></table>
-    </div>
-
-    <!-- Log -->
-    <div class="game-log" id="gameLog"></div>
   </div>
 </div>
 
-<!-- ═══════════════ FATED DECISION SCREEN ═══════════════ -->
 <div id="screen-fated" class="screen">
   <div class="masthead">
     <h1>Aspects of Fate</h1>
@@ -919,7 +1000,6 @@ body {
   </div>
 </div>
 
-<!-- ═══════════════ RESULTS SCREEN ═══════════════ -->
 <div id="screen-results" class="screen">
   <div class="masthead">
     <h1>Aspects of Fate</h1>
@@ -941,9 +1021,6 @@ body {
 </div>
 
 <script>
-// ═══════════════════════════════════════════
-// CARD DEFINITIONS
-// ═══════════════════════════════════════════
 const CARD_DEFS = [
   { num: 1, name: 'CHANCE',     color: 'black', img: 'thefatedchance.png',    suit: '♠' },
   { num: 2, name: 'TIME',       color: 'red',   img: 'thefatedtime.png',      suit: '♥' },
@@ -953,22 +1030,19 @@ const CARD_DEFS = [
   { num: 6, name: 'HERE & NOW', color: 'black', img: 'thefatedhereandnow.png',suit: '♠' },
 ];
 
-// ═══════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════
 let G = {};
 
 function initState() {
   G = {
-    currentGame: 0,       // 0-5
-    currentHand: 0,       // 0-14
-    phase: 'exchange1',   // exchange1 | exchange2 | scoring
+    currentGame: 0,
+    currentHand: 0,
+    phase: 'exchange1',
     hand: [],
     selected: [],
     deck: [],
     discardPile: [],
     scorecard: emptyScorecard(),
-    gameHistory: [],      // [{total, path, fated}]
+    gameHistory: [],
     log: [],
   };
 }
@@ -981,9 +1055,6 @@ function emptyScorecard() {
   };
 }
 
-// ═══════════════════════════════════════════
-// DECK
-// ═══════════════════════════════════════════
 function buildDeck() {
   const d = [];
   for (let i = 0; i < 10; i++)
@@ -1000,9 +1071,6 @@ function shuffle(arr) {
   return a;
 }
 
-// ═══════════════════════════════════════════
-// ANALYSIS
-// ═══════════════════════════════════════════
 function analyzeHand(hand) {
   const nums = hand.map(c => c.num).sort((a,b) => a-b);
   const colors = hand.map(c => c.color);
@@ -1026,8 +1094,6 @@ function analyzeHand(hand) {
 function scoringOptions(hand, sc) {
   const h = analyzeHand(hand);
   const opts = [];
-
-  // Basics
   const basicMap = { aces:1, deuces:2, treys:3, fours:4, fives:5, sixes:6 };
   for (const [key, num] of Object.entries(basicMap)) {
     if (sc[key] === null) {
@@ -1035,8 +1101,6 @@ function scoringOptions(hand, sc) {
       opts.push({ key, label: key.toUpperCase(), score, hasMatch: score > 0, section: 'basics' });
     }
   }
-
-  // Manifest
   const mList = [
     { key:'manifest',        label:'MANIFEST! (5 of a Kind)', score: h.manifest        ? h.total+50 : null, hasMatch: h.manifest },
     { key:'four_kind',       label:'4 OF A KIND',             score: h.four_kind       ? h.total+25 : null, hasMatch: h.four_kind },
@@ -1051,7 +1115,6 @@ function scoringOptions(hand, sc) {
   for (const m of mList) {
     if (sc[m.key] === null) opts.push({ ...m, section: 'manifest' });
   }
-
   return opts;
 }
 
@@ -1064,9 +1127,6 @@ function calcGameTotal(sc) {
   return { basics, fi, basics_total: basics+fi, manifest_total: manif, game_total: basics+fi+manif };
 }
 
-// ═══════════════════════════════════════════
-// GAME FLOW
-// ═══════════════════════════════════════════
 function startGame() {
   initState();
   showScreen('game');
@@ -1095,6 +1155,13 @@ function toggleSelect(idx) {
   const si = G.selected.indexOf(idx);
   if (si === -1) G.selected.push(idx);
   else G.selected.splice(si, 1);
+  renderHand();
+  updateExchangeBtn();
+}
+
+function clearExchangeSelection() {
+  if (G.phase !== 'exchange1' && G.phase !== 'exchange2') return;
+  G.selected = [];
   renderHand();
   updateExchangeBtn();
 }
@@ -1162,7 +1229,6 @@ function endGame() {
   log(`Game ${G.currentGame+1} complete. Total: ${totals.game_total}`, true);
   G.currentGame++;
 
-  // Show fated decision screen
   const fd = document.getElementById('fd-gamenum');
   const ft = document.getElementById('fd-total');
   const ar = document.getElementById('ascend-result');
@@ -1184,7 +1250,6 @@ function endGame() {
   pa.className = 'path-card' + (ascend < 0 ? ' negative' : '');
   pd.className = 'path-card' + (descend < 0 ? ' negative' : '');
 
-  // Store for use in choosePath
   G._pendingTotals = totals;
   G._pendingAscend = ascend;
   G._pendingDescend = descend;
@@ -1222,7 +1287,6 @@ function choosePath(path) {
     if (G.currentGame >= 6) {
       showResults();
     } else {
-      // Next game
       G.currentHand = 0;
       G.scorecard = emptyScorecard();
       showScreen('game');
@@ -1254,7 +1318,6 @@ function showResults() {
 
   document.getElementById('res-verdict').textContent = verdict;
 
-  // Game grid
   const grid = document.getElementById('resGameGrid');
   grid.innerHTML = '';
   for (const g of G.gameHistory) {
@@ -1270,9 +1333,6 @@ function showResults() {
   }
 }
 
-// ═══════════════════════════════════════════
-// RENDER
-// ═══════════════════════════════════════════
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(`screen-${name}`).classList.add('active');
@@ -1281,14 +1341,14 @@ function showScreen(name) {
 function makeCardEl(card, opts = {}) {
   const el = document.createElement('div');
   el.className = `card ${card.color}-card${opts.selected ? ' selected' : ''}${opts.noHover ? ' no-hover' : ''}`;
-  if (opts.small) el.style.cssText = '--card-w:50px;--card-h:70px;border-radius:4px;';
-  if (opts.medium) el.style.cssText = '--card-w:70px;--card-h:98px;';
+  if (opts.small) el.style.cssText = '--card-w:56px;--card-h:78px;--card-radius:6px;';
+  if (opts.medium) el.style.cssText = '--card-w:118px;--card-h:165px;--card-radius:8px;';
 
   const img = document.createElement('img');
   img.src = card.img;
   img.alt = card.name;
+  img.loading = 'lazy';
   img.onerror = () => {
-    // Fallback if image not found
     img.style.display = 'none';
     const fb = document.createElement('div');
     fb.className = 'card-fallback';
@@ -1348,21 +1408,19 @@ function updateExchangeBtn() {
 }
 
 function renderScoringPanel() {
-  // Hand preview
   const prev = document.getElementById('scoringHandPreview');
   prev.innerHTML = '';
   for (const c of G.hand) {
     prev.appendChild(makeCardEl(c, { medium: true, noHover: true }));
   }
 
-  // Scoring grid
   const grid = document.getElementById('scoringGrid');
   grid.innerHTML = '';
   const opts = scoringOptions(G.hand, G.scorecard);
-  const h = analyzeHand(G.hand);
 
   for (const opt of opts) {
     const btn = document.createElement('button');
+    btn.type = 'button';
     btn.className = 'score-btn' + (opt.hasMatch && opt.score !== null && opt.score > 0 ? ' match-highlight' : '');
     btn.disabled = false;
 
@@ -1499,12 +1557,9 @@ function log(msg, important = false) {
   logEl.scrollTop = logEl.scrollHeight;
 }
 
-// ═══════════════════════════════════════════
-// TITLE SCREEN CARD ART
-// ═══════════════════════════════════════════
 function renderTitleCards() {
   const container = document.getElementById('titleCards');
-  const show = [CARD_DEFS[0], CARD_DEFS[2], CARD_DEFS[4], CARD_DEFS[5]]; // CHANCE, CHOICE, LOVE, HERE&NOW
+  const show = [CARD_DEFS[0], CARD_DEFS[2], CARD_DEFS[4], CARD_DEFS[5]];
   const delays = [0, 0.5, 1.0, 1.5];
   const durs = [4, 3.5, 4.5, 3.8];
 
@@ -1518,7 +1573,17 @@ function renderTitleCards() {
   });
 }
 
-// Init title cards on load
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('screen-game').classList.contains('active')) return;
+  if (G.phase !== 'exchange1' && G.phase !== 'exchange2') return;
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    clearExchangeSelection();
+  }
+});
+
 renderTitleCards();
 </script>
 </body>
