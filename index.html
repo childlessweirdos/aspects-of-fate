@@ -422,6 +422,86 @@ html { width: 100%; }
 }
 @media (max-width: 559px) { #playerHand { flex-wrap: wrap; } }
 @media (max-width: 500px) { .results-game-grid { grid-template-columns: repeat(2,1fr); } }
+
+/* ── VISUAL ENHANCEMENTS ── */
+
+/* Richer masthead */
+.masthead {
+  background: linear-gradient(180deg, rgba(26,19,10,0.95) 0%, rgba(14,10,5,0.98) 100%);
+}
+.masthead h1 {
+  text-shadow: 0 0 40px rgba(200,148,26,0.5), 0 2px 4px rgba(0,0,0,0.8);
+}
+
+/* Card image rendering */
+.card img {
+  object-fit: contain;
+  object-position: center;
+  background: radial-gradient(ellipse at center, #1e1508 0%, #090604 100%);
+}
+.card { background: #090604; }
+
+/* Color-coded card borders */
+.card.black-card { border-color: rgba(200,148,26,0.45); }
+.card.red-card   { border-color: rgba(139,21,21,0.65); }
+.card.green-card { border-color: rgba(26,72,32,0.65); }
+
+/* Card hover lift + brightness */
+.card:hover:not(.selected):not(.no-hover) {
+  transform: translateY(-5px);
+  filter: brightness(1.08);
+  border-color: rgba(200,148,26,0.7);
+}
+.card.selected { filter: brightness(1.1); }
+
+/* Game ledger depth */
+#screen-game .game-ledger {
+  background: linear-gradient(168deg, rgba(42,34,24,0.92) 0%, rgba(22,18,12,0.96) 50%, rgba(14,11,8,0.98) 100%);
+  border: 1px solid rgba(200,148,26,0.28);
+  box-shadow: 0 1px 0 rgba(255,224,160,0.06) inset, 0 28px 64px rgba(0,0,0,0.6);
+}
+
+/* Scoring hint pulse */
+.play-scoring-hint {
+  animation: hint-pulse 2.2s ease-in-out infinite;
+}
+@keyframes hint-pulse {
+  0%,100% { box-shadow: 0 0 0 rgba(200,148,26,0); }
+  50%      { box-shadow: 0 0 20px rgba(200,148,26,0.22); }
+}
+
+/* Scorecard scoring-hot glow */
+.scorecard-wrap.scoring-hot {
+  border-color: rgba(232,192,96,0.5);
+  box-shadow: 0 0 32px rgba(200,148,26,0.15);
+}
+
+/* Status bar */
+.status-bar { background: rgba(18,13,7,0.85); }
+
+/* Phase banner */
+.phase-banner { background: rgba(14,10,5,0.92); }
+
+/* Title card explicit sizing fix for iframe */
+.title-art .card {
+  width: 90px !important;
+  height: 126px !important;
+  flex-shrink: 0;
+}
+
+/* Fated path card hover depth */
+.path-card:hover:not(.negative):not(.chosen) {
+  box-shadow: 0 8px 28px rgba(200,148,26,0.2);
+}
+
+/* Score table suggested row brightness */
+.sc-table tr.sc-pick.sc-suggest {
+  background: rgba(200,148,26,0.18);
+}
+.sc-table tr.sc-pick.sc-suggest td.sc-cat {
+  color: #ffe8b0;
+}
+
 </style>
 </head>
 <body>
@@ -897,10 +977,20 @@ function log(msg,important=false) {
   const l=document.getElementById('gameLog'); l.appendChild(d); l.scrollTop=l.scrollHeight;
 }
 function renderTitleCards() {
-  const container=document.getElementById('titleCards');
-  [[0,0,4],[2,0.5,3.5],[4,1.0,4.5],[5,1.5,3.8]].forEach(([ci,delay,dur])=>{
-    const el=makeCardEl(CARD_DEFS[ci],{noHover:false});
-    el.style.cssText=`width:90px;height:126px;--card-w:90px;--card-h:126px;animation:float ${dur}s ease-in-out infinite;animation-delay:${delay}s;border-radius:8px;`;
+  const container = document.getElementById('titleCards');
+  const show = [CARD_DEFS[0], CARD_DEFS[2], CARD_DEFS[4], CARD_DEFS[5]];
+  const delays = [0, 0.5, 1.0, 1.5];
+  const durs = [4, 3.5, 4.5, 3.8];
+  show.forEach((card, i) => {
+    const el = makeCardEl(card, { noHover: false });
+    el.style.setProperty('--delay', delays[i] + 's');
+    el.style.setProperty('--dur', durs[i] + 's');
+    el.classList.add('title-art');
+    el.style.width = '90px';
+    el.style.height = '126px';
+    el.style.animation = 'float ' + durs[i] + 's ease-in-out infinite';
+    el.style.animationDelay = delays[i] + 's';
+    el.style.flexShrink = '0';
     container.appendChild(el);
   });
 }
