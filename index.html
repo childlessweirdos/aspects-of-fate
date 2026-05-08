@@ -19,8 +19,8 @@
   --red-suit: #8b1515;
   --green-suit: #1a4820;
   --shadow: rgba(22,15,6,0.5);
-  --card-w: 168px;
-  --card-h: 236px;
+  --card-w: clamp(100px, 18vmin, 168px);
+  --card-h: clamp(140px, 25.2vmin, 236px);
   --card-radius: 10px;
 }
 
@@ -146,10 +146,11 @@ body {
   border-bottom: 1px solid rgba(200,148,26,0.14);
 }
 
+/* Vertical stack: score on top, cards below — scales desktop → mobile */
 .game-columns {
   flex: 1;
-  display: grid;
-  grid-template-columns: minmax(340px, 46%) minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 0;
   width: 100%;
   align-items: stretch;
@@ -157,17 +158,19 @@ body {
 }
 
 .game-col-scorecard {
-  position: sticky;
-  top: 8px;
-  align-self: start;
-  min-width: 0;
-  padding-right: 8px;
+  width: 100%;
+  flex-shrink: 0;
+  padding: 0 0 16px 0;
+  border-bottom: 1px solid rgba(200,148,26,0.2);
 }
 
 .game-col-scorecard .scorecard-wrap {
   box-shadow: 0 6px 28px rgba(0,0,0,0.35);
   display: flex;
   flex-direction: column;
+  max-width: 920px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .sc-table-panel {
@@ -197,8 +200,8 @@ body {
 .sc-dual-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px 12px;
-  padding: 8px 8px 10px;
+  gap: 8px 16px;
+  padding: 10px 12px 12px;
   align-items: start;
 }
 
@@ -219,15 +222,16 @@ body {
 .game-col-play {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: clamp(14px, 3vw, 22px);
   min-width: 0;
-  padding: 2px 0 2px 22px;
+  width: 100%;
+  padding: 18px 0 0 0;
   margin: 0;
   border: none;
   border-radius: 0;
   background: transparent;
-  border-left: 1px solid rgba(200,148,26,0.18);
   box-shadow: none;
+  align-items: center;
 }
 
 .play-scoring-hint {
@@ -252,6 +256,8 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  width: 100%;
+  max-width: min(960px, 100%);
 }
 
 .hand-label {
@@ -264,16 +270,15 @@ body {
 
 .hand {
   display: flex;
-  gap: 10px;
+  gap: clamp(6px, 1.5vw, 12px);
   justify-content: center;
   align-items: flex-end;
   flex-wrap: wrap;
   width: 100%;
-  max-width: 920px;
   margin: 0 auto;
 }
 
-@media (min-width: 880px) {
+@media (min-width: 560px) {
   #playerHand {
     flex-wrap: nowrap;
   }
@@ -375,6 +380,8 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  max-width: min(960px, 100%);
 }
 
 .exchange-hint {
@@ -439,6 +446,8 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  width: 100%;
+  max-width: min(960px, 100%);
 }
 .discard-label {
   font-family: 'Cinzel', serif;
@@ -617,6 +626,8 @@ body {
   padding: 12px 16px;
   max-height: 100px;
   overflow-y: auto;
+  width: 100%;
+  max-width: min(960px, 100%);
 }
 .log-entry {
   font-size: 0.72rem;
@@ -890,33 +901,27 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
 
-@media (max-width: 900px) {
-  .game-columns {
-    grid-template-columns: 1fr;
-  }
-  .game-col-scorecard {
-    position: relative;
-    top: auto;
-    order: 2;
-    padding-right: 0;
-  }
+@media (max-width: 720px) {
   .sc-dual-grid {
     grid-template-columns: 1fr;
-  }
-  .game-col-play {
-    order: 1;
-    border-left: none;
-    padding-left: 0;
-    padding-top: 16px;
-    border-top: 1px solid rgba(200,148,26,0.14);
+    gap: 10px;
+    padding: 8px 10px 10px;
   }
   .game-ledger {
-    padding: 16px 16px 18px;
+    padding: 14px 14px 16px;
+  }
+  .game-col-scorecard .scorecard-wrap {
+    max-width: none;
+  }
+}
+
+@media (max-width: 559px) {
+  #playerHand {
+    flex-wrap: wrap;
   }
 }
 
 @media (max-width: 500px) {
-  :root { --card-w: 112px; --card-h: 157px; }
   .results-game-grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
@@ -993,7 +998,7 @@ body {
       </aside>
       <div class="game-col-play">
         <div class="play-scoring-hint" id="playScoringHint" style="display:none;">
-          Final hand is below. <strong>Tap an open row</strong> on the score sheet (left) to record this hand.
+          Your hand is below. <strong>Tap an open row</strong> on the score sheet above to record this hand.
         </div>
         <div class="hand-area" id="handArea">
           <div class="hand-label" id="handLabel">Your Hand</div>
