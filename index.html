@@ -830,10 +830,10 @@ function showResults() {
   document.getElementById('res-final').style.color=hasLoss?'var(--red-suit)':'var(--gold-light)';
   document.getElementById('res-verdict').textContent=
     hasLoss?`You took ${losses} loss${losses>1?'es':''} across 6 games. Fate is unforgiving.`
-    :fatedSum<=100?'A masterful dance with destiny. You walked the razor's edge.'
-    :fatedSum<=200?'Well played. Your finesse shaped fate more than chance did.'
-    :fatedSum<=400?'A solid run. Fate yielded, but not without resistance.'
-    :'The dice were unkind, but you played on. Next time, fate may bend further.';
+    :fatedSum<=100?`A masterful dance with destiny. You walked the razor's edge.`
+    :fatedSum<=200?`Well played. Your finesse shaped fate more than chance did.`
+    :fatedSum<=400?`A solid run. Fate yielded, but not without resistance.`
+    :`The dice were unkind, but you played on. Next time, fate may bend further.`;
   const grid=document.getElementById('resGameGrid'); grid.innerHTML='';
   for(const g of G.gameHistory) {
     const cell=document.createElement('div'); cell.className='rg-cell';
