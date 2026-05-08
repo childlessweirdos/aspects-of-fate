@@ -57,13 +57,8 @@ body {
 .screen { display: none; }
 .screen.active { display: flex; flex-direction: column; min-height: 100dvh; }
 #scr-game.active {
-  height: 100dvh; max-height: 100dvh;
-  overflow: hidden;
-  padding:
-    env(safe-area-inset-top, 0px)
-    env(safe-area-inset-right, 0px)
-    env(safe-area-inset-bottom, 0px)
-    env(safe-area-inset-left, 0px);
+  min-height: 100dvh;
+  overflow: visible;
 }
 
 /* ════════════════════════════════════════════════
@@ -190,12 +185,13 @@ body {
    │  TABLE (cards+ctrl)  │  fills remaining
    └──────────────────────┘
 ════════════════════════════════════════════════ */
-#scr-game.active {
-  display: grid;
-  grid-template-rows: auto auto 1fr;
-}
+/* game layout is flex column via .active above */
 
 /* TOP CHROME */
+#scr-game.active {
+  display: flex;
+  flex-direction: column;
+}
 .game-chrome {
   flex-shrink: 0;
   background: linear-gradient(180deg, rgba(18,12,6,0.98) 0%, rgba(11,8,4,0.96) 100%);
@@ -246,7 +242,8 @@ body {
   border-bottom: 2px solid var(--gold-line);
   scrollbar-width: thin;
   scrollbar-color: var(--gold-dk) transparent;
-  max-height: 30vh;
+  max-height: none;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -385,11 +382,11 @@ body {
 
 /* TABLE — cards live here */
 .game-table {
-  flex: 1; min-height: 0;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: space-evenly;
-  padding: 14px 16px 18px;
-  overflow: hidden;
+  align-items: center; justify-content: flex-start;
+  padding: 16px 16px 24px;
+  gap: 16px;
+  overflow: visible;
   background:
     radial-gradient(ellipse 80% 50% at 50% 110%, rgba(200,148,26,0.07) 0%, transparent 70%);
   position: relative;
@@ -706,8 +703,7 @@ body {
   .btn { padding: 7px 14px; }
 }
 @media (max-height:640px) {
-  .score-panel { max-height: 28vh; }
-  .game-table { padding: 8px 12px 10px; gap: 8px; }
+  .game-table { padding: 8px 12px 12px; gap: 10px; }
 }
 
 /* scrollbar */
