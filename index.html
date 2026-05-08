@@ -83,17 +83,17 @@ body {
   justify-content: center;
   gap: 24px;
   padding: 10px 20px;
-  background: rgba(200,148,26,0.06);
-  border-bottom: 1px solid rgba(200,148,26,0.15);
+  background: rgba(28,22,14,0.75);
+  border-bottom: 1px solid rgba(200,148,26,0.14);
   flex-wrap: wrap;
   flex-shrink: 0;
 }
 .stat {
   font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--parchment-dark);
+  color: #c4b89a;
 }
 .stat span {
   color: var(--gold-light);
@@ -103,43 +103,55 @@ body {
 
 .phase-banner {
   text-align: center;
-  padding: 10px;
+  padding: 11px 16px;
   font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.25em;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--gold-light);
-  background: rgba(200,148,26,0.08);
-  border-bottom: 1px solid rgba(200,148,26,0.2);
+  background: rgba(22,18,12,0.85);
+  border-bottom: 1px solid rgba(200,148,26,0.16);
   flex-shrink: 0;
 }
 
-/* === TWO-COLUMN GAME SHELL (verify this exists in your file) === */
+/* === Game ledger: one cohesive panel for play + score === */
 .game-body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
   min-height: 0;
   width: 100%;
-  max-width: none;
+  padding: 0 14px 22px;
+  box-sizing: border-box;
+}
+
+.game-ledger {
+  width: 100%;
+  max-width: min(1320px, 100%);
+  margin: 0 auto;
+  padding: 18px 22px 22px;
+  background: linear-gradient(168deg, rgba(42,34,24,0.9) 0%, rgba(22,18,12,0.95) 50%, rgba(14,11,8,0.97) 100%);
+  border: 1px solid rgba(200,148,26,0.3);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 0 rgba(255,224,160,0.06) inset,
+    0 28px 64px rgba(0,0,0,0.5);
 }
 
 .history-full {
-  padding: 12px 20px 0;
+  padding: 0 0 14px 0;
+  margin: 0 0 16px 0;
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
+  border-bottom: 1px solid rgba(200,148,26,0.14);
 }
 
 .game-columns {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(280px, 36%) minmax(0, 1fr);
-  gap: 20px;
-  padding: 12px 20px 20px;
+  grid-template-columns: minmax(300px, 38%) minmax(0, 1fr);
+  gap: 0;
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
   align-items: stretch;
   min-height: 0;
 }
@@ -147,9 +159,18 @@ body {
 .game-col-scorecard {
   position: sticky;
   top: 8px;
+  align-self: start;
   max-height: calc(100vh - 160px);
   overflow-y: auto;
   min-width: 0;
+  padding-right: 4px;
+}
+
+.game-col-scorecard .scorecard-wrap {
+  box-shadow: 0 6px 28px rgba(0,0,0,0.35);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .game-col-play {
@@ -157,34 +178,30 @@ body {
   flex-direction: column;
   gap: 18px;
   min-width: 0;
-  background: rgba(242,232,204,0.02);
-  border: 1px solid rgba(200,148,26,0.12);
-  border-radius: 4px;
-  padding: 16px;
-}
-
-.game-col-scorecard .scorecard-wrap {
-  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+  padding: 2px 0 2px 22px;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  border-left: 1px solid rgba(200,148,26,0.18);
+  box-shadow: none;
 }
 
 .play-scoring-hint {
   text-align: center;
-  font-size: 0.82rem;
-  color: var(--parchment-dark);
+  font-size: 0.88rem;
+  color: #d4c9a8;
   font-style: italic;
-  padding: 10px 14px;
-  border: 1px dashed rgba(200,148,26,0.28);
-  border-radius: 6px;
-  background: rgba(200,148,26,0.04);
-  line-height: 1.45;
+  padding: 12px 16px;
+  border: 1px solid rgba(200,148,26,0.22);
+  border-radius: 10px;
+  background: rgba(200,148,26,0.08);
+  line-height: 1.5;
 }
 .play-scoring-hint strong {
   color: var(--gold-light);
   font-style: normal;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
 }
 
 .hand-area {
@@ -196,17 +213,27 @@ body {
 
 .hand-label {
   font-family: 'Cinzel', serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.3em;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--gold-dim);
+  color: #c9a85c;
 }
 
 .hand {
   display: flex;
-  gap: 14px;
+  gap: 10px;
   justify-content: center;
+  align-items: flex-end;
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+@media (min-width: 880px) {
+  #playerHand {
+    flex-wrap: nowrap;
+  }
 }
 
 .card {
@@ -309,8 +336,8 @@ body {
 
 .exchange-hint {
   font-style: italic;
-  font-size: 0.8rem;
-  color: var(--parchment-dark);
+  font-size: 0.88rem;
+  color: rgba(220, 208, 175, 0.88);
   text-align: center;
 }
 
@@ -372,10 +399,10 @@ body {
 }
 .discard-label {
   font-family: 'Cinzel', serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.3em;
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--gold-dim);
+  color: #c9a85c;
 }
 .discard-pile {
   display: flex;
@@ -393,81 +420,100 @@ body {
 .discard-pile .card:hover { transform: none; }
 
 .scorecard-wrap {
-  background: rgba(242,232,204,0.04);
-  border: 1px solid rgba(200,148,26,0.2);
+  background: rgba(6,5,4,0.45);
+  border: 1px solid rgba(200,148,26,0.22);
+  border-radius: 10px;
   overflow: hidden;
 }
 
 .scorecard-wrap.scoring-hot {
-  border-color: rgba(200,148,26,0.45);
-  box-shadow: 0 0 28px rgba(200,148,26,0.1);
+  border-color: rgba(232,192,96,0.5);
+  box-shadow: 0 0 32px rgba(200,148,26,0.14);
 }
 
 .sc-header {
-  background: rgba(200,148,26,0.1);
-  padding: 10px 14px;
+  background: linear-gradient(180deg, rgba(200,148,26,0.16) 0%, rgba(200,148,26,0.08) 100%);
+  padding: 14px 18px;
   font-family: 'Cinzel', serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.25em;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--gold);
-  border-bottom: 1px solid rgba(200,148,26,0.2);
+  color: #f0d78c;
+  border-bottom: 1px solid rgba(200,148,26,0.22);
   flex-shrink: 0;
 }
 
 .sc-header-sub {
   display: block;
-  margin-top: 8px;
-  font-size: 0.58rem;
-  letter-spacing: 0.08em;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
   text-transform: none;
-  color: var(--gold-light);
+  color: #e8c060;
   font-family: 'IM Fell English', serif;
   font-style: italic;
-  line-height: 1.35;
-  opacity: 0.95;
+  line-height: 1.45;
+  opacity: 1;
 }
 
 .sc-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.75rem;
+  font-size: 0.92rem;
 }
 
 .sc-table td {
-  padding: 5px 12px;
-  border-bottom: 1px solid rgba(200,148,26,0.08);
-  color: var(--parchment-dark);
+  padding: 12px 16px 12px 14px;
+  border-bottom: 1px solid rgba(200,148,26,0.11);
+  color: #e8dcc8;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+.sc-table td:first-child {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.07em;
+  color: #f5ebd4;
 }
 
 .sc-table td:last-child {
   text-align: right;
   font-family: 'Cinzel', serif;
   font-weight: 600;
-  color: var(--gold-light);
-  min-width: 72px;
+  font-size: 0.88rem;
+  color: #f0d78c;
+  min-width: 76px;
 }
 
 .sc-table td.sc-desc {
-  font-size: 0.65rem;
-  color: var(--gold-dim);
+  font-size: 0.74rem;
+  color: rgba(220, 205, 170, 0.72);
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
 }
 
 .sc-table tr.sc-pick {
   cursor: pointer;
-  background: rgba(200,148,26,0.07);
+  background: rgba(200,148,26,0.12);
   transition: background 0.15s, box-shadow 0.15s;
+}
+
+.sc-table tr.sc-pick td:first-child {
+  border-left: 4px solid var(--gold-light);
+  padding-left: 14px;
 }
 
 .sc-table tr.sc-pick:hover,
 .sc-table tr.sc-pick:focus-visible {
-  background: rgba(200,148,26,0.16);
+  background: rgba(200,148,26,0.22);
   outline: none;
-  box-shadow: inset 0 0 0 1px rgba(232,192,96,0.45);
+  box-shadow: inset 0 0 0 1px rgba(232,192,96,0.4);
 }
 
 .sc-table tr.sc-pick.sc-suggest {
-  background: rgba(200,148,26,0.12);
+  background: rgba(200,148,26,0.18);
 }
 
 .sc-table tr.sc-pick .sc-pick-val {
@@ -476,40 +522,41 @@ body {
 
 .sc-table tr.sc-pick .sc-will-record {
   font-family: 'Cinzel Decorative', serif;
-  font-size: 1.05rem;
-  color: var(--gold-light);
+  font-size: 1.2rem;
+  color: #ffe8a8;
 }
 
 .sc-table tr.sc-pick .sc-pick-hint {
   display: block;
-  font-size: 0.5rem;
-  letter-spacing: 0.18em;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold-dim);
-  margin-top: 4px;
+  color: #c9a85c;
+  margin-top: 5px;
   font-family: 'Cinzel', serif;
   font-style: normal;
 }
 
-.sc-table td.empty { color: rgba(200,148,26,0.2); }
-.sc-table td.zero { color: var(--red-suit); font-family: 'Cinzel', serif; }
+.sc-table td.empty { color: rgba(200,148,26,0.4); }
+.sc-table td.zero { color: #e07070; font-family: 'Cinzel', serif; }
 
 .sc-table tr.section-row td {
-  background: rgba(200,148,26,0.06);
+  background: rgba(200,148,26,0.1);
   font-family: 'Cinzel', serif;
-  font-size: 0.55rem;
-  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--gold-dim);
-  padding: 4px 12px;
+  color: #e8c060;
+  padding: 11px 16px;
 }
 
 .sc-table tr.total-row td {
-  background: rgba(200,148,26,0.12);
+  background: rgba(200,148,26,0.16);
   font-family: 'Cinzel', serif;
   font-weight: 700;
-  color: var(--gold-light);
-  border-top: 1px solid rgba(200,148,26,0.3);
+  font-size: 0.82rem;
+  color: #ffe8a8;
+  border-top: 1px solid rgba(200,148,26,0.35);
 }
 
 .history-row {
@@ -521,24 +568,27 @@ body {
 }
 
 .history-pill {
-  padding: 4px 12px;
-  border: 1px solid rgba(200,148,26,0.25);
+  padding: 6px 14px;
+  border: 1px solid rgba(200,148,26,0.28);
+  border-radius: 6px;
   font-family: 'Cinzel', serif;
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   letter-spacing: 0.1em;
-  color: var(--parchment-dark);
+  color: #c4b89a;
+  background: rgba(0,0,0,0.15);
 }
 .history-pill.current {
-  border-color: var(--gold);
-  color: var(--gold-light);
-  background: rgba(200,148,26,0.1);
+  border-color: var(--gold-light);
+  color: #ffe8a8;
+  background: rgba(200,148,26,0.14);
 }
-.history-pill.done { color: var(--gold-dim); }
+.history-pill.done { color: #8a7018; }
 
 .game-log {
-  background: rgba(22,15,6,0.6);
-  border: 1px solid rgba(200,148,26,0.15);
-  padding: 10px 14px;
+  background: rgba(0,0,0,0.22);
+  border: 1px solid rgba(200,148,26,0.12);
+  border-radius: 10px;
+  padding: 12px 16px;
   max-height: 100px;
   overflow-y: auto;
 }
@@ -823,9 +873,17 @@ body {
     top: auto;
     max-height: none;
     order: 2;
+    padding-right: 0;
   }
   .game-col-play {
     order: 1;
+    border-left: none;
+    padding-left: 0;
+    padding-top: 16px;
+    border-top: 1px solid rgba(200,148,26,0.14);
+  }
+  .game-ledger {
+    padding: 16px 16px 18px;
   }
 }
 
@@ -879,6 +937,7 @@ body {
   <div class="phase-banner" id="phaseBanner" role="status" aria-live="polite">✦ INITIAL DEAL ✦</div>
 
   <div class="game-body">
+    <div class="game-ledger">
     <div class="history-full">
       <div class="history-row" id="gameHistory"></div>
     </div>
@@ -921,6 +980,7 @@ body {
 
         <div class="game-log" id="gameLog"></div>
       </div>
+    </div>
     </div>
   </div>
 </div>
