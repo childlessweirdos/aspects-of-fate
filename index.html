@@ -15,7 +15,6 @@
   --gold: #c8941a;
   --gold-light: #e8c060;
   --gold-dim: #8a6010;
-  --black-suit: #160f06;
   --red-suit: #8b1515;
   --green-suit: #1a4820;
   --shadow: rgba(22,15,6,0.5);
@@ -23,9 +22,7 @@
   --card-h: clamp(100px, 21vw, 236px);
   --card-radius: 10px;
 }
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body { height: 100%; }
 
 body {
@@ -42,961 +39,391 @@ body {
 .screen { display: none; min-height: 100vh; }
 .screen.active { display: flex; flex-direction: column; }
 
-/* One-screen play: game fills dynamic viewport; no full-page scroll */
 #screen-game.screen.active {
-  height: 100vh;
-  height: 100dvh;
-  max-height: 100vh;
-  max-height: 100dvh;
+  height: 100vh; height: 100dvh;
+  max-height: 100vh; max-height: 100dvh;
   overflow: hidden;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+/* ── MASTHEAD ── */
 .masthead {
   text-align: center;
   padding: 24px 20px 16px;
   border-bottom: 1px solid rgba(200,148,26,0.2);
   position: relative;
   flex-shrink: 0;
+  background: linear-gradient(180deg, rgba(30,22,12,0.9) 0%, rgba(14,10,6,0.95) 100%);
 }
 .masthead::before, .masthead::after {
-  content: '✦';
-  color: var(--gold-dim);
-  font-size: 0.8rem;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  content: '✦'; color: var(--gold-dim); font-size: 0.8rem;
+  position: absolute; top: 50%; transform: translateY(-50%);
 }
 .masthead::before { left: 20px; }
 .masthead::after { right: 20px; }
-
 .masthead h1 {
   font-family: 'Cinzel Decorative', serif;
   font-size: clamp(1.4rem, 4vw, 2.2rem);
   color: var(--gold-light);
   letter-spacing: 0.05em;
-  text-shadow: 0 0 40px rgba(200,148,26,0.4);
+  text-shadow: 0 0 40px rgba(200,148,26,0.5), 0 2px 4px rgba(0,0,0,0.8);
 }
 .masthead .sub {
   font-family: 'Cinzel', serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: var(--gold-dim);
-  margin-top: 4px;
+  font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--gold-dim); margin-top: 4px;
 }
 
+/* ── STATUS BAR ── */
 .status-bar {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
+  display: flex; justify-content: center; gap: 24px;
   padding: 10px 20px;
-  background: rgba(28,22,14,0.75);
+  background: rgba(20,15,8,0.85);
   border-bottom: 1px solid rgba(200,148,26,0.14);
-  flex-wrap: wrap;
-  flex-shrink: 0;
+  flex-wrap: wrap; flex-shrink: 0;
 }
-.stat {
-  font-family: 'Cinzel', serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #c4b89a;
-}
-.stat span {
-  color: var(--gold-light);
-  font-weight: 700;
-  font-size: 0.85rem;
-}
+.stat { font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: #c4b89a; }
+.stat span { color: var(--gold-light); font-weight: 700; font-size: 0.85rem; }
 
+/* ── PHASE BANNER ── */
 .phase-banner {
-  text-align: center;
-  padding: 11px 16px;
-  font-family: 'Cinzel', serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  text-align: center; padding: 11px 16px;
+  font-family: 'Cinzel', serif; font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase;
   color: var(--gold-light);
-  background: rgba(22,18,12,0.85);
-  border-bottom: 1px solid rgba(200,148,26,0.16);
+  background: rgba(14,10,5,0.9);
+  border-bottom: 1px solid rgba(200,148,26,0.18);
   flex-shrink: 0;
 }
 
-/* === Game ledger: fills remaining viewport under chrome === */
+/* ── GAME BODY ── */
 #screen-game .game-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  min-height: 0;
-  width: 100%;
+  flex: 1; display: flex; flex-direction: column; align-items: stretch;
+  min-height: 0; width: 100%;
   padding: 0 max(8px, env(safe-area-inset-left)) max(6px, env(safe-area-inset-bottom));
   padding-right: max(8px, env(safe-area-inset-right));
-  box-sizing: border-box;
 }
-
 #screen-game .game-ledger {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
+  flex: 1; min-height: 0; display: flex; flex-direction: column;
+  overflow: hidden; width: 100%; margin: 0 auto;
   padding: 8px 10px 10px;
-  background: linear-gradient(168deg, rgba(42,34,24,0.9) 0%, rgba(22,18,12,0.95) 50%, rgba(14,11,8,0.97) 100%);
-  border: 1px solid rgba(200,148,26,0.3);
+  background: linear-gradient(168deg, rgba(42,34,24,0.92) 0%, rgba(22,18,12,0.96) 50%, rgba(14,11,8,0.98) 100%);
+  border: 1px solid rgba(200,148,26,0.28);
   border-radius: 12px;
-  box-shadow:
-    0 1px 0 rgba(255,224,160,0.06) inset,
-    0 28px 64px rgba(0,0,0,0.5);
+  box-shadow: 0 1px 0 rgba(255,224,160,0.06) inset, 0 28px 64px rgba(0,0,0,0.6);
 }
 
-.history-full {
-  padding: 0 0 6px 0;
-  margin: 0 0 8px 0;
-  width: 100%;
-  border-bottom: 1px solid rgba(200,148,26,0.14);
-  flex-shrink: 0;
-}
+/* compact game masthead */
+#screen-game .masthead { padding: 8px 12px 6px; }
+#screen-game .masthead::before, #screen-game .masthead::after { display: none; }
+#screen-game .masthead h1 { font-size: clamp(0.95rem, 3.8vw, 1.45rem); }
+#screen-game .masthead .sub { font-size: 0.55rem; letter-spacing: 0.28em; margin-top: 2px; }
+#screen-game .status-bar { padding: 5px 8px; gap: 10px 14px; }
+#screen-game .stat { font-size: 0.62rem; }
+#screen-game .stat span { font-size: 0.75rem; }
+#screen-game .phase-banner { padding: 6px 10px; font-size: 0.62rem; letter-spacing: 0.14em; }
 
-/* Score top / play bottom: split viewport; scroll only inside each band */
+/* ── HISTORY ROW ── */
+.history-full { padding: 0 0 6px; margin: 0 0 8px; border-bottom: 1px solid rgba(200,148,26,0.14); flex-shrink: 0; }
+.history-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; padding: 2px 0 4px; }
+.history-pill {
+  padding: 4px 10px; border: 1px solid rgba(200,148,26,0.28); border-radius: 6px;
+  font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.08em;
+  color: #c4b89a; background: rgba(0,0,0,0.2);
+}
+.history-pill.current { border-color: var(--gold-light); color: #ffe8a8; background: rgba(200,148,26,0.14); }
+.history-pill.done { color: #8a7018; }
+
+/* ── GAME COLUMNS ── */
 .game-columns {
-  flex: 1;
-  min-height: 0;
+  flex: 1; min-height: 0;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) minmax(0, 1.12fr);
-  gap: 0;
-  width: 100%;
-  overflow: hidden;
+  grid-template-rows: minmax(0,1fr) minmax(0,1.12fr);
+  gap: 0; width: 100%; overflow: hidden;
 }
 
+/* ── SCORECARD (top) ── */
 .game-col-scorecard {
-  width: 100%;
-  min-height: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  width: 100%; min-height: 0;
+  overflow-x: hidden; overflow-y: auto;
+  -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
   padding: 0 2px 8px 0;
   border-bottom: 1px solid rgba(200,148,26,0.2);
 }
-
-.game-col-scorecard .scorecard-wrap {
-  box-shadow: 0 6px 28px rgba(0,0,0,0.35);
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-  margin: 0 auto;
-  width: 100%;
+.scorecard-wrap {
+  background: rgba(6,5,4,0.5);
+  border: 1px solid rgba(200,148,26,0.22);
+  border-radius: 10px; overflow: hidden;
 }
-
-#screen-game .masthead {
-  padding: 8px 12px 6px;
+.scorecard-wrap.scoring-hot {
+  border-color: rgba(232,192,96,0.55);
+  box-shadow: 0 0 28px rgba(200,148,26,0.18);
 }
-#screen-game .masthead::before,
-#screen-game .masthead::after {
-  display: none;
+.sc-header {
+  background: linear-gradient(180deg, rgba(200,148,26,0.18) 0%, rgba(200,148,26,0.08) 100%);
+  padding: 8px 10px;
+  font-family: 'Cinzel', serif; font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #f0d78c;
+  border-bottom: 1px solid rgba(200,148,26,0.22); flex-shrink: 0;
 }
-#screen-game .masthead h1 {
-  font-size: clamp(0.95rem, 3.8vw, 1.45rem);
+.sc-header-sub {
+  display: block; margin-top: 4px; font-size: 0.58rem; letter-spacing: 0.02em; text-transform: none;
+  color: rgba(232,192,96,0.7); font-family: 'IM Fell English', serif; font-style: italic; line-height: 1.3;
 }
-#screen-game .masthead .sub {
-  font-size: 0.55rem;
-  letter-spacing: 0.28em;
-  margin-top: 2px;
-}
-#screen-game .status-bar {
-  padding: 5px 8px;
-  gap: 10px 14px;
-}
-#screen-game .stat {
-  font-size: 0.62rem;
-}
-#screen-game .stat span {
-  font-size: 0.75rem;
-}
-#screen-game .phase-banner {
-  padding: 6px 10px;
-  font-size: 0.62rem;
-  letter-spacing: 0.14em;
-}
-
 .sc-table-panel {
-  display: flex;
-  flex-direction: column;
-  margin-top: 6px;
-  border: 1px solid rgba(200,148,26,0.15);
-  border-radius: 8px;
-  overflow: hidden;
-  background: rgba(255,248,235,0.04);
-  flex-shrink: 0;
+  display: flex; flex-direction: column; margin-top: 4px;
+  border: 1px solid rgba(200,148,26,0.12); border-radius: 8px; overflow: hidden;
+  background: rgba(255,248,235,0.03); flex-shrink: 0;
 }
-
 .sc-live-label {
-  flex-shrink: 0;
-  font-family: 'Cinzel', serif;
-  font-size: 0.52rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #c9a85c;
-  padding: 5px 8px;
-  margin: 0;
+  font-family: 'Cinzel', serif; font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #c9a85c; padding: 5px 8px;
   background: rgba(200,148,26,0.07);
   border-bottom: 1px solid rgba(200,148,26,0.1);
 }
-
 .sc-dual-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px 10px;
-  padding: 6px 8px 8px;
-  align-items: start;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; padding: 6px 8px 8px; align-items: start;
 }
-
 .sc-col-title {
-  font-family: 'Cinzel', serif;
-  font-size: 0.48rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #e8c060;
-  margin: 0 0 2px 1px;
-  line-height: 1.15;
+  font-family: 'Cinzel', serif; font-size: 0.48rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #e8c060; margin: 0 0 2px 1px; line-height: 1.15;
 }
 
-.sc-col .sc-table {
-  width: 100%;
+/* ── SCORE TABLES ── */
+.sc-table { width: 100%; border-collapse: collapse; font-size: 0.68rem; table-layout: fixed; }
+.sc-table-live { background: rgba(16,12,8,0.4); border-radius: 6px; overflow: hidden; }
+.sc-table td {
+  padding: 2px 4px 3px 5px;
+  border-bottom: 1px solid rgba(90,75,50,0.2);
+  color: #f2ead8; line-height: 1.2; vertical-align: middle;
+}
+.sc-table td.sc-cat {
+  font-family: 'Cinzel', serif; font-weight: 600; font-size: 0.52rem; letter-spacing: 0.02em;
+  color: #faf3e4; width: 72%; white-space: normal; hyphens: auto;
+}
+.sc-table td.sc-val, .sc-table td:last-child {
+  text-align: right; font-family: 'Cinzel', serif; font-weight: 600; font-size: 0.62rem;
+  color: #f0d78c; width: 28%;
+}
+/* Clickable scoring rows */
+.sc-table tr.sc-pick {
+  cursor: pointer;
+  background: rgba(200,148,26,0.1);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.sc-table tr.sc-pick td.sc-cat { border-left: 3px solid var(--gold-light); padding-left: 5px; }
+.sc-table tr.sc-pick:hover, .sc-table tr.sc-pick:focus-visible {
+  background: rgba(200,148,26,0.22); outline: none;
+  box-shadow: inset 0 0 0 1px rgba(232,192,96,0.4);
+}
+.sc-table tr.sc-pick.sc-suggest { background: rgba(200,148,26,0.16); }
+.sc-table tr.sc-pick .sc-will-record { font-family: 'Cinzel Decorative', serif; font-size: 0.82rem; color: #ffe8a8; }
+.sc-table td.empty { color: rgba(200,148,26,0.4); }
+.sc-table td.zero { color: #e07070; font-family: 'Cinzel', serif; }
+.sc-table tr.total-row td {
+  background: rgba(200,148,26,0.13); font-family: 'Cinzel', serif; font-weight: 700;
+  font-size: 0.56rem; color: #ffe8a8;
+  border-top: 1px solid rgba(200,148,26,0.3); padding-top: 3px; padding-bottom: 3px;
 }
 
+/* ── PLAY COLUMN (bottom) ── */
 .game-col-play {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 2vw, 16px);
-  min-width: 0;
-  min-height: 0;
-  width: 100%;
-  padding: 10px 0 0 0;
-  margin: 0;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  align-items: center;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  display: flex; flex-direction: column; gap: clamp(8px,2vw,16px);
+  min-width: 0; min-height: 0; width: 100%;
+  padding: 10px 0 0 0; align-items: center;
+  overflow-x: hidden; overflow-y: auto;
+  -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
 }
 
 .play-scoring-hint {
-  text-align: center;
-  font-size: 0.78rem;
-  color: #d4c9a8;
-  font-style: italic;
-  padding: 8px 12px;
-  border: 1px solid rgba(200,148,26,0.22);
-  border-radius: 8px;
-  background: rgba(200,148,26,0.08);
-  line-height: 1.4;
-  flex-shrink: 0;
-  width: 100%;
-  max-width: min(960px, 100%);
+  text-align: center; font-size: 0.78rem; color: #d4c9a8; font-style: italic;
+  padding: 8px 12px; border: 1px solid rgba(200,148,26,0.25); border-radius: 8px;
+  background: rgba(200,148,26,0.09); line-height: 1.4; flex-shrink: 0;
+  width: 100%; max-width: min(960px, 100%);
+  animation: glow-pulse 2s ease-in-out infinite;
 }
-.play-scoring-hint strong {
-  color: var(--gold-light);
-  font-style: normal;
-  letter-spacing: 0.05em;
+.play-scoring-hint strong { color: var(--gold-light); font-style: normal; letter-spacing: 0.05em; }
+@keyframes glow-pulse {
+  0%,100% { box-shadow: 0 0 0 rgba(200,148,26,0); }
+  50% { box-shadow: 0 0 18px rgba(200,148,26,0.25); }
 }
 
+/* ── HAND ── */
 .hand-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  max-width: min(960px, 100%);
-  flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  width: 100%; max-width: min(960px, 100%); flex-shrink: 0;
 }
-
 .hand-label {
-  font-family: 'Cinzel', serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #c9a85c;
+  font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: #c9a85c;
 }
-
 .hand {
-  display: flex;
-  gap: clamp(6px, 1.5vw, 12px);
-  justify-content: center;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  width: 100%;
-  margin: 0 auto;
+  display: flex; gap: clamp(6px,1.5vw,12px);
+  justify-content: center; align-items: flex-end;
+  flex-wrap: wrap; width: 100%; margin: 0 auto;
 }
+@media (min-width: 560px) { #playerHand { flex-wrap: nowrap; } }
 
-@media (min-width: 560px) {
-  #playerHand {
-    flex-wrap: nowrap;
-  }
-}
-
+/* ── CARDS ── */
 .card {
-  width: var(--card-w);
-  height: var(--card-h);
+  width: var(--card-w); height: var(--card-h);
   border-radius: var(--card-radius);
   border: 2px solid rgba(200,148,26,0.3);
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s;
-  position: relative;
-  overflow: hidden;
-  background: var(--ink);
+  transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s, filter 0.2s;
+  position: relative; overflow: hidden;
+  background: #090604;
   box-shadow: 0 4px 16px var(--shadow);
   user-select: none;
 }
-
 .card img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  display: block;
-  pointer-events: none;
+  width: 100%; height: 100%;
+  object-fit: contain; object-position: center;
+  display: block; pointer-events: none;
   background: radial-gradient(ellipse at center, #2a1f12 0%, #0d0904 100%);
 }
-
 .card .card-fallback {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  background: var(--ink);
+  width: 100%; height: 100%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 8px; background: var(--ink);
 }
-
-.card .card-num {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1;
-}
+.card .card-num { font-family: 'Cinzel Decorative', serif; font-size: 2rem; font-weight: 700; line-height: 1; }
 .card .card-num.black { color: var(--parchment); }
 .card .card-num.red { color: #e05050; }
 .card .card-num.green { color: #50c060; }
-
-.card .card-name {
-  font-family: 'Cinzel', serif;
-  font-size: 0.5rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--parchment-dark);
-  margin-top: 6px;
-  text-align: center;
-}
-
-.card .card-color-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-}
+.card .card-name { font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--parchment-dark); margin-top: 6px; text-align: center; }
+.card .card-color-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
+.card.black-card { border-color: rgba(200,148,26,0.4); }
 .card.black-card .card-color-bar { background: var(--gold); }
+.card.red-card { border-color: rgba(139,21,21,0.6); }
 .card.red-card .card-color-bar { background: var(--red-suit); }
+.card.green-card { border-color: rgba(26,72,32,0.6); }
 .card.green-card .card-color-bar { background: var(--green-suit); }
-
+.card:hover:not(.selected):not(.no-hover) { transform: translateY(-5px); filter: brightness(1.08); border-color: rgba(200,148,26,0.7); }
 .card.selected {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 2px var(--gold), 0 8px 24px rgba(200,148,26,0.5);
-  transform: translateY(-10px);
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 2px var(--gold), 0 10px 28px rgba(200,148,26,0.55);
+  transform: translateY(-10px); filter: brightness(1.1);
 }
-
 .card.selected::after {
-  content: '✦ SWAP';
-  position: absolute;
-  bottom: 8px;
-  left: 0; right: 0;
-  text-align: center;
-  font-family: 'Cinzel', serif;
-  font-size: 0.5rem;
-  letter-spacing: 0.15em;
-  color: var(--gold-light);
-  background: rgba(22,15,6,0.8);
-  padding: 3px 0;
+  content: '✦ SWAP'; position: absolute; bottom: 0; left: 0; right: 0;
+  text-align: center; font-family: 'Cinzel', serif; font-size: 0.48rem; letter-spacing: 0.15em;
+  color: var(--gold-light); background: rgba(12,8,4,0.88); padding: 4px 0;
 }
 
-.card:hover:not(.selected):not(.no-hover) {
-  transform: translateY(-4px);
-  border-color: rgba(200,148,26,0.6);
-}
-
+/* ── EXCHANGE CONTROLS ── */
 .exchange-controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  max-width: min(960px, 100%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  width: 100%; max-width: min(960px, 100%);
 }
+.exchange-hint { font-style: italic; font-size: 0.88rem; color: rgba(220,208,175,0.88); text-align: center; }
+.btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-.exchange-hint {
-  font-style: italic;
-  font-size: 0.88rem;
-  color: rgba(220, 208, 175, 0.88);
-  text-align: center;
-}
-
-.btn-row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
+/* ── BUTTONS ── */
 .btn {
-  padding: 10px 28px;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  cursor: pointer;
-  border: 1px solid var(--gold-dim);
-  background: transparent;
-  color: var(--gold-light);
-  transition: all 0.15s;
-  position: relative;
+  padding: 10px 28px; font-family: 'Cinzel', serif; font-size: 0.75rem;
+  letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
+  border: 1px solid var(--gold-dim); background: transparent; color: var(--gold-light);
+  transition: all 0.15s; position: relative; overflow: hidden;
 }
 .btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.15s;
-  z-index: -1;
+  content: ''; position: absolute; inset: 0; background: var(--gold);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.15s; z-index: -1;
 }
-.btn:hover { color: var(--ink); border-color: var(--gold); }
-.btn:hover::before { transform: scaleX(1); }
+.btn:hover:not(:disabled) { color: var(--ink); border-color: var(--gold); }
+.btn:hover:not(:disabled)::before { transform: scaleX(1); }
 .btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.btn:disabled:hover { color: var(--gold-light); }
-.btn:disabled:hover::before { transform: scaleX(0); }
-
-.btn-primary {
-  background: var(--gold);
-  color: var(--ink);
-  border-color: var(--gold);
-  font-weight: 700;
-}
-.btn-primary:hover { background: var(--gold-light); }
+.btn-primary { background: var(--gold); color: var(--ink); border-color: var(--gold); font-weight: 700; }
+.btn-primary:hover:not(:disabled) { background: var(--gold-light); }
 .btn-primary::before { display: none; }
+.btn-ghost { border-color: rgba(200,148,26,0.3); color: var(--parchment-dark); }
 
-.btn-ghost {
-  border-color: rgba(200,148,26,0.3);
-  color: var(--parchment-dark);
-}
+/* ── EXCHANGE INDICATOR ── */
+.exchange-indicator { display: flex; gap: 8px; justify-content: center; }
+.ex-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(200,148,26,0.2); border: 1px solid rgba(200,148,26,0.3); transition: all 0.3s; }
+.ex-dot.done { background: var(--gold); border-color: var(--gold); }
+.ex-dot.active { background: var(--gold-light); border-color: var(--gold-light); box-shadow: 0 0 7px var(--gold-light); }
 
-.discard-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  max-width: min(960px, 100%);
-}
-.discard-label {
-  font-family: 'Cinzel', serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: #c9a85c;
-}
-.discard-pile {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  flex-wrap: wrap;
-  min-height: 40px;
-}
-.discard-pile .card {
-  --card-w: 58px;
-  --card-h: 81px;
-  --card-radius: 6px;
-  cursor: default;
-}
-.discard-pile .card:hover { transform: none; }
+/* ── DISCARD ── */
+.discard-area { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: min(960px, 100%); }
+.discard-label { font-family: 'Cinzel', serif; font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: #c9a85c; }
+.discard-pile { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; min-height: 40px; }
+.discard-pile .card { --card-w: 58px; --card-h: 81px; --card-radius: 6px; cursor: default; }
+.discard-pile .card:hover { transform: none; filter: none; }
 
-.scorecard-wrap {
-  background: rgba(6,5,4,0.42);
-  border: 1px solid rgba(200,148,26,0.22);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.scorecard-wrap.scoring-hot {
-  border-color: rgba(232,192,96,0.5);
-  box-shadow: 0 0 32px rgba(200,148,26,0.14);
-}
-
-.sc-header {
-  background: linear-gradient(180deg, rgba(200,148,26,0.16) 0%, rgba(200,148,26,0.08) 100%);
-  padding: 8px 10px;
-  font-family: 'Cinzel', serif;
-  font-size: 0.64rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #f0d78c;
-  border-bottom: 1px solid rgba(200,148,26,0.22);
-  flex-shrink: 0;
-}
-
-.sc-header-sub {
-  display: block;
-  margin-top: 4px;
-  font-size: 0.62rem;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  color: #e8c060;
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  line-height: 1.3;
-  opacity: 1;
-}
-
-/* Compact 2-column tables: category | value (rule text in title tooltip) */
-.sc-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.68rem;
-  table-layout: fixed;
-}
-
-.sc-table-live {
-  background: rgba(20,16,12,0.35);
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.sc-table td {
-  padding: 2px 4px 3px 5px;
-  border-bottom: 1px solid rgba(90,75,50,0.22);
-  color: #f2ead8;
-  line-height: 1.2;
-  vertical-align: middle;
-}
-
-.sc-table td.sc-cat {
-  font-family: 'Cinzel', serif;
-  font-weight: 600;
-  font-size: 0.52rem;
-  letter-spacing: 0.02em;
-  color: #faf3e4;
-  width: 72%;
-  line-height: 1.15;
-  white-space: normal;
-  hyphens: auto;
-}
-
-.sc-table td.sc-val,
-.sc-table td:last-child {
-  text-align: right;
-  font-family: 'Cinzel', serif;
-  font-weight: 600;
-  font-size: 0.62rem;
-  color: #f0d78c;
-  width: 28%;
-}
-
-.sc-table tr.sc-pick {
-  cursor: pointer;
-  background: rgba(200,148,26,0.12);
-  transition: background 0.15s, box-shadow 0.15s;
-}
-
-.sc-table tr.sc-pick td.sc-cat {
-  border-left: 3px solid var(--gold-light);
-  padding-left: 5px;
-}
-
-.sc-table tr.sc-pick:hover,
-.sc-table tr.sc-pick:focus-visible {
-  background: rgba(200,148,26,0.22);
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(232,192,96,0.35);
-}
-
-.sc-table tr.sc-pick.sc-suggest {
-  background: rgba(200,148,26,0.18);
-}
-
-.sc-table tr.sc-pick .sc-will-record {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.82rem;
-  color: #ffe8a8;
-}
-
-.sc-table td.empty { color: rgba(200,148,26,0.45); }
-.sc-table td.zero { color: #e07070; font-family: 'Cinzel', serif; }
-
-.sc-table tr.total-row td {
-  background: rgba(200,148,26,0.14);
-  font-family: 'Cinzel', serif;
-  font-weight: 700;
-  font-size: 0.56rem;
-  color: #ffe8a8;
-  border-top: 1px solid rgba(200,148,26,0.3);
-  padding-top: 3px;
-  padding-bottom: 3px;
-}
-
-.history-row {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  flex-wrap: wrap;
-  padding: 2px 0 4px;
-}
-
-.history-pill {
-  padding: 4px 10px;
-  border: 1px solid rgba(200,148,26,0.28);
-  border-radius: 6px;
-  font-family: 'Cinzel', serif;
-  font-size: 0.58rem;
-  letter-spacing: 0.08em;
-  color: #c4b89a;
-  background: rgba(0,0,0,0.15);
-}
-.history-pill.current {
-  border-color: var(--gold-light);
-  color: #ffe8a8;
-  background: rgba(200,148,26,0.14);
-}
-.history-pill.done { color: #8a7018; }
-
+/* ── LOG ── */
 .game-log {
-  background: rgba(0,0,0,0.22);
-  border: 1px solid rgba(200,148,26,0.12);
-  border-radius: 8px;
-  padding: 8px 12px;
-  max-height: min(72px, 18vh);
-  overflow-y: auto;
-  width: 100%;
-  max-width: min(960px, 100%);
-  flex-shrink: 0;
+  background: rgba(0,0,0,0.25); border: 1px solid rgba(200,148,26,0.12); border-radius: 8px;
+  padding: 8px 12px; max-height: min(72px, 18vh); overflow-y: auto;
+  width: 100%; max-width: min(960px, 100%); flex-shrink: 0;
 }
-.log-entry {
-  font-size: 0.72rem;
-  color: rgba(217,201,154,0.6);
-  padding: 2px 0;
-  border-left: 2px solid rgba(200,148,26,0.2);
-  padding-left: 8px;
-  margin-bottom: 3px;
-  font-style: italic;
-}
-.log-entry.important {
-  color: var(--gold-light);
-  border-left-color: var(--gold);
-}
+.log-entry { font-size: 0.72rem; color: rgba(217,201,154,0.55); padding: 2px 0; border-left: 2px solid rgba(200,148,26,0.2); padding-left: 8px; margin-bottom: 3px; font-style: italic; }
+.log-entry.important { color: var(--gold-light); border-left-color: var(--gold); }
 
-.fated-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  text-align: center;
-  gap: 24px;
-}
+/* ── TITLE SCREEN ── */
+.title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 40px 20px; text-align: center; }
+.title-art { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
+.title-art .card { --card-w: 90px; --card-h: 126px; cursor: default; animation: float var(--dur, 4s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.title-desc { font-style: italic; color: var(--parchment-dark); font-size: 0.9rem; max-width: 480px; line-height: 1.7; }
+.title-rules { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--gold-dim); line-height: 2; max-width: 420px; }
+.ornament { color: var(--gold-dim); letter-spacing: 0.5em; font-size: 0.75rem; }
 
-.fated-eye {
-  font-size: 3rem;
-  line-height: 1;
-  color: var(--gold-dim);
-  animation: pulse 3s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-}
-
-.fated-title {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(1.4rem, 5vw, 2rem);
-  color: var(--gold-light);
-  text-shadow: 0 0 40px rgba(200,148,26,0.6);
-}
-
-.fated-game-total {
-  font-family: 'Cinzel', serif;
-  font-size: 0.85rem;
-  letter-spacing: 0.2em;
-  color: var(--parchment-dark);
-}
-
-.fated-game-total strong {
-  color: var(--gold-light);
-  font-size: 1.4rem;
-  display: block;
-  margin-top: 4px;
-}
-
-.fated-paths {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
-  width: 100%;
-  max-width: 600px;
-}
-
+/* ── FATED DECISION ── */
+.fated-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; gap: 24px; }
+.fated-eye { font-size: 3rem; line-height: 1; color: var(--gold-dim); animation: pulse 3s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.06)} }
+.fated-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.4rem,5vw,2rem); color: var(--gold-light); text-shadow: 0 0 40px rgba(200,148,26,0.6); }
+.fated-game-total { font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.2em; color: var(--parchment-dark); }
+.fated-game-total strong { color: var(--gold-light); font-size: 1.4rem; display: block; margin-top: 4px; }
+.fated-paths { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 600px; }
 .path-card {
-  flex: 1;
-  min-width: 200px;
-  max-width: 260px;
-  border: 1px solid rgba(200,148,26,0.3);
-  padding: 24px 20px;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-  background: rgba(22,15,6,0.4);
+  flex: 1; min-width: 200px; max-width: 260px;
+  border: 1px solid rgba(200,148,26,0.3); padding: 24px 20px; cursor: pointer;
+  transition: all 0.2s; background: rgba(22,15,6,0.5);
 }
-
-.path-card:hover:not(.negative):not(.chosen) {
-  border-color: var(--gold);
-  background: rgba(200,148,26,0.1);
-  transform: translateY(-4px);
-}
-
-.path-card.negative {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.path-card.chosen {
-  border-color: var(--gold);
-  background: rgba(200,148,26,0.15);
-}
-
-.path-label {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 1.1rem;
-  color: var(--gold-light);
-  margin-bottom: 8px;
-}
-
-.path-formula {
-  font-family: 'Cinzel', serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  color: var(--gold-dim);
-  margin-bottom: 12px;
-}
-
-.path-result {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 2.2rem;
-  line-height: 1;
-}
-
+.path-card:hover:not(.negative):not(.chosen) { border-color: var(--gold); background: rgba(200,148,26,0.12); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(200,148,26,0.2); }
+.path-card.negative { opacity: 0.4; cursor: not-allowed; }
+.path-card.chosen { border-color: var(--gold); background: rgba(200,148,26,0.15); }
+.path-label { font-family: 'Cinzel Decorative', serif; font-size: 1.1rem; color: var(--gold-light); margin-bottom: 8px; }
+.path-formula { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--gold-dim); margin-bottom: 12px; }
+.path-result { font-family: 'Cinzel Decorative', serif; font-size: 2.2rem; line-height: 1; }
 .path-result.positive { color: var(--gold-light); }
 .path-result.negative { color: var(--red-suit); }
+.path-desc { font-size: 0.7rem; font-style: italic; color: var(--parchment-dark); margin-top: 10px; line-height: 1.5; }
+.fated-tagline { font-style: italic; color: var(--parchment-dark); font-size: 0.85rem; max-width: 400px; }
 
-.path-desc {
-  font-size: 0.7rem;
-  font-style: italic;
-  color: var(--parchment-dark);
-  margin-top: 10px;
-  line-height: 1.5;
-}
-
-.fated-tagline {
-  font-style: italic;
-  color: var(--parchment-dark);
-  font-size: 0.85rem;
-  max-width: 400px;
-}
-
-.results-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  gap: 20px;
-  text-align: center;
-}
-
-.results-game-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  width: 100%;
-  max-width: 500px;
-}
-
-.rg-cell {
-  border: 1px solid rgba(200,148,26,0.2);
-  padding: 10px 8px;
-  font-family: 'Cinzel', serif;
-}
-
-.rg-cell .rg-game {
-  font-size: 0.55rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold-dim);
-  margin-bottom: 4px;
-}
-
+/* ── RESULTS ── */
+.results-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; gap: 20px; text-align: center; }
+.results-game-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; width: 100%; max-width: 500px; }
+.rg-cell { border: 1px solid rgba(200,148,26,0.2); padding: 10px 8px; font-family: 'Cinzel', serif; }
+.rg-cell .rg-game { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 4px; }
 .rg-cell .rg-total { font-size: 0.8rem; color: var(--parchment-dark); }
 .rg-cell .rg-path { font-size: 0.65rem; color: var(--gold-dim); margin-top: 2px; }
 .rg-cell .rg-fated { font-size: 1.1rem; color: var(--gold-light); font-weight: 700; }
 .rg-cell .rg-fated.loss { color: var(--red-suit); }
+.final-score-label { font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-dim); }
+.final-score-value { font-family: 'Cinzel Decorative', serif; font-size: clamp(2rem,8vw,3.5rem); color: var(--gold-light); text-shadow: 0 0 60px rgba(200,148,26,0.5); line-height: 1; }
+.final-verdict { font-style: italic; color: var(--parchment-dark); font-size: 0.9rem; max-width: 400px; line-height: 1.7; }
 
-.final-score-label {
-  font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--gold-dim);
-}
-
-.final-score-value {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(2rem, 8vw, 3.5rem);
-  color: var(--gold-light);
-  text-shadow: 0 0 60px rgba(200,148,26,0.5);
-  line-height: 1;
-}
-
-.final-verdict {
-  font-style: italic;
-  color: var(--parchment-dark);
-  font-size: 0.9rem;
-  max-width: 400px;
-  line-height: 1.7;
-}
-
-.title-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  padding: 40px 20px;
-  text-align: center;
-}
-
-.title-art {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
-
-.title-art .card {
-  --card-w: 90px;
-  --card-h: 126px;
-  cursor: default;
-  animation: float var(--dur, 4s) ease-in-out infinite;
-  animation-delay: var(--delay, 0s);
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-.title-art .card:hover { transform: translateY(-6px); }
-
-.title-desc {
-  font-style: italic;
-  color: var(--parchment-dark);
-  font-size: 0.9rem;
-  max-width: 480px;
-  line-height: 1.7;
-}
-
-.title-rules {
-  font-family: 'Cinzel', serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  color: var(--gold-dim);
-  line-height: 2;
-  max-width: 420px;
-}
-
-.ornament {
-  color: var(--gold-dim);
-  letter-spacing: 0.5em;
-  font-size: 0.75rem;
-}
-
-.exchange-indicator {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-.ex-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: rgba(200,148,26,0.2);
-  border: 1px solid rgba(200,148,26,0.3);
-  transition: background 0.3s;
-}
-.ex-dot.done { background: var(--gold); border-color: var(--gold); }
-.ex-dot.active { background: var(--gold-light); border-color: var(--gold-light); box-shadow: 0 0 6px var(--gold-light); }
-
+/* ── SCROLLBARS ── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
 
-@media (max-width: 720px) {
-  .sc-dual-grid {
-    grid-template-columns: 1fr;
-    gap: 6px;
-    padding: 6px 8px 8px;
-  }
-}
-
-/* Short viewports: give more room to cards */
+/* ── RESPONSIVE ── */
+@media (max-width: 720px) { .sc-dual-grid { grid-template-columns: 1fr; gap: 6px; } }
 @media (max-height: 700px) {
-  .game-columns {
-    grid-template-rows: minmax(0, 0.88fr) minmax(0, 1.12fr);
-  }
-  #screen-game .masthead {
-    padding: 6px 10px 4px;
-  }
-  #screen-game .phase-banner {
-    padding: 4px 8px;
-    font-size: 0.55rem;
-  }
+  .game-columns { grid-template-rows: minmax(0,0.88fr) minmax(0,1.12fr); }
+  #screen-game .masthead { padding: 5px 10px 4px; }
+  #screen-game .phase-banner { padding: 4px 8px; font-size: 0.55rem; }
 }
-
-@media (max-width: 559px) {
-  #playerHand {
-    flex-wrap: wrap;
-  }
-}
-
-@media (max-width: 500px) {
-  .results-game-grid { grid-template-columns: repeat(2, 1fr); }
-}
+@media (max-width: 559px) { #playerHand { flex-wrap: wrap; } }
+@media (max-width: 500px) { .results-game-grid { grid-template-columns: repeat(2,1fr); } }
 </style>
 </head>
 <body>
 
+<!-- TITLE -->
 <div id="screen-title" class="screen active">
   <div class="masthead">
     <h1>Aspects of Fate</h1>
@@ -1005,112 +432,91 @@ body {
   <div class="title-wrap">
     <div class="title-art" id="titleCards"></div>
     <div class="ornament">✦ ✦ ✦</div>
-    <div class="title-desc">
-      Shape fate through cunning exchanges and careful scoring.<br>
-      At the end of six games, your accumulated Fated Totals tell the story of your dance with destiny.
-    </div>
-    <div class="title-rules">
-      15 hands per game &nbsp;·&nbsp; 2 exchanges each &nbsp;·&nbsp; 15 categories to fill<br>
-      Ascend from perfection &nbsp;·&nbsp; or &nbsp;·&nbsp; Descend from honest failure<br>
-      Closest to zero wins &nbsp;·&nbsp; Negatives are a loss
-    </div>
-    <button class="btn btn-primary" onclick="startGame()" style="padding:14px 48px;font-size:0.85rem;letter-spacing:0.3em;">
-      ✦ &nbsp; Deal the Fates &nbsp; ✦
-    </button>
-    <div class="ornament" style="color:var(--gold-dim);font-style:italic;font-family:'IM Fell English',serif;font-size:0.8rem;letter-spacing:0.1em;">
-      Fate favors the bold. Fortune favors the prepared.
-    </div>
+    <div class="title-desc">Shape fate through cunning exchanges and careful scoring.<br>At the end of six games, your accumulated Fated Totals tell the story of your dance with destiny.</div>
+    <div class="title-rules">15 hands per game &nbsp;·&nbsp; 2 exchanges each &nbsp;·&nbsp; 15 categories to fill<br>Ascend: 350 − score &nbsp;·&nbsp; or &nbsp;·&nbsp; Descend: score − 100<br>Closest to zero wins &nbsp;·&nbsp; Negatives are a loss</div>
+    <button class="btn btn-primary" onclick="startGame()" style="padding:14px 48px;font-size:0.85rem;letter-spacing:0.3em;">✦ &nbsp; Deal the Fates &nbsp; ✦</button>
+    <div class="ornament" style="color:var(--gold-dim);font-style:italic;font-family:'IM Fell English',serif;font-size:0.8rem;letter-spacing:0.1em;">Fate favors the bold. Fortune favors the prepared.</div>
   </div>
 </div>
 
+<!-- GAME -->
 <div id="screen-game" class="screen">
   <div class="masthead">
     <h1>Aspects of Fate</h1>
     <div class="sub">✦ The Great Game of Fate ✦</div>
   </div>
-
   <div class="status-bar">
     <div class="stat">Game <span id="st-game">1</span> of 6</div>
     <div class="stat">Hand <span id="st-hand">1</span> of 15</div>
     <div class="stat">Deck <span id="st-deck">—</span></div>
     <div class="stat">Running Fated <span id="st-fated">—</span></div>
   </div>
-
   <div class="phase-banner" id="phaseBanner" role="status" aria-live="polite">✦ INITIAL DEAL ✦</div>
-
   <div class="game-body">
     <div class="game-ledger">
-    <div class="history-full">
-      <div class="history-row" id="gameHistory"></div>
-    </div>
-    <div class="game-columns">
-      <aside class="game-col-scorecard">
-        <div class="scorecard-wrap" id="scorecardWrap">
-          <div class="sc-header">
-            ✦ Score Sheet — Game <span id="scGameNum">1</span> ✦
-            <span class="sc-header-sub" id="scHeaderSub"></span>
-          </div>
-          <div class="sc-table-panel">
-            <p class="sc-live-label" id="scLiveLabel">Live scores — this game</p>
-            <div class="sc-dual-grid" id="scTablesLive">
-              <div class="sc-col">
-                <div class="sc-col-title">Basics of Fate</div>
-                <table class="sc-table sc-table-live" id="scTableBasics" aria-label="Basics of fate scores"></table>
-              </div>
-              <div class="sc-col">
-                <div class="sc-col-title">Manifest! Moments</div>
-                <table class="sc-table sc-table-live" id="scTableManifest" aria-label="Manifest scores"></table>
+      <div class="history-full">
+        <div class="history-row" id="gameHistory"></div>
+      </div>
+      <div class="game-columns">
+        <aside class="game-col-scorecard">
+          <div class="scorecard-wrap" id="scorecardWrap">
+            <div class="sc-header">
+              ✦ Score Sheet — Game <span id="scGameNum">1</span> ✦
+              <span class="sc-header-sub" id="scHeaderSub"></span>
+            </div>
+            <div class="sc-table-panel">
+              <p class="sc-live-label" id="scLiveLabel">Live scores — this game</p>
+              <div class="sc-dual-grid" id="scTablesLive">
+                <div class="sc-col">
+                  <div class="sc-col-title">Basics of Fate</div>
+                  <table class="sc-table sc-table-live" id="scTableBasics"></table>
+                </div>
+                <div class="sc-col">
+                  <div class="sc-col-title">Manifest! Moments</div>
+                  <table class="sc-table sc-table-live" id="scTableManifest"></table>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </aside>
-      <div class="game-col-play">
-        <div class="play-scoring-hint" id="playScoringHint" style="display:none;">
-          Your hand is below. <strong>Tap an open row</strong> on the score sheet above to record this hand.
-        </div>
-        <div class="hand-area" id="handArea">
-          <div class="hand-label" id="handLabel">Your Hand</div>
-          <div class="hand" id="playerHand"></div>
-          <div class="exchange-indicator" id="exchangeIndicator">
-            <div class="ex-dot active" id="ex1"></div>
-            <div class="ex-dot" id="ex2"></div>
+        </aside>
+        <div class="game-col-play">
+          <div class="play-scoring-hint" id="playScoringHint" style="display:none;">
+            Your hand is below. <strong>Tap an open row</strong> on the score sheet above to record this hand.
           </div>
-        </div>
-
-        <div class="exchange-controls" id="exchangeControls">
-          <div class="exchange-hint" id="exchangeHint">Tap cards to mark for exchange, then confirm.</div>
-          <div class="btn-row">
-            <button class="btn btn-primary" id="btnExchange" onclick="confirmExchange()">Exchange Selected</button>
-            <button class="btn btn-ghost" type="button" onclick="clearExchangeSelection()">Clear</button>
-            <button class="btn btn-ghost" onclick="holdAll()">Hold All</button>
+          <div class="hand-area" id="handArea">
+            <div class="hand-label" id="handLabel">Your Hand</div>
+            <div class="hand" id="playerHand"></div>
+            <div class="exchange-indicator" id="exchangeIndicator">
+              <div class="ex-dot active" id="ex1"></div>
+              <div class="ex-dot" id="ex2"></div>
+            </div>
           </div>
+          <div class="exchange-controls" id="exchangeControls">
+            <div class="exchange-hint" id="exchangeHint">Tap cards to mark for exchange, then confirm.</div>
+            <div class="btn-row">
+              <button class="btn btn-primary" id="btnExchange" onclick="confirmExchange()">Exchange Selected</button>
+              <button class="btn btn-ghost" type="button" onclick="clearExchangeSelection()">Clear</button>
+              <button class="btn btn-ghost" onclick="holdAll()">Hold All</button>
+            </div>
+          </div>
+          <div class="discard-area" id="discardArea">
+            <div class="discard-label">Discard Pile</div>
+            <div class="discard-pile" id="discardPile"></div>
+          </div>
+          <div class="game-log" id="gameLog"></div>
         </div>
-
-        <div class="discard-area" id="discardArea">
-          <div class="discard-label">Discard Pile</div>
-          <div class="discard-pile" id="discardPile"></div>
-        </div>
-
-        <div class="game-log" id="gameLog"></div>
       </div>
-    </div>
     </div>
   </div>
 </div>
 
+<!-- FATED DECISION -->
 <div id="screen-fated" class="screen">
-  <div class="masthead">
-    <h1>Aspects of Fate</h1>
-    <div class="sub">✦ The Great Game of Fate ✦</div>
-  </div>
+  <div class="masthead"><h1>Aspects of Fate</h1><div class="sub">✦ The Great Game of Fate ✦</div></div>
   <div class="fated-wrap">
     <div class="fated-eye">👁</div>
     <div class="fated-title">The Fated Decision</div>
-    <div class="fated-game-total">
-      Game <span id="fd-gamenum">1</span> Total
-      <strong id="fd-total">—</strong>
-    </div>
+    <div class="fated-game-total">Game <span id="fd-gamenum">1</span> Total<strong id="fd-total">—</strong></div>
     <div class="fated-paths">
       <div class="path-card" id="path-ascend" onclick="choosePath('ascend')">
         <div class="path-label">Ascend</div>
@@ -1129,11 +535,9 @@ body {
   </div>
 </div>
 
+<!-- RESULTS -->
 <div id="screen-results" class="screen">
-  <div class="masthead">
-    <h1>Aspects of Fate</h1>
-    <div class="sub">✦ The Great Game of Fate ✦</div>
-  </div>
+  <div class="masthead"><h1>Aspects of Fate</h1><div class="sub">✦ The Great Game of Fate ✦</div></div>
   <div class="results-wrap">
     <div class="ornament">✦ Fate Has Spoken ✦</div>
     <div class="final-score-label">Your Accumulated Fated Total</div>
@@ -1143,9 +547,7 @@ body {
     <div class="btn-row">
       <button class="btn btn-primary" onclick="location.reload()">✦ Play Again ✦</button>
     </div>
-    <div class="ornament" style="font-style:italic;font-family:'IM Fell English',serif;font-size:0.85rem;letter-spacing:0.1em;">
-      Fate favors the bold. Fortune favors the prepared.
-    </div>
+    <div class="ornament" style="color:var(--gold-dim);font-style:italic;font-family:'IM Fell English',serif;font-size:0.85rem;letter-spacing:0.1em;">Fate favors the bold. Fortune favors the prepared.</div>
   </div>
 </div>
 
@@ -1163,608 +565,347 @@ let G = {};
 
 function initState() {
   G = {
-    currentGame: 0,
-    currentHand: 0,
-    phase: 'exchange1',
-    hand: [],
-    selected: [],
-    deck: [],
-    discardPile: [],
-    scorecard: emptyScorecard(),
-    gameHistory: [],
-    log: [],
+    currentGame: 0, currentHand: 0, phase: 'exchange1',
+    hand: [], selected: [], deck: [], discardPile: [],
+    scorecard: emptyScorecard(), gameHistory: [], log: [],
   };
 }
 
 function emptyScorecard() {
-  return {
-    aces:null,deuces:null,treys:null,fours:null,fives:null,sixes:null,
+  return { aces:null,deuces:null,treys:null,fours:null,fives:null,sixes:null,
     two_pair:null,three_kind:null,straight:null,flush:null,
-    full_house:null,full_house_same:null,four_kind:null,yarborough:null,manifest:null,
-  };
+    full_house:null,full_house_same:null,four_kind:null,yarborough:null,manifest:null };
 }
 
 function buildDeck() {
   const d = [];
-  for (let i = 0; i < 10; i++)
-    for (const c of CARD_DEFS) d.push({ ...c, id: `${c.num}_${i}` });
+  for (let i = 0; i < 10; i++) for (const c of CARD_DEFS) d.push({ ...c, id: `${c.num}_${i}` });
   return shuffle(d);
 }
-
 function shuffle(arr) {
   const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
+  for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
   return a;
 }
 
 function analyzeHand(hand) {
-  const nums = hand.map(c => c.num).sort((a,b) => a-b);
-  const colors = hand.map(c => c.color);
-  const total = nums.reduce((a,b) => a+b, 0);
-  const counts = {};
-  for (const n of nums) counts[n] = (counts[n]||0) + 1;
-  const vals = Object.values(counts).sort((a,b) => b-a);
-  const flush = colors.every(c => c === colors[0]);
-  const straight = nums[4]-nums[0] === 4 && new Set(nums).size === 5;
-  return {
-    total, flush, straight,
-    manifest: vals[0] === 5,
-    four_kind: vals[0] === 4,
-    full_house_same: vals[0] === 3 && vals[1] === 2 && flush,
-    full_house: vals[0] === 3 && vals[1] === 2,
-    three_kind: vals[0] === 3 && !(vals[1] === 2),
-    two_pair: vals[0] === 2 && vals[1] === 2,
-  };
+  const nums = hand.map(c=>c.num).sort((a,b)=>a-b);
+  const colors = hand.map(c=>c.color);
+  const total = nums.reduce((a,b)=>a+b,0);
+  const counts = {}; for (const n of nums) counts[n]=(counts[n]||0)+1;
+  const vals = Object.values(counts).sort((a,b)=>b-a);
+  const flush = colors.every(c=>c===colors[0]);
+  const straight = nums[4]-nums[0]===4 && new Set(nums).size===5;
+  return { total, flush, straight,
+    manifest: vals[0]===5, four_kind: vals[0]===4,
+    full_house_same: vals[0]===3&&vals[1]===2&&flush,
+    full_house: vals[0]===3&&vals[1]===2,
+    three_kind: vals[0]===3&&!(vals[1]===2),
+    two_pair: vals[0]===2&&vals[1]===2 };
 }
 
 function scoringOptions(hand, sc) {
-  const h = analyzeHand(hand);
-  const opts = [];
-  const basicMap = { aces:1, deuces:2, treys:3, fours:4, fives:5, sixes:6 };
-  for (const [key, num] of Object.entries(basicMap)) {
-    if (sc[key] === null) {
-      const score = hand.filter(c => c.num === num).length * num;
-      opts.push({ key, label: key.toUpperCase(), score, hasMatch: score > 0, section: 'basics' });
+  const h = analyzeHand(hand); const opts = [];
+  const basicMap = { aces:1,deuces:2,treys:3,fours:4,fives:5,sixes:6 };
+  for (const [key,num] of Object.entries(basicMap)) {
+    if (sc[key]===null) {
+      const score = hand.filter(c=>c.num===num).length*num;
+      opts.push({ key, label:key.toUpperCase(), score, hasMatch:score>0, section:'basics' });
     }
   }
   const mList = [
-    { key:'manifest',        label:'MANIFEST! (5 of a Kind)', score: h.manifest        ? h.total+50 : null, hasMatch: h.manifest },
-    { key:'four_kind',       label:'4 OF A KIND',             score: h.four_kind       ? h.total+25 : null, hasMatch: h.four_kind },
-    { key:'full_house_same', label:'FULL HOUSE SAME COLOR',   score: h.full_house_same ? h.total+20 : null, hasMatch: h.full_house_same },
-    { key:'full_house',      label:'FULL HOUSE',              score: h.full_house      ? h.total+15 : null, hasMatch: h.full_house },
-    { key:'flush',           label:'FLUSH',                   score: h.flush           ? 35         : null, hasMatch: h.flush },
-    { key:'straight',        label:'STRAIGHT',                score: h.straight        ? 30         : null, hasMatch: h.straight },
-    { key:'three_kind',      label:'3 OF A KIND',             score: h.three_kind      ? h.total    : null, hasMatch: h.three_kind },
-    { key:'two_pair',        label:'2 PAIR (SAME COLOR)',     score: h.two_pair        ? h.total    : null, hasMatch: h.two_pair },
-    { key:'yarborough',      label:'YARBOROUGH',              score: h.total,                               hasMatch: true },
+    { key:'manifest',        label:'MANIFEST! (5 of a Kind)', score:h.manifest?h.total+50:null,        hasMatch:h.manifest },
+    { key:'four_kind',       label:'4 OF A KIND',             score:h.four_kind?h.total+25:null,       hasMatch:h.four_kind },
+    { key:'full_house_same', label:'FULL HOUSE SAME COLOR',   score:h.full_house_same?h.total+20:null, hasMatch:h.full_house_same },
+    { key:'full_house',      label:'FULL HOUSE',              score:h.full_house?h.total+15:null,      hasMatch:h.full_house },
+    { key:'flush',           label:'FLUSH',                   score:h.flush?35:null,                   hasMatch:h.flush },
+    { key:'straight',        label:'STRAIGHT',                score:h.straight?30:null,                hasMatch:h.straight },
+    { key:'three_kind',      label:'3 OF A KIND',             score:h.three_kind?h.total:null,         hasMatch:h.three_kind },
+    { key:'two_pair',        label:'2 PAIR (SAME COLOR)',     score:h.two_pair?h.total:null,           hasMatch:h.two_pair },
+    { key:'yarborough',      label:'YARBOROUGH',              score:h.total,                           hasMatch:true },
   ];
-  for (const m of mList) {
-    if (sc[m.key] === null) opts.push({ ...m, section: 'manifest' });
-  }
+  for (const m of mList) if (sc[m.key]===null) opts.push({...m,section:'manifest'});
   return opts;
 }
 
 function calcGameTotal(sc) {
-  const bKeys = ['aces','deuces','treys','fours','fives','sixes'];
-  let basics = bKeys.reduce((s,k) => s+(sc[k]||0), 0);
-  let fi = basics >= 78 ? 75 : basics >= 71 ? 55 : basics >= 63 ? 35 : 0;
-  const mKeys = ['two_pair','three_kind','straight','flush','full_house','full_house_same','four_kind','yarborough','manifest'];
-  let manif = mKeys.reduce((s,k) => s+(sc[k]||0), 0);
-  return { basics, fi, basics_total: basics+fi, manifest_total: manif, game_total: basics+fi+manif };
+  const bKeys=['aces','deuces','treys','fours','fives','sixes'];
+  let basics=bKeys.reduce((s,k)=>s+(sc[k]||0),0);
+  let fi=basics>=78?75:basics>=71?55:basics>=63?35:0;
+  const mKeys=['two_pair','three_kind','straight','flush','full_house','full_house_same','four_kind','yarborough','manifest'];
+  let manif=mKeys.reduce((s,k)=>s+(sc[k]||0),0);
+  return { basics, fi, basics_total:basics+fi, manifest_total:manif, game_total:basics+fi+manif };
 }
 
 function setHandAreaVisible(show) {
-  const el = document.getElementById('handArea');
-  if (el) el.style.display = show ? '' : 'none';
+  const el=document.getElementById('handArea'); if(el) el.style.display=show?'':'none';
 }
 
-function startGame() {
-  initState();
-  showScreen('game');
-  dealHand();
-}
+function startGame() { initState(); showScreen('game'); dealHand(); }
 
 function dealHand() {
-  G.phase = 'exchange1';
-  G.selected = [];
-  G.deck = buildDeck();
-  G.discardPile = [];
-  G.hand = G.deck.splice(0, 5);
+  G.phase='exchange1'; G.selected=[];
+  G.deck=buildDeck(); G.discardPile=[];
+  G.hand=G.deck.splice(0,5);
   setHandAreaVisible(true);
-  updateStatusBar();
-  updatePhase();
-  renderHand();
-  renderExchangeControls();
-  renderDiscardPile();
-  renderScorecard();
-  updateHistory();
-  document.getElementById('scorecardWrap').style.display = '';
-  document.getElementById('playScoringHint').style.display = 'none';
-  document.getElementById('exchangeIndicator').style.display = '';
+  updateStatusBar(); updatePhase(); renderHand(); renderExchangeControls();
+  renderDiscardPile(); renderScorecard(); updateHistory();
+  document.getElementById('scorecardWrap').style.display='';
+  document.getElementById('playScoringHint').style.display='none';
+  document.getElementById('exchangeIndicator').style.display='';
   log(`Hand ${G.currentHand+1} dealt.`);
 }
 
 function toggleSelect(idx) {
-  if (G.phase !== 'exchange1' && G.phase !== 'exchange2') return;
-  const si = G.selected.indexOf(idx);
-  if (si === -1) G.selected.push(idx);
-  else G.selected.splice(si, 1);
-  renderHand();
-  updateExchangeBtn();
+  if(G.phase!=='exchange1'&&G.phase!=='exchange2') return;
+  const si=G.selected.indexOf(idx);
+  if(si===-1) G.selected.push(idx); else G.selected.splice(si,1);
+  renderHand(); updateExchangeBtn();
 }
-
 function clearExchangeSelection() {
-  if (G.phase !== 'exchange1' && G.phase !== 'exchange2') return;
-  G.selected = [];
-  renderHand();
-  updateExchangeBtn();
+  if(G.phase!=='exchange1'&&G.phase!=='exchange2') return;
+  G.selected=[]; renderHand(); updateExchangeBtn();
 }
-
 function confirmExchange() {
-  const toDiscard = [...G.selected].sort((a,b) => b-a);
-  if (toDiscard.length > 0) {
-    const discarded = toDiscard.map(i => G.hand.splice(i,1)[0]);
+  const toDiscard=[...G.selected].sort((a,b)=>b-a);
+  if(toDiscard.length>0) {
+    const discarded=toDiscard.map(i=>G.hand.splice(i,1)[0]);
     G.discardPile.push(...discarded);
-    for (const c of discarded) {
-      if (G.deck.length === 0) G.deck = buildDeck();
-      G.hand.push(G.deck.pop());
-    }
-    log(`Exchanged ${discarded.length} card(s): ${discarded.map(c=>c.name).join(', ')}.`);
-  } else {
-    log('Held all cards.');
-  }
-  G.selected = [];
-  advancePhase();
+    for(const c of discarded){if(G.deck.length===0)G.deck=buildDeck();G.hand.push(G.deck.pop());}
+    log(`Exchanged ${discarded.length}: ${discarded.map(c=>c.name).join(', ')}.`);
+  } else log('Held all cards.');
+  G.selected=[]; advancePhase();
 }
-
-function holdAll() {
-  G.selected = [];
-  log('Held all cards.');
-  advancePhase();
-}
+function holdAll() { G.selected=[]; log('Held all cards.'); advancePhase(); }
 
 function advancePhase() {
-  if (G.phase === 'exchange1') {
-    G.phase = 'exchange2';
-    updatePhase();
-    renderHand();
-    renderExchangeControls();
-    renderDiscardPile();
-  } else if (G.phase === 'exchange2') {
-    G.phase = 'scoring';
-    updatePhase();
-    setHandAreaVisible(true);
-    document.getElementById('exchangeControls').style.display = 'none';
-    document.getElementById('exchangeIndicator').style.display = 'none';
-    document.getElementById('playScoringHint').style.display = '';
-    renderHand();
-    renderScorecard();
-    renderDiscardPile();
+  if(G.phase==='exchange1') {
+    G.phase='exchange2'; updatePhase(); renderHand(); renderExchangeControls(); renderDiscardPile();
+  } else if(G.phase==='exchange2') {
+    G.phase='scoring'; updatePhase(); setHandAreaVisible(true);
+    document.getElementById('exchangeControls').style.display='none';
+    document.getElementById('exchangeIndicator').style.display='none';
+    document.getElementById('playScoringHint').style.display='';
+    renderHand(); renderScorecard(); renderDiscardPile();
   }
 }
 
 function recordScore(key, score) {
-  G.scorecard[key] = score;
+  G.scorecard[key]=score;
   log(`Recorded ${key.toUpperCase()}: ${score}`);
-  document.getElementById('playScoringHint').style.display = 'none';
-  document.getElementById('exchangeIndicator').style.display = '';
-
-  G.currentHand++;
-  updateStatusBar();
-  renderScorecard();
-  document.getElementById('scorecardWrap').style.display = '';
-
-  if (G.currentHand >= 15) {
-    endGame();
-  } else {
-    dealHand();
-  }
+  document.getElementById('playScoringHint').style.display='none';
+  document.getElementById('exchangeIndicator').style.display='';
+  G.currentHand++; updateStatusBar(); renderScorecard();
+  document.getElementById('scorecardWrap').style.display='';
+  if(G.currentHand>=15) endGame(); else dealHand();
 }
 
 function endGame() {
-  const totals = calcGameTotal(G.scorecard);
-  log(`Game ${G.currentGame+1} complete. Total: ${totals.game_total}`, true);
+  const totals=calcGameTotal(G.scorecard);
+  log(`Game ${G.currentGame+1} complete. Total: ${totals.game_total}`,true);
   G.currentGame++;
-
-  const fd = document.getElementById('fd-gamenum');
-  const ft = document.getElementById('fd-total');
-  const ar = document.getElementById('ascend-result');
-  const dr = document.getElementById('descend-result');
-  const pa = document.getElementById('path-ascend');
-  const pd = document.getElementById('path-descend');
-
-  fd.textContent = G.currentGame;
-  ft.textContent = totals.game_total;
-
-  const ascend = 350 - totals.game_total;
-  const descend = totals.game_total - 100;
-
-  ar.textContent = ascend;
-  ar.className = 'path-result ' + (ascend >= 0 ? 'positive' : 'negative');
-  dr.textContent = descend;
-  dr.className = 'path-result ' + (descend >= 0 ? 'positive' : 'negative');
-
-  pa.className = 'path-card' + (ascend < 0 ? ' negative' : '');
-  pd.className = 'path-card' + (descend < 0 ? ' negative' : '');
-
-  G._pendingTotals = totals;
-  G._pendingAscend = ascend;
-  G._pendingDescend = descend;
-
-  document.getElementById('fd-tagline').textContent =
-    ascend < 0 && descend < 0 ? '⚠ Both paths are negative — this game is a loss regardless.'
-    : ascend < 0 ? 'Ascend is negative. You must Descend — or accept a loss.'
-    : descend < 0 ? 'Descend is negative. You must Ascend — or accept a loss.'
-    : 'Choose your path. Closest to zero wins. A negative total is a loss.';
-
-  pa.onclick = () => choosePath('ascend');
-  pd.onclick = () => choosePath('descend');
-
+  const ascend=350-totals.game_total, descend=totals.game_total-100;
+  document.getElementById('fd-gamenum').textContent=G.currentGame;
+  document.getElementById('fd-total').textContent=totals.game_total;
+  const ar=document.getElementById('ascend-result'), dr=document.getElementById('descend-result');
+  ar.textContent=ascend; ar.className='path-result '+(ascend>=0?'positive':'negative');
+  dr.textContent=descend; dr.className='path-result '+(descend>=0?'positive':'negative');
+  document.getElementById('path-ascend').className='path-card'+(ascend<0?' negative':'');
+  document.getElementById('path-descend').className='path-card'+(descend<0?' negative':'');
+  G._pendingTotals=totals; G._pendingAscend=ascend; G._pendingDescend=descend;
+  document.getElementById('fd-tagline').textContent=
+    ascend<0&&descend<0?'⚠ Both paths are negative — this game is a loss regardless.':
+    ascend<0?'Ascend is negative. You must Descend — or accept a loss.':
+    descend<0?'Descend is negative. You must Ascend — or accept a loss.':
+    'Choose your path. Closest to zero wins. A negative total is a loss.';
+  document.getElementById('path-ascend').onclick=()=>choosePath('ascend');
+  document.getElementById('path-descend').onclick=()=>choosePath('descend');
   showScreen('fated');
 }
 
 function choosePath(path) {
-  const card = document.getElementById(`path-${path}`);
-  if (card.classList.contains('negative')) return;
-
-  const fated = path === 'ascend' ? G._pendingAscend : G._pendingDescend;
-
+  const card=document.getElementById(`path-${path}`);
+  if(card.classList.contains('negative')) return;
+  const fated=path==='ascend'?G._pendingAscend:G._pendingDescend;
   card.classList.add('chosen');
-  document.getElementById('path-ascend').onclick = null;
-  document.getElementById('path-descend').onclick = null;
-
-  G.gameHistory.push({
-    game: G.currentGame,
-    total: G._pendingTotals.game_total,
-    path,
-    fated,
-    basics: G._pendingTotals.basics,
-    fi: G._pendingTotals.fi,
-    manifest: G._pendingTotals.manifest_total,
-  });
-
-  setTimeout(() => {
-    if (G.currentGame >= 6) {
-      showResults();
-    } else {
-      G.currentHand = 0;
-      G.scorecard = emptyScorecard();
-      showScreen('game');
-      dealHand();
-    }
+  document.getElementById('path-ascend').onclick=null;
+  document.getElementById('path-descend').onclick=null;
+  G.gameHistory.push({ game:G.currentGame, total:G._pendingTotals.game_total, path, fated,
+    basics:G._pendingTotals.basics, fi:G._pendingTotals.fi, manifest:G._pendingTotals.manifest_total });
+  setTimeout(()=>{
+    if(G.currentGame>=6) showResults();
+    else { G.currentHand=0; G.scorecard=emptyScorecard(); showScreen('game'); dealHand(); }
   }, 800);
 }
 
 function showResults() {
   showScreen('results');
-
-  const hasLoss = G.gameHistory.some(g => g.fated < 0);
-  const fatedSum = G.gameHistory.reduce((s,g) => s + g.fated, 0);
-  const losses = G.gameHistory.filter(g => g.fated < 0).length;
-
-  document.getElementById('res-final').textContent = hasLoss
-    ? `${fatedSum} ⚠`
-    : fatedSum;
-
-  document.getElementById('res-final').style.color =
-    hasLoss ? 'var(--red-suit)' : 'var(--gold-light)';
-
-  const verdict = hasLoss
-    ? `You took ${losses} loss${losses>1?'es':''} across 6 games. Fate is unforgiving — a negative total means fate claimed that game entirely.`
-    : fatedSum <= 100 ? `A masterful dance with destiny. You walked the razor's edge across all six games.`
-    : fatedSum <= 200 ? `Well played. Your finesse shaped fate more than chance did.`
-    : fatedSum <= 400 ? `A solid run. Fate yielded, but not without resistance.`
-    : `The dice were unkind, but you played on. Next time, fate may bend further.`;
-
-  document.getElementById('res-verdict').textContent = verdict;
-
-  const grid = document.getElementById('resGameGrid');
-  grid.innerHTML = '';
-  for (const g of G.gameHistory) {
-    const cell = document.createElement('div');
-    cell.className = 'rg-cell';
-    cell.innerHTML = `
-      <div class="rg-game">Game ${g.game}</div>
-      <div class="rg-total">Score: ${g.total}</div>
-      <div class="rg-path">${g.path.toUpperCase()}</div>
-      <div class="rg-fated ${g.fated < 0 ? 'loss' : ''}">${g.fated < 0 ? '⚠ ' : ''}${g.fated}</div>
-    `;
+  const hasLoss=G.gameHistory.some(g=>g.fated<0);
+  const fatedSum=G.gameHistory.reduce((s,g)=>s+g.fated,0);
+  const losses=G.gameHistory.filter(g=>g.fated<0).length;
+  document.getElementById('res-final').textContent=hasLoss?`${fatedSum} ⚠`:fatedSum;
+  document.getElementById('res-final').style.color=hasLoss?'var(--red-suit)':'var(--gold-light)';
+  document.getElementById('res-verdict').textContent=
+    hasLoss?`You took ${losses} loss${losses>1?'es':''} across 6 games. Fate is unforgiving.`
+    :fatedSum<=100?'A masterful dance with destiny. You walked the razor's edge.'
+    :fatedSum<=200?'Well played. Your finesse shaped fate more than chance did.'
+    :fatedSum<=400?'A solid run. Fate yielded, but not without resistance.'
+    :'The dice were unkind, but you played on. Next time, fate may bend further.';
+  const grid=document.getElementById('resGameGrid'); grid.innerHTML='';
+  for(const g of G.gameHistory) {
+    const cell=document.createElement('div'); cell.className='rg-cell';
+    cell.innerHTML=`<div class="rg-game">Game ${g.game}</div><div class="rg-total">Score: ${g.total}</div><div class="rg-path">${g.path.toUpperCase()}</div><div class="rg-fated ${g.fated<0?'loss':''}">${g.fated<0?'⚠ ':''} ${g.fated}</div>`;
     grid.appendChild(cell);
   }
 }
 
 function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(`screen-${name}`).classList.add('active');
 }
 
-function makeCardEl(card, opts = {}) {
-  const el = document.createElement('div');
-  el.className = `card ${card.color}-card${opts.selected ? ' selected' : ''}${opts.noHover ? ' no-hover' : ''}`;
-  if (opts.small) el.style.cssText = '--card-w:58px;--card-h:81px;--card-radius:6px;';
-  if (opts.medium) el.style.cssText = '--card-w:148px;--card-h:208px;--card-radius:10px;';
-
-  const img = document.createElement('img');
-  img.src = card.img;
-  img.alt = card.name;
-  img.loading = 'lazy';
-  img.decoding = 'async';
-  img.onerror = () => {
-    img.style.display = 'none';
-    const fb = document.createElement('div');
-    fb.className = 'card-fallback';
-    fb.innerHTML = `
-      <div class="card-num ${card.color}">${card.num}</div>
-      <div class="card-name">${card.name}</div>
-    `;
-    el.appendChild(fb);
-  };
+function makeCardEl(card, opts={}) {
+  const el=document.createElement('div');
+  el.className=`card ${card.color}-card${opts.selected?' selected':''}${opts.noHover?' no-hover':''}`;
+  if(opts.small) el.style.cssText='--card-w:58px;--card-h:81px;--card-radius:6px;';
+  const img=document.createElement('img'); img.src=card.img; img.alt=card.name; img.loading='lazy'; img.decoding='async';
+  img.onerror=()=>{ img.style.display='none'; const fb=document.createElement('div'); fb.className='card-fallback'; fb.innerHTML=`<div class="card-num ${card.color}">${card.num}</div><div class="card-name">${card.name}</div>`; el.appendChild(fb); };
   el.appendChild(img);
-
-  const bar = document.createElement('div');
-  bar.className = 'card-color-bar';
-  el.appendChild(bar);
-
-  if (opts.onClick) el.onclick = opts.onClick;
+  const bar=document.createElement('div'); bar.className='card-color-bar'; el.appendChild(bar);
+  if(opts.onClick) el.onclick=opts.onClick;
   return el;
 }
 
 function renderHand() {
-  const div = document.getElementById('playerHand');
-  div.innerHTML = '';
-  for (let i = 0; i < G.hand.length; i++) {
-    const c = G.hand[i];
-    const isExchangePhase = G.phase === 'exchange1' || G.phase === 'exchange2';
-    const el = makeCardEl(c, {
-      selected: G.selected.includes(i),
-      onClick: isExchangePhase ? () => toggleSelect(i) : null,
-      noHover: !isExchangePhase,
-    });
-    div.appendChild(el);
+  const div=document.getElementById('playerHand'); div.innerHTML='';
+  const isEx=G.phase==='exchange1'||G.phase==='exchange2';
+  for(let i=0;i<G.hand.length;i++) {
+    div.appendChild(makeCardEl(G.hand[i],{ selected:G.selected.includes(i), onClick:isEx?()=>toggleSelect(i):null, noHover:!isEx }));
   }
 }
 
 function renderExchangeControls() {
-  const ctrl = document.getElementById('exchangeControls');
-  ctrl.style.display = '';
-
-  const ex1 = document.getElementById('ex1');
-  const ex2 = document.getElementById('ex2');
-  if (G.phase === 'exchange1') {
-    ex1.className = 'ex-dot active';
-    ex2.className = 'ex-dot';
-  } else if (G.phase === 'exchange2') {
-    ex1.className = 'ex-dot done';
-    ex2.className = 'ex-dot active';
-  }
-
+  document.getElementById('exchangeControls').style.display='';
+  document.getElementById('ex1').className='ex-dot'+(G.phase==='exchange1'?' active':' done');
+  document.getElementById('ex2').className='ex-dot'+(G.phase==='exchange2'?' active':'');
   updateExchangeBtn();
 }
-
 function updateExchangeBtn() {
-  const btn = document.getElementById('btnExchange');
-  btn.textContent = G.selected.length > 0
-    ? `Exchange ${G.selected.length} Card${G.selected.length>1?'s':''}`
-    : 'Exchange Selected';
+  const btn=document.getElementById('btnExchange');
+  btn.textContent=G.selected.length>0?`Exchange ${G.selected.length} Card${G.selected.length>1?'s':''}`:`Exchange Selected`;
 }
 
 function renderDiscardPile() {
-  const div = document.getElementById('discardPile');
-  div.innerHTML = '';
-  if (G.discardPile.length === 0) {
-    div.innerHTML = '<span style="font-style:italic;font-size:0.7rem;color:rgba(200,148,26,0.3);align-self:center;">empty</span>';
-    return;
-  }
-  for (const c of G.discardPile.slice(-6).reverse()) {
-    div.appendChild(makeCardEl(c, { small: true, noHover: true }));
-  }
+  const div=document.getElementById('discardPile'); div.innerHTML='';
+  if(!G.discardPile||G.discardPile.length===0){div.innerHTML='<span style="font-style:italic;font-size:0.7rem;color:rgba(200,148,26,0.3);align-self:center;">empty</span>';return;}
+  for(const c of G.discardPile.slice(-6).reverse()) div.appendChild(makeCardEl(c,{small:true,noHover:true}));
 }
 
-function escAttr(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;');
-}
+function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 
-function buildScoreTableRows(rows, sc, scoringMode, optsByKey, fi, basics_total, game_total) {
-  let html = '';
-  for (const row of rows) {
-    if (row.computed) {
-      let valInner = '';
-      if (row.label === "FATE'S INFLUENCE") {
-        valInner = fi > 0 ? `${fi}` : `<span class="empty">—</span>`;
-      } else if (row.label === '★ BASICS TOTAL') {
-        valInner = `${basics_total || '—'}`;
-      } else if (row.label === '★ GAME TOTAL') {
-        valInner = `${game_total || '—'}`;
-      }
-      html += `<tr${row.total ? ' class="total-row"' : ''}><td class="sc-cat">${row.label}</td><td class="sc-val">${valInner}</td></tr>`;
+function buildScoreTableRows(rows,sc,scoringMode,optsByKey,fi,basics_total,game_total) {
+  let html='';
+  for(const row of rows) {
+    if(row.computed) {
+      let v='';
+      if(row.label==="FATE'S INFLUENCE") v=fi>0?`${fi}`:`<span class="empty">—</span>`;
+      else if(row.label==='★ BASICS TOTAL') v=`${basics_total||'—'}`;
+      else if(row.label==='★ GAME TOTAL') v=`${game_total||'—'}`;
+      html+=`<tr${row.total?' class="total-row"':''}><td class="sc-cat">${row.label}</td><td class="sc-val">${v}</td></tr>`;
       continue;
     }
-
-    const titleAttr = row.desc ? ` title="${escAttr(row.desc)}"` : '';
-    const val = sc[row.key];
-
-    if (val === null && scoringMode && optsByKey[row.key]) {
-      const opt = optsByKey[row.key];
-      const willRecord = opt.score !== null ? opt.score : 0;
-      const suggest = opt.hasMatch && opt.score !== null && opt.score > 0;
-      const cls = `sc-pick${suggest ? ' sc-suggest' : ''}`;
-      html += `<tr class="${cls}" role="button" tabindex="0" data-pick-key="${opt.key}" data-pick-val="${willRecord}">` +
-        `<td class="sc-cat"${titleAttr}>${row.label}</td>` +
-        `<td class="sc-val sc-pick-val"><span class="sc-will-record">${willRecord}</span></td>` +
-        `</tr>`;
+    const titleAttr=row.desc?` title="${escAttr(row.desc)}"`:'';;
+    const val=sc[row.key];
+    if(val===null&&scoringMode&&optsByKey[row.key]) {
+      const opt=optsByKey[row.key];
+      const willRecord=opt.score!==null?opt.score:0;
+      const suggest=opt.hasMatch&&opt.score!==null&&opt.score>0;
+      html+=`<tr class="sc-pick${suggest?' sc-suggest':''}" role="button" tabindex="0" data-pick-key="${opt.key}" data-pick-val="${willRecord}"><td class="sc-cat"${titleAttr}>${row.label}</td><td class="sc-val sc-pick-val"><span class="sc-will-record">${willRecord}</span></td></tr>`;
       continue;
     }
-
-    let valInner = '';
-    if (val === null) valInner = `<span class="empty">—</span>`;
-    else if (val === 0) valInner = `<span class="zero">0</span>`;
-    else valInner = `${val}`;
-    html += `<tr><td class="sc-cat"${titleAttr}>${row.label}</td><td class="sc-val">${valInner}</td></tr>`;
+    let v=val===null?'<span class="empty">—</span>':val===0?'<span class="zero">0</span>':`${val}`;
+    html+=`<tr><td class="sc-cat"${titleAttr}>${row.label}</td><td class="sc-val">${v}</td></tr>`;
   }
   return html;
 }
 
 function renderScorecard() {
-  const sc = G.scorecard;
-  const basicsEl = document.getElementById('scTableBasics');
-  const manifestEl = document.getElementById('scTableManifest');
-  const wrap = document.getElementById('scorecardWrap');
-  const headerSub = document.getElementById('scHeaderSub');
-  document.getElementById('scGameNum').textContent = G.currentGame + 1;
-
-  const scoringMode = G.phase === 'scoring';
-  wrap.classList.toggle('scoring-hot', scoringMode);
-  if (headerSub) {
-    headerSub.textContent = scoringMode
-      ? 'Gold-edge rows are tappable. Hover a category to see the scoring rule. Number at right is what gets recorded.'
-      : 'Hover categories for scoring rules.';
-  }
-  const liveLbl = document.getElementById('scLiveLabel');
-  if (liveLbl) {
-    liveLbl.textContent = scoringMode
-      ? 'Tap any open row — full sheet shown'
-      : 'Live scores — this game';
-  }
-
-  const optsByKey = {};
-  if (scoringMode) {
-    for (const o of scoringOptions(G.hand, G.scorecard))
-      optsByKey[o.key] = o;
-  }
-
-  const basicsRows = [
-    { label: '♠ ACES',      key: 'aces',    desc: '1 per Ace' },
-    { label: '♦ DEUCES',    key: 'deuces',  desc: '2 per Deuce' },
-    { label: '♣ TREYS',     key: 'treys',   desc: '3 per Trey' },
-    { label: '✦ FOURS',     key: 'fours',   desc: '4 per Four' },
-    { label: '♥ FIVES',     key: 'fives',   desc: '5 per Five' },
-    { label: '☽ SIXES',     key: 'sixes',   desc: '6 per Six' },
-    { label: "FATE'S INFLUENCE", key: null, computed: true },
-    { label: '★ BASICS TOTAL', key: null, total: true, computed: true },
+  const sc=G.scorecard;
+  const scoringMode=G.phase==='scoring';
+  const wrap=document.getElementById('scorecardWrap');
+  const headerSub=document.getElementById('scHeaderSub');
+  document.getElementById('scGameNum').textContent=G.currentGame+1;
+  wrap.classList.toggle('scoring-hot',scoringMode);
+  if(headerSub) headerSub.textContent=scoringMode?'Gold-edge rows are tappable. Number shown is what gets recorded.':'Hover categories for scoring rules.';
+  const liveLbl=document.getElementById('scLiveLabel');
+  if(liveLbl) liveLbl.textContent=scoringMode?'Tap any open row to score this hand':'Live scores — this game';
+  const optsByKey={};
+  if(scoringMode) for(const o of scoringOptions(G.hand,G.scorecard)) optsByKey[o.key]=o;
+  const {fi,basics_total,game_total}=calcGameTotal(sc);
+  const basicsRows=[
+    {label:'♠ ACES',key:'aces',desc:'1 per Ace'},{label:'♦ DEUCES',key:'deuces',desc:'2 per Deuce'},
+    {label:'♣ TREYS',key:'treys',desc:'3 per Trey'},{label:'✦ FOURS',key:'fours',desc:'4 per Four'},
+    {label:'♥ FIVES',key:'fives',desc:'5 per Five'},{label:'☽ SIXES',key:'sixes',desc:'6 per Six'},
+    {label:"FATE'S INFLUENCE",key:null,computed:true},{label:'★ BASICS TOTAL',key:null,total:true,computed:true},
   ];
-
-  const manifestRows = [
-    { label: '2 PAIR',           key: 'two_pair',        desc: 'Total all cards' },
-    { label: '3 OF A KIND',      key: 'three_kind',      desc: 'Total all cards' },
-    { label: 'STRAIGHT',         key: 'straight',        desc: '30' },
-    { label: 'FLUSH',            key: 'flush',           desc: '35' },
-    { label: 'FULL HOUSE',       key: 'full_house',      desc: 'Total +15' },
-    { label: 'FULL HOUSE SAME',  key: 'full_house_same', desc: 'Total +20' },
-    { label: '4 OF A KIND',      key: 'four_kind',       desc: 'Total +25' },
-    { label: 'YARBOROUGH',       key: 'yarborough',      desc: 'Total all cards' },
-    { label: 'MANIFEST!',        key: 'manifest',        desc: 'Total +50' },
-    { label: '★ GAME TOTAL',     key: null, total: true, computed: true },
+  const manifestRows=[
+    {label:'2 PAIR',key:'two_pair',desc:'Total all cards'},{label:'3 OF A KIND',key:'three_kind',desc:'Total all cards'},
+    {label:'STRAIGHT',key:'straight',desc:'30'},{label:'FLUSH',key:'flush',desc:'35'},
+    {label:'FULL HOUSE',key:'full_house',desc:'Total +15'},{label:'FULL HOUSE SAME',key:'full_house_same',desc:'Total +20'},
+    {label:'4 OF A KIND',key:'four_kind',desc:'Total +25'},{label:'YARBOROUGH',key:'yarborough',desc:'Total all cards'},
+    {label:'MANIFEST!',key:'manifest',desc:'Total +50'},{label:'★ GAME TOTAL',key:null,total:true,computed:true},
   ];
-
-  const { fi, basics_total, game_total } = calcGameTotal(sc);
-
-  basicsEl.innerHTML = buildScoreTableRows(basicsRows, sc, scoringMode, optsByKey, fi, basics_total, game_total);
-  manifestEl.innerHTML = buildScoreTableRows(manifestRows, sc, scoringMode, optsByKey, fi, basics_total, game_total);
+  document.getElementById('scTableBasics').innerHTML=buildScoreTableRows(basicsRows,sc,scoringMode,optsByKey,fi,basics_total,game_total);
+  document.getElementById('scTableManifest').innerHTML=buildScoreTableRows(manifestRows,sc,scoringMode,optsByKey,fi,basics_total,game_total);
 }
 
 function updatePhase() {
-  const names = {
-    exchange1: '✦ FIRST EXCHANGE — Select cards to swap ✦',
-    exchange2: '✦ SECOND EXCHANGE — Select cards to swap ✦',
-    scoring: '✦ SCORING — Tap a row on the score sheet ✦',
-  };
-  document.getElementById('phaseBanner').textContent = names[G.phase] || '';
-  document.getElementById('handLabel').textContent =
-    G.phase === 'scoring' ? 'Final hand' : 'Your Hand';
+  const names={exchange1:'✦ FIRST EXCHANGE — Select cards to swap ✦',exchange2:'✦ SECOND EXCHANGE — Select cards to swap ✦',scoring:'✦ SCORING — Tap a row on the score sheet ✦'};
+  document.getElementById('phaseBanner').textContent=names[G.phase]||'';;
+  document.getElementById('handLabel').textContent=G.phase==='scoring'?'Final hand':'Your Hand';
 }
-
 function updateStatusBar() {
-  document.getElementById('st-game').textContent = G.currentGame + 1;
-  document.getElementById('st-hand').textContent = G.currentHand + 1;
-  document.getElementById('st-deck').textContent = G.deck.length;
-
-  const runningFated = G.gameHistory.reduce((s,g) => s+g.fated, 0);
-  document.getElementById('st-fated').textContent =
-    G.gameHistory.length === 0 ? '—' : runningFated;
+  document.getElementById('st-game').textContent=G.currentGame+1;
+  document.getElementById('st-hand').textContent=G.currentHand+1;
+  document.getElementById('st-deck').textContent=G.deck.length;
+  const rf=G.gameHistory.reduce((s,g)=>s+g.fated,0);
+  document.getElementById('st-fated').textContent=G.gameHistory.length===0?'—':rf;
 }
-
 function updateHistory() {
-  const div = document.getElementById('gameHistory');
-  div.innerHTML = '';
-  for (let i = 0; i < 6; i++) {
-    const pill = document.createElement('div');
-    const gh = G.gameHistory[i];
-    if (i < G.currentGame) {
-      pill.className = 'history-pill done';
-      pill.textContent = gh
-        ? `G${i+1}: ${gh.path[0].toUpperCase()}${gh.fated}`
-        : `G${i+1}: —`;
-    } else if (i === G.currentGame) {
-      pill.className = 'history-pill current';
-      pill.textContent = `G${i+1}: ACTIVE`;
-    } else {
-      pill.className = 'history-pill';
-      pill.textContent = `G${i+1}`;
-    }
+  const div=document.getElementById('gameHistory'); div.innerHTML='';
+  for(let i=0;i<6;i++){
+    const pill=document.createElement('div');
+    const gh=G.gameHistory[i];
+    if(i<G.currentGame){pill.className='history-pill done';pill.textContent=gh?`G${i+1}: ${gh.path[0].toUpperCase()}${gh.fated}`:`G${i+1}: —`;}
+    else if(i===G.currentGame){pill.className='history-pill current';pill.textContent=`G${i+1}: ACTIVE`;}
+    else{pill.className='history-pill';pill.textContent=`G${i+1}`;}
     div.appendChild(pill);
   }
 }
-
-function log(msg, important = false) {
-  const div = document.createElement('div');
-  div.className = 'log-entry' + (important ? ' important' : '');
-  div.textContent = msg;
-  const logEl = document.getElementById('gameLog');
-  logEl.appendChild(div);
-  logEl.scrollTop = logEl.scrollHeight;
+function log(msg,important=false) {
+  const d=document.createElement('div'); d.className='log-entry'+(important?' important':''); d.textContent=msg;
+  const l=document.getElementById('gameLog'); l.appendChild(d); l.scrollTop=l.scrollHeight;
 }
-
 function renderTitleCards() {
-  const container = document.getElementById('titleCards');
-  const show = [CARD_DEFS[0], CARD_DEFS[2], CARD_DEFS[4], CARD_DEFS[5]];
-  const delays = [0, 0.5, 1.0, 1.5];
-  const durs = [4, 3.5, 4.5, 3.8];
-
-  show.forEach((card, i) => {
-    const el = makeCardEl(card, { noHover: false });
-    el.style.setProperty('--delay', `${delays[i]}s`);
-    el.style.setProperty('--dur', `${durs[i]}s`);
-    el.classList.add('title-art');
-    el.style.cssText += `;--card-w:90px;--card-h:126px;animation:float ${durs[i]}s ease-in-out infinite;animation-delay:${delays[i]}s;`;
+  const container=document.getElementById('titleCards');
+  [[0,0,4],[2,0.5,3.5],[4,1.0,4.5],[5,1.5,3.8]].forEach(([ci,delay,dur])=>{
+    const el=makeCardEl(CARD_DEFS[ci],{noHover:false});
+    el.style.cssText+=`;--card-w:90px;--card-h:126px;animation:float ${dur}s ease-in-out infinite;animation-delay:${delay}s;`;
     container.appendChild(el);
   });
 }
-
-document.addEventListener('keydown', (e) => {
-  if (!document.getElementById('screen-game').classList.contains('active')) return;
-  if (G.phase !== 'exchange1' && G.phase !== 'exchange2') return;
-  const t = e.target;
-  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
-  if (e.key === 'Escape') {
-    e.preventDefault();
-    clearExchangeSelection();
-  }
+document.addEventListener('keydown',(e)=>{
+  if(!document.getElementById('screen-game').classList.contains('active')) return;
+  if(G.phase!=='exchange1'&&G.phase!=='exchange2') return;
+  const t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable)) return;
+  if(e.key==='Escape'){e.preventDefault();clearExchangeSelection();}
 });
-
-(function bindScoreTable() {
-  const wrap = document.getElementById('scTablesLive');
-  if (!wrap || wrap.dataset.bound) return;
-  wrap.dataset.bound = '1';
-  wrap.addEventListener('click', (e) => {
-    const tr = e.target.closest('tr.sc-pick');
-    if (!tr || G.phase !== 'scoring') return;
-    recordScore(tr.dataset.pickKey, Number(tr.dataset.pickVal));
-  });
-  wrap.addEventListener('keydown', (e) => {
-    if (e.key !== 'Enter' && e.key !== ' ') return;
-    const tr = e.target.closest('tr.sc-pick');
-    if (!tr || G.phase !== 'scoring') return;
-    e.preventDefault();
-    recordScore(tr.dataset.pickKey, Number(tr.dataset.pickVal));
-  });
+(function bindScoreTable(){
+  const wrap=document.getElementById('scTablesLive');
+  if(!wrap||wrap.dataset.bound) return; wrap.dataset.bound='1';
+  wrap.addEventListener('click',(e)=>{ const tr=e.target.closest('tr.sc-pick'); if(!tr||G.phase!=='scoring') return; recordScore(tr.dataset.pickKey,Number(tr.dataset.pickVal)); });
+  wrap.addEventListener('keydown',(e)=>{ if(e.key!=='Enter'&&e.key!==' ') return; const tr=e.target.closest('tr.sc-pick'); if(!tr||G.phase!=='scoring') return; e.preventDefault(); recordScore(tr.dataset.pickKey,Number(tr.dataset.pickVal)); });
 })();
-
 renderTitleCards();
 </script>
 </body>
