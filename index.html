@@ -140,7 +140,7 @@ body {
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  align-items: start;
+  align-items: stretch;
   min-height: 0;
 }
 
@@ -165,35 +165,26 @@ body {
 
 .game-col-scorecard .scorecard-wrap {
   box-shadow: 0 8px 32px rgba(0,0,0,0.35);
-}
-
-/* During scoring: hand preview + category grid side by side */
-.scoring-panel-inner {
-  display: grid;
-  grid-template-columns: minmax(220px, auto) minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
-}
-
-.scoring-hand-col {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
 }
 
-.scoring-hand-col .hand-label {
-  font-family: 'Cinzel', serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--gold-dim);
+.play-scoring-hint {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--parchment-dark);
+  font-style: italic;
+  padding: 10px 14px;
+  border: 1px dashed rgba(200,148,26,0.28);
+  border-radius: 6px;
+  background: rgba(200,148,26,0.04);
+  line-height: 1.45;
 }
-
-.scoring-cats-col .scoring-grid {
-  max-height: min(70vh, 520px);
-  overflow-y: auto;
-  padding-right: 4px;
+.play-scoring-hint strong {
+  color: var(--gold-light);
+  font-style: normal;
+  letter-spacing: 0.06em;
 }
 
 .hand-area {
@@ -401,118 +392,40 @@ body {
 }
 .discard-pile .card:hover { transform: none; }
 
-.scoring-panel {
-  background: rgba(242,232,204,0.05);
-  border: 1px solid rgba(200,148,26,0.2);
-  padding: 16px;
-}
-
-.scoring-panel h3 {
-  font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 14px;
-  text-align: center;
-}
-
-.hand-preview {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.hand-preview .card {
-  --card-w: 148px;
-  --card-h: 208px;
-  --card-radius: 10px;
-  cursor: default;
-}
-.hand-preview .card:hover { transform: none; }
-
-.scoring-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
-
-.score-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 8px 12px;
-  background: rgba(242,232,204,0.04);
-  border: 1px solid rgba(200,148,26,0.2);
-  cursor: pointer;
-  transition: all 0.15s;
-  text-align: left;
-  position: relative;
-  overflow: hidden;
-}
-
-.score-btn:hover:not(:disabled) {
-  background: rgba(200,148,26,0.12);
-  border-color: var(--gold);
-}
-
-.score-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.score-btn .sb-name {
-  font-family: 'Cinzel', serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--parchment-dark);
-  line-height: 1.3;
-}
-
-.score-btn .sb-score {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 1.1rem;
-  color: var(--gold-light);
-  margin-top: 2px;
-  line-height: 1;
-}
-
-.score-btn .sb-score.no-match {
-  font-size: 0.7rem;
-  color: var(--ink-mid);
-  font-family: 'Cinzel', serif;
-}
-
-.score-btn .sb-section {
-  font-size: 0.5rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--gold-dim);
-  margin-top: 2px;
-}
-
-.score-btn.match-highlight {
-  border-color: rgba(200,148,26,0.5);
-  background: rgba(200,148,26,0.08);
-}
-
 .scorecard-wrap {
   background: rgba(242,232,204,0.04);
   border: 1px solid rgba(200,148,26,0.2);
   overflow: hidden;
 }
 
+.scorecard-wrap.scoring-hot {
+  border-color: rgba(200,148,26,0.45);
+  box-shadow: 0 0 28px rgba(200,148,26,0.1);
+}
+
 .sc-header {
   background: rgba(200,148,26,0.1);
-  padding: 8px 14px;
+  padding: 10px 14px;
   font-family: 'Cinzel', serif;
   font-size: 0.65rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--gold);
   border-bottom: 1px solid rgba(200,148,26,0.2);
+  flex-shrink: 0;
+}
+
+.sc-header-sub {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: var(--gold-light);
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  line-height: 1.35;
+  opacity: 0.95;
 }
 
 .sc-table {
@@ -532,7 +445,50 @@ body {
   font-family: 'Cinzel', serif;
   font-weight: 600;
   color: var(--gold-light);
-  min-width: 40px;
+  min-width: 72px;
+}
+
+.sc-table td.sc-desc {
+  font-size: 0.65rem;
+  color: var(--gold-dim);
+}
+
+.sc-table tr.sc-pick {
+  cursor: pointer;
+  background: rgba(200,148,26,0.07);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.sc-table tr.sc-pick:hover,
+.sc-table tr.sc-pick:focus-visible {
+  background: rgba(200,148,26,0.16);
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(232,192,96,0.45);
+}
+
+.sc-table tr.sc-pick.sc-suggest {
+  background: rgba(200,148,26,0.12);
+}
+
+.sc-table tr.sc-pick .sc-pick-val {
+  vertical-align: middle;
+}
+
+.sc-table tr.sc-pick .sc-will-record {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.05rem;
+  color: var(--gold-light);
+}
+
+.sc-table tr.sc-pick .sc-pick-hint {
+  display: block;
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-top: 4px;
+  font-family: 'Cinzel', serif;
+  font-style: normal;
 }
 
 .sc-table td.empty { color: rgba(200,148,26,0.2); }
@@ -871,19 +827,11 @@ body {
   .game-col-play {
     order: 1;
   }
-  .scoring-panel-inner {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 500px) {
   :root { --card-w: 112px; --card-h: 157px; }
-  .scoring-grid { grid-template-columns: 1fr; }
   .results-game-grid { grid-template-columns: repeat(2, 1fr); }
-  .hand-preview .card {
-    --card-w: 100px;
-    --card-h: 140px;
-  }
 }
 </style>
 </head>
@@ -937,11 +885,17 @@ body {
     <div class="game-columns">
       <aside class="game-col-scorecard">
         <div class="scorecard-wrap" id="scorecardWrap">
-          <div class="sc-header">✦ Score Sheet — Game <span id="scGameNum">1</span> ✦</div>
+          <div class="sc-header">
+            ✦ Score Sheet — Game <span id="scGameNum">1</span> ✦
+            <span class="sc-header-sub" id="scHeaderSub"></span>
+          </div>
           <table class="sc-table" id="scTable"></table>
         </div>
       </aside>
       <div class="game-col-play">
+        <div class="play-scoring-hint" id="playScoringHint" style="display:none;">
+          Final hand is below. <strong>Tap an open row</strong> on the score sheet (left) to record this hand.
+        </div>
         <div class="hand-area" id="handArea">
           <div class="hand-label" id="handLabel">Your Hand</div>
           <div class="hand" id="playerHand"></div>
@@ -957,19 +911,6 @@ body {
             <button class="btn btn-primary" id="btnExchange" onclick="confirmExchange()">Exchange Selected</button>
             <button class="btn btn-ghost" type="button" onclick="clearExchangeSelection()">Clear</button>
             <button class="btn btn-ghost" onclick="holdAll()">Hold All</button>
-          </div>
-        </div>
-
-        <div class="scoring-panel" id="scoringPanel" style="display:none;">
-          <h3>✦ Choose a Category ✦</h3>
-          <div class="scoring-panel-inner">
-            <div class="scoring-hand-col">
-              <div class="hand-label">Final hand</div>
-              <div class="hand-preview" id="scoringHandPreview"></div>
-            </div>
-            <div class="scoring-cats-col">
-              <div class="scoring-grid" id="scoringGrid"></div>
-            </div>
           </div>
         </div>
 
@@ -1167,6 +1108,8 @@ function dealHand() {
   renderScorecard();
   updateHistory();
   document.getElementById('scorecardWrap').style.display = '';
+  document.getElementById('playScoringHint').style.display = 'none';
+  document.getElementById('exchangeIndicator').style.display = '';
   log(`Hand ${G.currentHand+1} dealt.`);
 }
 
@@ -1219,10 +1162,12 @@ function advancePhase() {
   } else if (G.phase === 'exchange2') {
     G.phase = 'scoring';
     updatePhase();
-    setHandAreaVisible(false);
+    setHandAreaVisible(true);
     document.getElementById('exchangeControls').style.display = 'none';
-    document.getElementById('scoringPanel').style.display = '';
-    renderScoringPanel();
+    document.getElementById('exchangeIndicator').style.display = 'none';
+    document.getElementById('playScoringHint').style.display = '';
+    renderHand();
+    renderScorecard();
     renderDiscardPile();
   }
 }
@@ -1230,8 +1175,8 @@ function advancePhase() {
 function recordScore(key, score) {
   G.scorecard[key] = score;
   log(`Recorded ${key.toUpperCase()}: ${score}`);
-  document.getElementById('scoringPanel').style.display = 'none';
-  setHandAreaVisible(true);
+  document.getElementById('playScoringHint').style.display = 'none';
+  document.getElementById('exchangeIndicator').style.display = '';
 
   G.currentHand++;
   updateStatusBar();
@@ -1432,36 +1377,6 @@ function updateExchangeBtn() {
     : 'Exchange Selected';
 }
 
-function renderScoringPanel() {
-  const prev = document.getElementById('scoringHandPreview');
-  prev.innerHTML = '';
-  for (const c of G.hand) {
-    prev.appendChild(makeCardEl(c, { medium: true, noHover: true }));
-  }
-
-  const grid = document.getElementById('scoringGrid');
-  grid.innerHTML = '';
-  const opts = scoringOptions(G.hand, G.scorecard);
-
-  for (const opt of opts) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'score-btn' + (opt.hasMatch && opt.score !== null && opt.score > 0 ? ' match-highlight' : '');
-    btn.disabled = false;
-
-    const displayScore = opt.score !== null ? opt.score : null;
-    const noMatch = opt.score === null && !opt.hasMatch;
-
-    btn.innerHTML = `
-      <span class="sb-name">${opt.label}</span>
-      <span class="sb-score ${noMatch ? 'no-match' : ''}">${noMatch ? '— record 0' : displayScore}</span>
-      <span class="sb-section">${opt.section}</span>
-    `;
-    btn.onclick = () => recordScore(opt.key, displayScore !== null ? displayScore : 0);
-    grid.appendChild(btn);
-  }
-}
-
 function renderDiscardPile() {
   const div = document.getElementById('discardPile');
   div.innerHTML = '';
@@ -1477,7 +1392,23 @@ function renderDiscardPile() {
 function renderScorecard() {
   const sc = G.scorecard;
   const table = document.getElementById('scTable');
+  const wrap = document.getElementById('scorecardWrap');
+  const headerSub = document.getElementById('scHeaderSub');
   document.getElementById('scGameNum').textContent = G.currentGame + 1;
+
+  const scoringMode = G.phase === 'scoring';
+  wrap.classList.toggle('scoring-hot', scoringMode);
+  if (headerSub) {
+    headerSub.textContent = scoringMode
+      ? 'Tap any open category row below — the value shown is what will be recorded.'
+      : '';
+  }
+
+  const optsByKey = {};
+  if (scoringMode) {
+    for (const o of scoringOptions(G.hand, G.scorecard))
+      optsByKey[o.key] = o;
+  }
 
   const rows = [
     { section: 'BASICS OF FATE' },
@@ -1510,8 +1441,9 @@ function renderScorecard() {
       html += `<tr class="section-row"><td colspan="3">${row.section}</td></tr>`;
       continue;
     }
-    let valCell = '';
+
     if (row.computed) {
+      let valCell = '';
       if (row.label === "FATE'S INFLUENCE") {
         valCell = fi > 0 ? `<td>${fi}</td>` : `<td class="empty">—</td>`;
       } else if (row.label === '★ BASICS TOTAL') {
@@ -1519,13 +1451,29 @@ function renderScorecard() {
       } else if (row.label === '★ GAME TOTAL') {
         valCell = `<td>${game_total || '—'}</td>`;
       }
-    } else {
-      const val = sc[row.key];
-      if (val === null) valCell = `<td class="empty">—</td>`;
-      else if (val === 0) valCell = `<td class="zero">0</td>`;
-      else valCell = `<td>${val}</td>`;
+      html += `<tr${row.total ? ' class="total-row"' : ''}><td>${row.label}</td><td class="sc-desc">${row.desc || ''}</td>${valCell}</tr>`;
+      continue;
     }
-    html += `<tr${row.total ? ' class="total-row"' : ''}><td>${row.label}</td><td style="font-size:0.65rem;color:var(--gold-dim)">${row.desc||''}</td>${valCell}</tr>`;
+
+    const val = sc[row.key];
+    if (val === null && scoringMode && optsByKey[row.key]) {
+      const opt = optsByKey[row.key];
+      const willRecord = opt.score !== null ? opt.score : 0;
+      const suggest = opt.hasMatch && opt.score !== null && opt.score > 0;
+      const cls = `sc-pick${suggest ? ' sc-suggest' : ''}`;
+      html += `<tr class="${cls}" role="button" tabindex="0" data-pick-key="${opt.key}" data-pick-val="${willRecord}">` +
+        `<td>${row.label}</td>` +
+        `<td class="sc-desc">${row.desc || ''}</td>` +
+        `<td class="sc-pick-val"><span class="sc-will-record">${willRecord}</span><span class="sc-pick-hint">tap row</span></td>` +
+        `</tr>`;
+      continue;
+    }
+
+    let valCell = '';
+    if (val === null) valCell = `<td class="empty">—</td>`;
+    else if (val === 0) valCell = `<td class="zero">0</td>`;
+    else valCell = `<td>${val}</td>`;
+    html += `<tr${row.total ? ' class="total-row"' : ''}><td>${row.label}</td><td class="sc-desc">${row.desc || ''}</td>${valCell}</tr>`;
   }
   table.innerHTML = html;
 }
@@ -1534,11 +1482,11 @@ function updatePhase() {
   const names = {
     exchange1: '✦ FIRST EXCHANGE — Select cards to swap ✦',
     exchange2: '✦ SECOND EXCHANGE — Select cards to swap ✦',
-    scoring: '✦ SCORING — Choose a category ✦',
+    scoring: '✦ SCORING — Tap a row on the score sheet ✦',
   };
   document.getElementById('phaseBanner').textContent = names[G.phase] || '';
   document.getElementById('handLabel').textContent =
-    G.phase === 'scoring' ? 'Final Hand' : 'Your Hand';
+    G.phase === 'scoring' ? 'Final hand' : 'Your Hand';
 }
 
 function updateStatusBar() {
@@ -1608,6 +1556,23 @@ document.addEventListener('keydown', (e) => {
     clearExchangeSelection();
   }
 });
+
+(function bindScoreTable() {
+  const table = document.getElementById('scTable');
+  if (!table) return;
+  table.addEventListener('click', (e) => {
+    const tr = e.target.closest('tr.sc-pick');
+    if (!tr || G.phase !== 'scoring') return;
+    recordScore(tr.dataset.pickKey, Number(tr.dataset.pickVal));
+  });
+  table.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const tr = e.target.closest('tr.sc-pick');
+    if (!tr || G.phase !== 'scoring') return;
+    e.preventDefault();
+    recordScore(tr.dataset.pickKey, Number(tr.dataset.pickVal));
+  });
+})();
 
 renderTitleCards();
 </script>
