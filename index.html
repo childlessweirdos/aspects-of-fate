@@ -7,1006 +7,1181 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
+
+/* ════════════════════════════════════════════════
+   DESIGN TOKENS
+════════════════════════════════════════════════ */
 :root {
-  --parchment: #f2e8cc;
-  --parchment-dark: #d9c99a;
-  --ink: #160f06;
-  --ink-mid: #3a2510;
-  --gold: #c8941a;
-  --gold-light: #e8c060;
-  --gold-dim: #8a6010;
-  --red-suit: #8b1515;
-  --green-suit: #1a4820;
-  --shadow: rgba(22,15,6,0.5);
-  --card-w: clamp(72px, 15vw, 168px);
-  --card-h: clamp(100px, 21vw, 236px);
-  --card-radius: 10px;
+  /* Palette — aged tarot table */
+  --black:      #07050300;
+  --felt:       #0b0804;
+  --felt2:      #120e08;
+  --felt3:      #1c160e;
+  --gold:       #c8941a;
+  --gold-lt:    #e8c060;
+  --gold-dk:    #8a6010;
+  --gold-glow:  rgba(200,148,26,0.15);
+  --gold-line:  rgba(200,148,26,0.22);
+  --red:        #8c1a1a;
+  --green:      #1a4820;
+  --parch:      #f0e2b8;
+  --parch-dk:   #c8b070;
+  --cream:      rgba(240,226,184,0.88);
+
+  /* Card */
+  --cw: clamp(100px, 17vw, 155px);
+  --ch: clamp(140px, 23.8vw, 217px);
+
+  /* Motion */
+  --ease: cubic-bezier(.4,0,.2,1);
 }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 
 body {
-  background: #0a0703;
+  background: var(--felt);
+  /* subtle cloth texture */
   background-image:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,148,26,0.08) 0%, transparent 70%),
-    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23c8941a' fill-opacity='0.03'%3E%3Cpath d='M40 0 L42 38 L80 40 L42 42 L40 80 L38 42 L0 40 L38 38Z'/%3E%3C/g%3E%3C/svg%3E");
+    radial-gradient(ellipse 120% 60% at 50% -5%, rgba(200,148,26,0.12) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%230b0804'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23ffffff' fill-opacity='0.018'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%23ffffff' fill-opacity='0.018'/%3E%3C/svg%3E");
   font-family: 'IM Fell English', serif;
-  color: var(--parchment);
-  min-height: 100vh;
+  color: var(--parch);
+  min-height: 100dvh;
   overflow-x: hidden;
-  width: 100%;
-  max-width: 100%;
 }
-html { width: 100%; }
 
-.screen { display: none; min-height: 100vh; }
-.screen.active { display: flex; flex-direction: column; }
-
-#screen-game.screen.active {
-  height: 100vh; height: 100dvh;
-  max-height: 100vh; max-height: 100dvh;
+/* ════════════════════════════════════════════════
+   SCREENS
+════════════════════════════════════════════════ */
+.screen { display: none; }
+.screen.active { display: flex; flex-direction: column; min-height: 100dvh; }
+#scr-game.active {
+  height: 100dvh; max-height: 100dvh;
   overflow: hidden;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding:
+    env(safe-area-inset-top, 0px)
+    env(safe-area-inset-right, 0px)
+    env(safe-area-inset-bottom, 0px)
+    env(safe-area-inset-left, 0px);
 }
 
-/* ── MASTHEAD ── */
-.masthead {
+/* ════════════════════════════════════════════════
+   TITLE SCREEN
+════════════════════════════════════════════════ */
+.title-screen {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 48px 28px;
+  gap: 22px;
   text-align: center;
-  padding: 24px 20px 16px;
-  border-bottom: 1px solid rgba(200,148,26,0.2);
-  position: relative;
-  flex-shrink: 0;
-  background: linear-gradient(180deg, rgba(30,22,12,0.9) 0%, rgba(14,10,6,0.95) 100%);
 }
-.masthead::before, .masthead::after {
-  content: '✦'; color: var(--gold-dim); font-size: 0.8rem;
-  position: absolute; top: 50%; transform: translateY(-50%);
-}
-.masthead::before { left: 20px; }
-.masthead::after { right: 20px; }
-.masthead h1 {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(1.4rem, 4vw, 2.2rem);
-  color: var(--gold-light);
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 40px rgba(200,148,26,0.5), 0 2px 4px rgba(0,0,0,0.8);
-}
-.masthead .sub {
+
+.title-eyebrow {
   font-family: 'Cinzel', serif;
-  font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase;
-  color: var(--gold-dim); margin-top: 4px;
+  font-size: 0.62rem; letter-spacing: 0.45em; text-transform: uppercase;
+  color: var(--gold-dk);
 }
 
-/* ── STATUS BAR ── */
-.status-bar {
-  display: flex; justify-content: center; gap: 24px;
-  padding: 10px 20px;
-  background: rgba(20,15,8,0.85);
-  border-bottom: 1px solid rgba(200,148,26,0.14);
-  flex-wrap: wrap; flex-shrink: 0;
-}
-.stat { font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: #c4b89a; }
-.stat span { color: var(--gold-light); font-weight: 700; font-size: 0.85rem; }
-
-/* ── PHASE BANNER ── */
-.phase-banner {
-  text-align: center; padding: 11px 16px;
-  font-family: 'Cinzel', serif; font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--gold-light);
-  background: rgba(14,10,5,0.9);
-  border-bottom: 1px solid rgba(200,148,26,0.18);
-  flex-shrink: 0;
+.title-h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  color: var(--gold-lt);
+  letter-spacing: 0.06em;
+  text-shadow:
+    0 0 60px rgba(200,148,26,0.6),
+    0 0 120px rgba(200,148,26,0.25),
+    0 3px 6px rgba(0,0,0,0.9);
+  line-height: 1.15;
 }
 
-/* ── GAME BODY ── */
-#screen-game .game-body {
-  flex: 1; display: flex; flex-direction: column; align-items: stretch;
-  min-height: 0; width: 100%;
-  padding: 0 max(8px, env(safe-area-inset-left)) max(6px, env(safe-area-inset-bottom));
-  padding-right: max(8px, env(safe-area-inset-right));
-}
-#screen-game .game-ledger {
-  flex: 1; min-height: 0; display: flex; flex-direction: column;
-  overflow: hidden; width: 100%; margin: 0 auto;
-  padding: 8px 10px 10px;
-  background: linear-gradient(168deg, rgba(42,34,24,0.92) 0%, rgba(22,18,12,0.96) 50%, rgba(14,11,8,0.98) 100%);
-  border: 1px solid rgba(200,148,26,0.28);
-  border-radius: 12px;
-  box-shadow: 0 1px 0 rgba(255,224,160,0.06) inset, 0 28px 64px rgba(0,0,0,0.6);
+.title-cards-fan {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0;
+  height: calc(var(--ch) + 20px);
+  position: relative;
+  width: 100%;
+  max-width: 500px;
 }
 
-/* compact game masthead */
-#screen-game .masthead { padding: 8px 12px 6px; }
-#screen-game .masthead::before, #screen-game .masthead::after { display: none; }
-#screen-game .masthead h1 { font-size: clamp(0.95rem, 3.8vw, 1.45rem); }
-#screen-game .masthead .sub { font-size: 0.55rem; letter-spacing: 0.28em; margin-top: 2px; }
-#screen-game .status-bar { padding: 5px 8px; gap: 10px 14px; }
-#screen-game .stat { font-size: 0.62rem; }
-#screen-game .stat span { font-size: 0.75rem; }
-#screen-game .phase-banner { padding: 6px 10px; font-size: 0.62rem; letter-spacing: 0.14em; }
+/* fan layout: 4 cards rotated */
+.title-cards-fan .card:nth-child(1) { transform: rotate(-12deg) translateY(8px); z-index: 1; }
+.title-cards-fan .card:nth-child(2) { transform: rotate(-4deg) translateY(2px); z-index: 2; }
+.title-cards-fan .card:nth-child(3) { transform: rotate(4deg) translateY(2px); z-index: 3; }
+.title-cards-fan .card:nth-child(4) { transform: rotate(12deg) translateY(8px); z-index: 4; }
+.title-cards-fan .card { margin: 0 -8px; animation: float var(--dur,4s) ease-in-out infinite; animation-delay: var(--delay,0s); }
+@keyframes float { 0%,100%{transform-origin:bottom center; margin-bottom:0} 50%{margin-bottom:6px} }
+/* override float for fanned cards to preserve rotation */
+.title-cards-fan .card:nth-child(1) { animation: fan-float1 4s ease-in-out infinite; }
+.title-cards-fan .card:nth-child(2) { animation: fan-float2 3.5s ease-in-out infinite 0.3s; }
+.title-cards-fan .card:nth-child(3) { animation: fan-float3 4.5s ease-in-out infinite 0.7s; }
+.title-cards-fan .card:nth-child(4) { animation: fan-float4 3.8s ease-in-out infinite 1.1s; }
+@keyframes fan-float1 { 0%,100%{transform:rotate(-12deg) translateY(8px)} 50%{transform:rotate(-12deg) translateY(2px)} }
+@keyframes fan-float2 { 0%,100%{transform:rotate(-4deg) translateY(2px)} 50%{transform:rotate(-4deg) translateY(-4px)} }
+@keyframes fan-float3 { 0%,100%{transform:rotate(4deg) translateY(2px)} 50%{transform:rotate(4deg) translateY(-4px)} }
+@keyframes fan-float4 { 0%,100%{transform:rotate(12deg) translateY(8px)} 50%{transform:rotate(12deg) translateY(2px)} }
 
-/* ── HISTORY ROW ── */
-.history-full { padding: 0 0 6px; margin: 0 0 8px; border-bottom: 1px solid rgba(200,148,26,0.14); flex-shrink: 0; }
-.history-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; padding: 2px 0 4px; }
-.history-pill {
-  padding: 4px 10px; border: 1px solid rgba(200,148,26,0.28); border-radius: 6px;
-  font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.08em;
-  color: #c4b89a; background: rgba(0,0,0,0.2);
+.title-ornament {
+  color: var(--gold-dk);
+  font-size: 1rem; letter-spacing: 0.5em;
+  line-height: 1;
 }
-.history-pill.current { border-color: var(--gold-light); color: #ffe8a8; background: rgba(200,148,26,0.14); }
-.history-pill.done { color: #8a7018; }
 
-/* ── GAME COLUMNS ── */
-.game-columns {
-  flex: 1; min-height: 0;
+.title-desc {
+  font-style: italic;
+  color: var(--parch-dk);
+  font-size: clamp(0.82rem, 2.2vw, 1rem);
+  max-width: 440px;
+  line-height: 1.8;
+}
+
+.title-rules {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.55rem, 1.6vw, 0.68rem);
+  letter-spacing: 0.15em;
+  color: var(--gold-dk);
+  line-height: 2.1;
+  max-width: 380px;
+}
+
+.deal-btn {
+  padding: 15px 52px;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.7rem, 2vw, 0.88rem);
+  letter-spacing: 0.3em; text-transform: uppercase;
+  background: var(--gold);
+  color: var(--felt);
+  border: none; cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 0 0 1px var(--gold-lt), 0 0 40px rgba(200,148,26,0.35), 0 4px 16px rgba(0,0,0,0.6);
+  transition: all 0.2s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.deal-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+.deal-btn:hover {
+  background: var(--gold-lt);
+  box-shadow: 0 0 0 1px var(--gold-lt), 0 0 60px rgba(232,192,96,0.5), 0 6px 20px rgba(0,0,0,0.7);
+  transform: translateY(-2px);
+}
+
+.title-tagline {
+  font-style: italic;
+  color: var(--gold-dk);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+/* ════════════════════════════════════════════════
+   GAME SCREEN — 3-zone vertical layout
+   ┌──────────────────────┐
+   │  TOP BAR + PHASE     │  ~50px fixed
+   ├──────────────────────┤
+   │  SCORE SHEET         │  scrollable, auto height
+   ├──────────────────────┤
+   │  TABLE (cards+ctrl)  │  fills remaining
+   └──────────────────────┘
+════════════════════════════════════════════════ */
+#scr-game.active {
   display: grid;
-  grid-template-rows: minmax(0,1fr) minmax(0,1.12fr);
-  gap: 0; width: 100%; overflow: hidden;
+  grid-template-rows: auto auto 1fr;
 }
 
-/* ── SCORECARD (top) ── */
-.game-col-scorecard {
-  width: 100%; min-height: 0;
-  overflow-x: hidden; overflow-y: auto;
-  -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
-  padding: 0 2px 8px 0;
-  border-bottom: 1px solid rgba(200,148,26,0.2);
-}
-.scorecard-wrap {
-  background: rgba(6,5,4,0.5);
-  border: 1px solid rgba(200,148,26,0.22);
-  border-radius: 10px; overflow: hidden;
-}
-.scorecard-wrap.scoring-hot {
-  border-color: rgba(232,192,96,0.55);
-  box-shadow: 0 0 28px rgba(200,148,26,0.18);
-}
-.sc-header {
-  background: linear-gradient(180deg, rgba(200,148,26,0.18) 0%, rgba(200,148,26,0.08) 100%);
-  padding: 8px 10px;
-  font-family: 'Cinzel', serif; font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase;
-  color: #f0d78c;
-  border-bottom: 1px solid rgba(200,148,26,0.22); flex-shrink: 0;
-}
-.sc-header-sub {
-  display: block; margin-top: 4px; font-size: 0.58rem; letter-spacing: 0.02em; text-transform: none;
-  color: rgba(232,192,96,0.7); font-family: 'IM Fell English', serif; font-style: italic; line-height: 1.3;
-}
-.sc-table-panel {
-  display: flex; flex-direction: column; margin-top: 4px;
-  border: 1px solid rgba(200,148,26,0.12); border-radius: 8px; overflow: hidden;
-  background: rgba(255,248,235,0.03); flex-shrink: 0;
-}
-.sc-live-label {
-  font-family: 'Cinzel', serif; font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase;
-  color: #c9a85c; padding: 5px 8px;
-  background: rgba(200,148,26,0.07);
-  border-bottom: 1px solid rgba(200,148,26,0.1);
-}
-.sc-dual-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; padding: 6px 8px 8px; align-items: start;
-}
-.sc-col-title {
-  font-family: 'Cinzel', serif; font-size: 0.48rem; letter-spacing: 0.16em; text-transform: uppercase;
-  color: #e8c060; margin: 0 0 2px 1px; line-height: 1.15;
+/* TOP CHROME */
+.game-chrome {
+  flex-shrink: 0;
+  background: linear-gradient(180deg, rgba(18,12,6,0.98) 0%, rgba(11,8,4,0.96) 100%);
+  border-bottom: 1px solid var(--gold-line);
 }
 
-/* ── SCORE TABLES ── */
-.sc-table { width: 100%; border-collapse: collapse; font-size: 0.68rem; table-layout: fixed; }
-.sc-table-live { background: rgba(16,12,8,0.4); border-radius: 6px; overflow: hidden; }
-.sc-table td {
-  padding: 2px 4px 3px 5px;
-  border-bottom: 1px solid rgba(90,75,50,0.2);
-  color: #f2ead8; line-height: 1.2; vertical-align: middle;
+.game-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px;
+  gap: 12px;
 }
-.sc-table td.sc-cat {
-  font-family: 'Cinzel', serif; font-weight: 600; font-size: 0.52rem; letter-spacing: 0.02em;
-  color: #faf3e4; width: 72%; white-space: normal; hyphens: auto;
+
+.game-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(0.72rem, 2.5vw, 1.1rem);
+  color: var(--gold-lt);
+  text-shadow: 0 0 20px rgba(200,148,26,0.5);
+  white-space: nowrap; flex-shrink: 0;
 }
-.sc-table td.sc-val, .sc-table td:last-child {
-  text-align: right; font-family: 'Cinzel', serif; font-weight: 600; font-size: 0.62rem;
-  color: #f0d78c; width: 28%;
+
+.game-stats {
+  display: flex; gap: 12px 20px; flex-wrap: wrap; justify-content: flex-end;
 }
-/* Clickable scoring rows */
-.sc-table tr.sc-pick {
+
+.gstat {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.48rem, 1.5vw, 0.62rem);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: #a09060;
+}
+.gstat b { color: var(--gold-lt); font-size: clamp(0.58rem, 1.7vw, 0.74rem); }
+
+.phase-bar {
+  text-align: center;
+  padding: 5px 16px 7px;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.48rem, 1.8vw, 0.65rem);
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--gold-lt);
+  border-top: 1px solid var(--gold-line);
+  background: rgba(200,148,26,0.06);
+}
+
+/* SCORE PANEL */
+.score-panel {
+  overflow-y: auto; overflow-x: hidden;
+  background: rgba(8,6,3,0.7);
+  border-bottom: 2px solid var(--gold-line);
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-dk) transparent;
+  max-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sp-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1px;
+  background: var(--gold-line);
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.sp-col {
+  background: rgba(8,6,3,0.6);
+  padding: 0;
+}
+
+.sp-col-head {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--gold-dk);
+  padding: 4px 8px 3px;
+  background: rgba(200,148,26,0.08);
+  border-bottom: 1px solid var(--gold-line);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sp-col-head span { color: var(--gold-lt); font-size: 0.52rem; }
+
+.sp-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 2px 8px;
+  border-bottom: 1px solid rgba(200,148,26,0.07);
+  min-height: 18px;
+  cursor: default;
+  transition: background 0.12s;
+}
+.sp-row.pickable {
   cursor: pointer;
   background: rgba(200,148,26,0.1);
-  transition: background 0.15s, box-shadow 0.15s;
+  border-left: 3px solid var(--gold-lt);
 }
-.sc-table tr.sc-pick td.sc-cat { border-left: 3px solid var(--gold-light); padding-left: 5px; }
-.sc-table tr.sc-pick:hover, .sc-table tr.sc-pick:focus-visible {
-  background: rgba(200,148,26,0.22); outline: none;
-  box-shadow: inset 0 0 0 1px rgba(232,192,96,0.4);
+.sp-row.pickable:hover { background: rgba(200,148,26,0.22); }
+.sp-row.pickable.best {
+  background: rgba(200,148,26,0.18);
+  border-left-color: var(--gold-lt);
 }
-.sc-table tr.sc-pick.sc-suggest { background: rgba(200,148,26,0.16); }
-.sc-table tr.sc-pick .sc-will-record { font-family: 'Cinzel Decorative', serif; font-size: 0.82rem; color: #ffe8a8; }
-.sc-table td.empty { color: rgba(200,148,26,0.4); }
-.sc-table td.zero { color: #e07070; font-family: 'Cinzel', serif; }
-.sc-table tr.total-row td {
-  background: rgba(200,148,26,0.13); font-family: 'Cinzel', serif; font-weight: 700;
-  font-size: 0.56rem; color: #ffe8a8;
-  border-top: 1px solid rgba(200,148,26,0.3); padding-top: 3px; padding-bottom: 3px;
+/* tiered score highlights */
+.sp-row.pickable.tier-high {
+  background: rgba(200,148,26,0.26);
+  border-left: 3px solid var(--gold-lt);
+  box-shadow: inset 0 0 0 1px rgba(200,148,26,0.3);
 }
-
-/* ── PLAY COLUMN (bottom) ── */
-.game-col-play {
-  display: flex; flex-direction: column; gap: clamp(8px,2vw,16px);
-  min-width: 0; min-height: 0; width: 100%;
-  padding: 10px 0 0 0; align-items: center;
-  overflow-x: hidden; overflow-y: auto;
-  -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+.sp-row.pickable.tier-high .sp-cat { color: #fff4c8; font-weight: 600; }
+.sp-row.pickable.tier-high .sp-val { color: #ffe060; font-size: clamp(0.78rem,2.1vw,0.96rem); text-shadow: 0 0 8px rgba(232,192,96,0.6); }
+.sp-row.pickable.tier-mid {
+  background: rgba(200,148,26,0.14);
+  border-left: 3px solid rgba(200,148,26,0.7);
 }
-
-.play-scoring-hint {
-  text-align: center; font-size: 0.78rem; color: #d4c9a8; font-style: italic;
-  padding: 8px 12px; border: 1px solid rgba(200,148,26,0.25); border-radius: 8px;
-  background: rgba(200,148,26,0.09); line-height: 1.4; flex-shrink: 0;
-  width: 100%; max-width: min(960px, 100%);
-  animation: glow-pulse 2s ease-in-out infinite;
+.sp-row.pickable.tier-mid .sp-val { color: #e8d060; }
+.sp-row.pickable.tier-zero {
+  background: rgba(200,148,26,0.06);
+  border-left: 3px solid rgba(200,148,26,0.25);
 }
-.play-scoring-hint strong { color: var(--gold-light); font-style: normal; letter-spacing: 0.05em; }
-@keyframes glow-pulse {
-  0%,100% { box-shadow: 0 0 0 rgba(200,148,26,0); }
-  50% { box-shadow: 0 0 18px rgba(200,148,26,0.25); }
+.sp-row.pickable.tier-zero .sp-val { color: rgba(200,148,26,0.4); font-size: 0.56rem; font-family: 'Cinzel', serif; }
+.sp-row.sub-total {
+  background: rgba(200,148,26,0.12);
+  border-top: 1px solid rgba(200,148,26,0.25);
+  border-bottom: 1px solid rgba(200,148,26,0.25);
 }
 
-/* ── HAND ── */
-.hand-area {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  width: 100%; max-width: min(960px, 100%); flex-shrink: 0;
+.sp-cat {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.48rem, 1.3vw, 0.58rem);
+  letter-spacing: 0.03em; color: #e8d8a8;
+  flex: 1; line-height: 1.1;
 }
+.sp-row.sub-total .sp-cat { color: var(--gold-lt); font-weight: 700; font-size: clamp(0.52rem,1.5vw,0.62rem); }
+
+.sp-val {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(0.65rem, 1.8vw, 0.82rem);
+  color: var(--gold-lt);
+  text-align: right; min-width: 32px; line-height: 1;
+}
+.sp-val.empty { color: rgba(200,148,26,0.3); font-family:'Cinzel',serif; font-size:0.56rem; }
+.sp-val.zero  { color: #c05050; font-family:'Cinzel',serif; font-size:0.6rem; }
+.sp-val.pick  { color: #fff4b8; font-size: clamp(0.72rem,2vw,0.9rem); }
+.sp-row.sub-total .sp-val { font-size: clamp(0.7rem,1.9vw,0.88rem); }
+
+/* score panel footer: history + fated preview */
+.sp-footer {
+  display: flex; gap: 1px;
+  background: var(--gold-line);
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+}
+.sp-history {
+  flex: 1;
+  background: rgba(8,6,3,0.7);
+  padding: 4px 8px;
+  display: flex; gap: 4px; flex-wrap: wrap; align-items: center;
+}
+.sp-pill {
+  padding: 2px 7px;
+  border: 1px solid rgba(200,148,26,0.2);
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.44rem,1.2vw,0.54rem);
+  letter-spacing: 0.05em;
+  color: #80701a;
+}
+.sp-pill.now { border-color: var(--gold); color: var(--gold-lt); background: rgba(200,148,26,0.12); }
+.sp-pill.done { color: #504010; }
+
+.sp-fated {
+  background: rgba(8,6,3,0.7);
+  padding: 4px 10px;
+  display: flex; flex-direction: column; justify-content: center; gap: 2px;
+  min-width: 130px;
+}
+.sp-fated-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.44rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold-dk); text-align: center; margin-bottom: 2px;
+}
+.sp-fated-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: 'Cinzel', serif; font-size: clamp(0.5rem,1.4vw,0.6rem);
+  color: #a09060;
+}
+.sp-fated-row b { color: var(--gold-lt); font-size: clamp(0.58rem,1.6vw,0.7rem); }
+.sp-fated-row b.neg { color: var(--red); }
+
+/* TABLE — cards live here */
+.game-table {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: space-evenly;
+  padding: 14px 16px 18px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 110%, rgba(200,148,26,0.07) 0%, transparent 70%);
+  position: relative;
+}
+
+/* felt table surface line */
+.game-table::before {
+  content: '';
+  position: absolute;
+  left: 12px; right: 12px;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-line), transparent);
+}
+
+/* HAND */
+.hand-section { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
+
 .hand-label {
-  font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.22em;
-  text-transform: uppercase; color: #c9a85c;
+  font-family: 'Cinzel', serif;
+  font-size: 0.56rem; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--gold-dk);
 }
-.hand {
-  display: flex; gap: clamp(6px,1.5vw,12px);
-  justify-content: center; align-items: flex-end;
-  flex-wrap: wrap; width: 100%; margin: 0 auto;
-}
-@media (min-width: 560px) { #playerHand { flex-wrap: nowrap; } }
 
-/* ── CARDS ── */
+.hand {
+  display: flex;
+  gap: clamp(6px, 2vw, 14px);
+  justify-content: center;
+  align-items: flex-end;
+}
+
+/* CARDS */
 .card {
-  width: var(--card-w); height: var(--card-h);
-  border-radius: var(--card-radius);
+  width: var(--cw);
+  height: var(--ch);
+  border-radius: 10px;
   border: 2px solid rgba(200,148,26,0.3);
+  overflow: hidden; position: relative;
+  background: #070503;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.5),
+    0 6px 24px rgba(0,0,0,0.7),
+    0 2px 4px rgba(0,0,0,0.5);
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s, filter 0.2s;
-  position: relative; overflow: hidden;
-  background: #090604;
-  box-shadow: 0 4px 16px var(--shadow);
-  user-select: none;
+  transition: transform 0.22s var(--ease), border-color 0.18s, box-shadow 0.22s, filter 0.18s;
+  user-select: none; flex-shrink: 0;
 }
 .card img {
   width: 100%; height: 100%;
   object-fit: contain; object-position: center;
   display: block; pointer-events: none;
-  background: radial-gradient(ellipse at center, #2a1f12 0%, #0d0904 100%);
+  background: radial-gradient(ellipse at center, #221808 0%, #070503 100%);
 }
-.card .card-fallback {
-  width: 100%; height: 100%; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; padding: 8px; background: var(--ink);
+.card .cbar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px; pointer-events: none;
 }
-.card .card-num { font-family: 'Cinzel Decorative', serif; font-size: 2rem; font-weight: 700; line-height: 1; }
-.card .card-num.black { color: var(--parchment); }
-.card .card-num.red { color: #e05050; }
-.card .card-num.green { color: #50c060; }
-.card .card-name { font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--parchment-dark); margin-top: 6px; text-align: center; }
-.card .card-color-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
-.card.black-card { border-color: rgba(200,148,26,0.4); }
-.card.black-card .card-color-bar { background: var(--gold); }
-.card.red-card { border-color: rgba(139,21,21,0.6); }
-.card.red-card .card-color-bar { background: var(--red-suit); }
+.card.black-card { border-color: rgba(200,148,26,0.42); }
+.card.black-card .cbar { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.card.red-card   { border-color: rgba(140,26,26,0.6); }
+.card.red-card   .cbar { background: linear-gradient(90deg, transparent, var(--red), transparent); }
 .card.green-card { border-color: rgba(26,72,32,0.6); }
-.card.green-card .card-color-bar { background: var(--green-suit); }
-.card:hover:not(.selected):not(.no-hover) { transform: translateY(-5px); filter: brightness(1.08); border-color: rgba(200,148,26,0.7); }
+.card.green-card .cbar { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+
+.card:hover:not(.selected):not(.nohover) {
+  transform: translateY(-8px) scale(1.04);
+  border-color: rgba(200,148,26,0.8);
+  box-shadow:
+    0 0 0 1px rgba(200,148,26,0.5),
+    0 14px 36px rgba(0,0,0,0.8),
+    0 0 20px rgba(200,148,26,0.15);
+  filter: brightness(1.1);
+  z-index: 10;
+}
 .card.selected {
+  transform: translateY(-14px) scale(1.06) !important;
   border-color: var(--gold) !important;
-  box-shadow: 0 0 0 2px var(--gold), 0 10px 28px rgba(200,148,26,0.55);
-  transform: translateY(-10px); filter: brightness(1.1);
+  box-shadow:
+    0 0 0 2px var(--gold-lt),
+    0 0 0 4px rgba(200,148,26,0.3),
+    0 16px 40px rgba(0,0,0,0.8),
+    0 0 30px rgba(200,148,26,0.35) !important;
+  filter: brightness(1.12) !important;
+  z-index: 20;
 }
 .card.selected::after {
-  content: '✦ SWAP'; position: absolute; bottom: 0; left: 0; right: 0;
-  text-align: center; font-family: 'Cinzel', serif; font-size: 0.48rem; letter-spacing: 0.15em;
-  color: var(--gold-light); background: rgba(12,8,4,0.88); padding: 4px 0;
+  content: '✦ SWAP';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 0.44rem; letter-spacing: 0.16em;
+  color: var(--gold-lt);
+  background: rgba(5,3,1,0.92);
+  padding: 5px 0;
+  border-top: 1px solid rgba(200,148,26,0.4);
 }
+/* card fallback */
+.card-fb { width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px; }
+.card-fb .cfn { font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:700;line-height:1; }
+.card-fb .cfn.black{color:var(--parch);} .card-fb .cfn.red{color:#e05050;} .card-fb .cfn.green{color:#50c060;}
+.card-fb .cfl { font-family:'Cinzel',serif;font-size:0.44rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--parch-dk);margin-top:6px;text-align:center; }
 
-/* ── EXCHANGE CONTROLS ── */
-.exchange-controls {
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  width: 100%; max-width: min(960px, 100%);
+/* DISCARD ROW */
+.discard-section { display:flex;flex-direction:column;align-items:center;gap:5px;width:100%; }
+.discard-lbl { font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-dk); }
+.discard-row { display:flex;gap:5px;justify-content:center;flex-wrap:wrap;min-height:28px;align-items:center; }
+.discard-row .card { --cw:44px;--ch:61px;border-radius:5px;cursor:default; }
+.discard-row .card:hover { transform:none;filter:none;border-color:inherit;box-shadow:0 0 0 1px rgba(0,0,0,0.5),0 6px 24px rgba(0,0,0,0.7); }
+
+/* EXCHANGE CONTROLS */
+.controls-section { display:flex;flex-direction:column;align-items:center;gap:8px;width:100%; }
+
+.ex-progress {
+  display: flex; gap: 6px; align-items: center;
 }
-.exchange-hint { font-style: italic; font-size: 0.88rem; color: rgba(220,208,175,0.88); text-align: center; }
-.btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.ex-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(200,148,26,0.18);
+  border: 1px solid rgba(200,148,26,0.28);
+  transition: all 0.28s;
+}
+.ex-dot.done  { background: var(--gold); border-color: var(--gold); }
+.ex-dot.active {
+  background: var(--gold-lt); border-color: var(--gold-lt);
+  box-shadow: 0 0 8px var(--gold-lt);
+  width: 9px; height: 9px;
+}
+.ex-label { font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-dk); }
 
-/* ── BUTTONS ── */
+.ex-hint { font-style:italic;font-size:0.76rem;color:rgba(200,175,120,0.75);text-align:center; }
+
+.btn-row { display:flex;gap:10px;justify-content:center;flex-wrap:wrap; }
+
 .btn {
-  padding: 10px 28px; font-family: 'Cinzel', serif; font-size: 0.75rem;
-  letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
-  border: 1px solid var(--gold-dim); background: transparent; color: var(--gold-light);
-  transition: all 0.15s; position: relative; overflow: hidden;
+  padding: 8px 20px;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.6rem, 1.8vw, 0.7rem);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid var(--gold-dk);
+  background: transparent;
+  color: var(--gold-lt);
+  transition: all 0.15s var(--ease);
+  position: relative; overflow: hidden;
 }
 .btn::before {
-  content: ''; position: absolute; inset: 0; background: var(--gold);
-  transform: scaleX(0); transform-origin: left; transition: transform 0.15s; z-index: -1;
+  content:''; position:absolute;inset:0;
+  background:var(--gold);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.15s var(--ease);z-index:-1;
 }
-.btn:hover:not(:disabled) { color: var(--ink); border-color: var(--gold); }
-.btn:hover:not(:disabled)::before { transform: scaleX(1); }
-.btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.btn-primary { background: var(--gold); color: var(--ink); border-color: var(--gold); font-weight: 700; }
-.btn-primary:hover:not(:disabled) { background: var(--gold-light); }
-.btn-primary::before { display: none; }
-.btn-ghost { border-color: rgba(200,148,26,0.3); color: var(--parchment-dark); }
+.btn:hover:not(:disabled) { color:var(--felt);border-color:var(--gold); }
+.btn:hover:not(:disabled)::before { transform:scaleX(1); }
+.btn:disabled { opacity:0.3;cursor:not-allowed; }
+.btn-gold {
+  background: var(--gold); color: var(--felt);
+  border-color: var(--gold); font-weight: 700;
+  box-shadow: 0 0 16px rgba(200,148,26,0.25), 0 2px 8px rgba(0,0,0,0.5);
+}
+.btn-gold:hover:not(:disabled) { background: var(--gold-lt); box-shadow: 0 0 24px rgba(200,148,26,0.4), 0 4px 12px rgba(0,0,0,0.6); }
+.btn-gold::before { display:none; }
+.btn-ghost { border-color:rgba(200,148,26,0.22);color:var(--parch-dk); }
 
-/* ── EXCHANGE INDICATOR ── */
-.exchange-indicator { display: flex; gap: 8px; justify-content: center; }
-.ex-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(200,148,26,0.2); border: 1px solid rgba(200,148,26,0.3); transition: all 0.3s; }
-.ex-dot.done { background: var(--gold); border-color: var(--gold); }
-.ex-dot.active { background: var(--gold-light); border-color: var(--gold-light); box-shadow: 0 0 7px var(--gold-light); }
+/* SCORE HINT */
+.score-hint {
+  width:100%;
+  text-align:center;
+  font-size:clamp(0.72rem,2vw,0.82rem);
+  font-style:italic;
+  color:#c8b070;
+  padding:8px 16px;
+  border:1px solid rgba(200,148,26,0.22);
+  background: rgba(200,148,26,0.07);
+  animation: hint-glow 2.5s ease-in-out infinite;
+  line-height:1.5;
+}
+.score-hint strong { color:var(--gold-lt);font-style:normal; }
+@keyframes hint-glow {
+  0%,100%{box-shadow:0 0 0 rgba(200,148,26,0);border-color:rgba(200,148,26,0.22);}
+  50%{box-shadow:0 0 22px rgba(200,148,26,0.18);border-color:rgba(200,148,26,0.5);}
+}
 
-/* ── DISCARD ── */
-.discard-area { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: min(960px, 100%); }
-.discard-label { font-family: 'Cinzel', serif; font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: #c9a85c; }
-.discard-pile { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; min-height: 40px; }
-.discard-pile .card { --card-w: 58px; --card-h: 81px; --card-radius: 6px; cursor: default; }
-.discard-pile .card:hover { transform: none; filter: none; }
-
-/* ── LOG ── */
+/* LOG */
 .game-log {
-  background: rgba(0,0,0,0.25); border: 1px solid rgba(200,148,26,0.12); border-radius: 8px;
-  padding: 8px 12px; max-height: min(72px, 18vh); overflow-y: auto;
-  width: 100%; max-width: min(960px, 100%); flex-shrink: 0;
+  width:100%;
+  font-size:clamp(0.58rem,1.6vw,0.66rem);
+  font-style:italic;
+  color:rgba(180,155,80,0.45);
+  text-align:center;
+  min-height:16px;
+  line-height:1.5;
 }
-.log-entry { font-size: 0.72rem; color: rgba(217,201,154,0.55); padding: 2px 0; border-left: 2px solid rgba(200,148,26,0.2); padding-left: 8px; margin-bottom: 3px; font-style: italic; }
-.log-entry.important { color: var(--gold-light); border-left-color: var(--gold); }
+.game-log .log-imp { color:rgba(232,192,96,0.7); }
 
-/* ── TITLE SCREEN ── */
-.title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 40px 20px; text-align: center; width: 100%; }
-.title-art { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
-.title-art .card { width: 90px !important; height: 126px !important; --card-w: 90px; --card-h: 126px; cursor: default; animation: float var(--dur, 4s) ease-in-out infinite; animation-delay: var(--delay, 0s); flex-shrink: 0; }
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-.title-desc { font-style: italic; color: var(--parchment-dark); font-size: 0.9rem; max-width: 480px; line-height: 1.7; }
-.title-rules { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--gold-dim); line-height: 2; max-width: 420px; }
-.ornament { color: var(--gold-dim); letter-spacing: 0.5em; font-size: 0.75rem; }
+/* ════════════════════════════════════════════════
+   FATED DECISION SCREEN
+════════════════════════════════════════════════ */
+.fated-screen {
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:48px 28px;gap:22px;text-align:center;
+}
 
-/* ── FATED DECISION ── */
-.fated-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; gap: 24px; }
-.fated-eye { font-size: 3rem; line-height: 1; color: var(--gold-dim); animation: pulse 3s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.06)} }
-.fated-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.4rem,5vw,2rem); color: var(--gold-light); text-shadow: 0 0 40px rgba(200,148,26,0.6); }
-.fated-game-total { font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.2em; color: var(--parchment-dark); }
-.fated-game-total strong { color: var(--gold-light); font-size: 1.4rem; display: block; margin-top: 4px; }
-.fated-paths { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 600px; }
+.fated-eye {
+  font-size: 3.5rem; color: var(--gold-dk);
+  animation: pulse 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(200,148,26,0.4));
+}
+@keyframes pulse {
+  0%,100%{opacity:.35;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.08)}
+}
+
+.fated-h {
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(1.5rem,5vw,2.4rem);
+  color:var(--gold-lt);
+  text-shadow:0 0 50px rgba(200,148,26,0.65),0 3px 6px rgba(0,0,0,0.8);
+}
+.fated-total {
+  font-family:'Cinzel',serif;font-size:0.8rem;
+  letter-spacing:0.2em;color:var(--parch-dk);
+}
+.fated-total strong {
+  display:block;
+  font-family:'Cinzel Decorative',serif;
+  font-size:2.2rem;color:var(--gold-lt);margin-top:5px;
+  text-shadow:0 0 30px rgba(200,148,26,0.5);
+}
+
+.fated-paths {
+  display:flex;gap:16px;justify-content:center;flex-wrap:wrap;width:100%;max-width:560px;
+}
 .path-card {
-  flex: 1; min-width: 200px; max-width: 260px;
-  border: 1px solid rgba(200,148,26,0.3); padding: 24px 20px; cursor: pointer;
-  transition: all 0.2s; background: rgba(22,15,6,0.5);
+  flex:1;min-width:200px;max-width:250px;
+  border:1px solid rgba(200,148,26,0.28);
+  padding:24px 20px;cursor:pointer;
+  background:rgba(15,10,5,0.6);
+  transition:all 0.2s var(--ease);
+  position:relative;overflow:hidden;
 }
-.path-card:hover:not(.negative):not(.chosen) { border-color: var(--gold); background: rgba(200,148,26,0.12); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(200,148,26,0.2); }
-.path-card.negative { opacity: 0.4; cursor: not-allowed; }
-.path-card.chosen { border-color: var(--gold); background: rgba(200,148,26,0.15); }
-.path-label { font-family: 'Cinzel Decorative', serif; font-size: 1.1rem; color: var(--gold-light); margin-bottom: 8px; }
-.path-formula { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--gold-dim); margin-bottom: 12px; }
-.path-result { font-family: 'Cinzel Decorative', serif; font-size: 2.2rem; line-height: 1; }
-.path-result.positive { color: var(--gold-light); }
-.path-result.negative { color: var(--red-suit); }
-.path-desc { font-size: 0.7rem; font-style: italic; color: var(--parchment-dark); margin-top: 10px; line-height: 1.5; }
-.fated-tagline { font-style: italic; color: var(--parchment-dark); font-size: 0.85rem; max-width: 400px; }
-
-/* ── RESULTS ── */
-.results-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; gap: 20px; text-align: center; }
-.results-game-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; width: 100%; max-width: 500px; }
-.rg-cell { border: 1px solid rgba(200,148,26,0.2); padding: 10px 8px; font-family: 'Cinzel', serif; }
-.rg-cell .rg-game { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 4px; }
-.rg-cell .rg-total { font-size: 0.8rem; color: var(--parchment-dark); }
-.rg-cell .rg-path { font-size: 0.65rem; color: var(--gold-dim); margin-top: 2px; }
-.rg-cell .rg-fated { font-size: 1.1rem; color: var(--gold-light); font-weight: 700; }
-.rg-cell .rg-fated.loss { color: var(--red-suit); }
-.final-score-label { font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-dim); }
-.final-score-value { font-family: 'Cinzel Decorative', serif; font-size: clamp(2rem,8vw,3.5rem); color: var(--gold-light); text-shadow: 0 0 60px rgba(200,148,26,0.5); line-height: 1; }
-.final-verdict { font-style: italic; color: var(--parchment-dark); font-size: 0.9rem; max-width: 400px; line-height: 1.7; }
-
-/* ── SCROLLBARS ── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 720px) { .sc-dual-grid { grid-template-columns: 1fr; gap: 6px; } }
-@media (max-height: 700px) {
-  .game-columns { grid-template-rows: minmax(0,0.88fr) minmax(0,1.12fr); }
-  #screen-game .masthead { padding: 5px 10px 4px; }
-  #screen-game .phase-banner { padding: 4px 8px; font-size: 0.55rem; }
+.path-card::before {
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(200,148,26,0.06) 0%,transparent 100%);
+  pointer-events:none;
 }
-@media (max-width: 559px) { #playerHand { flex-wrap: wrap; } }
-@media (max-width: 500px) { .results-game-grid { grid-template-columns: repeat(2,1fr); } }
+.path-card:hover:not(.neg):not(.chosen) {
+  border-color:var(--gold);
+  background:rgba(200,148,26,0.1);
+  transform:translateY(-5px);
+  box-shadow:0 12px 32px rgba(0,0,0,0.6),0 0 24px rgba(200,148,26,0.2);
+}
+.path-card.neg { opacity:0.35;cursor:not-allowed; }
+.path-card.chosen { border-color:var(--gold);background:rgba(200,148,26,0.14); }
 
-/* ── VISUAL ENHANCEMENTS ── */
+.pc-lbl { font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:var(--gold-lt);margin-bottom:6px; }
+.pc-form { font-family:'Cinzel',serif;font-size:0.56rem;letter-spacing:0.15em;color:var(--gold-dk);margin-bottom:12px; }
+.pc-result { font-family:'Cinzel Decorative',serif;font-size:2.4rem;line-height:1; }
+.pc-result.pos { color:var(--gold-lt);text-shadow:0 0 20px rgba(200,148,26,0.5); }
+.pc-result.neg { color:var(--red);text-shadow:0 0 20px rgba(140,26,26,0.4); }
+.pc-desc { font-size:0.68rem;font-style:italic;color:var(--parch-dk);margin-top:10px;line-height:1.55; }
 
-/* Richer masthead */
+.fated-hint {
+  font-style:italic;color:var(--parch-dk);
+  font-size:0.8rem;max-width:380px;line-height:1.6;
+}
+
+/* ════════════════════════════════════════════════
+   RESULTS SCREEN
+════════════════════════════════════════════════ */
+.results-screen {
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:48px 28px;gap:18px;text-align:center;
+}
+.res-ornament { color:var(--gold-dk);letter-spacing:0.45em;font-size:0.75rem; }
+.res-label { font-family:'Cinzel',serif;font-size:0.66rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-dk); }
+.res-score {
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(3rem,10vw,5rem);
+  color:var(--gold-lt);line-height:1;
+  text-shadow:0 0 80px rgba(200,148,26,0.6),0 4px 8px rgba(0,0,0,0.9);
+}
+.res-score.loss { color:var(--red);text-shadow:0 0 80px rgba(140,26,26,0.5),0 4px 8px rgba(0,0,0,0.9); }
+.res-verdict { font-style:italic;color:var(--parch-dk);font-size:0.9rem;max-width:400px;line-height:1.75; }
+.res-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:480px; }
+@media(max-width:400px){.res-grid{grid-template-columns:repeat(2,1fr);}}
+.rg-cell { border:1px solid rgba(200,148,26,0.18);padding:10px 8px;font-family:'Cinzel',serif;text-align:center;background:rgba(0,0,0,0.2); }
+.rg-cell .rg-g { font-size:0.5rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-dk);margin-bottom:3px; }
+.rg-cell .rg-t { font-size:0.72rem;color:var(--parch-dk); }
+.rg-cell .rg-p { font-size:0.58rem;color:var(--gold-dk);margin-top:1px; }
+.rg-cell .rg-f { font-size:1rem;font-weight:700;color:var(--gold-lt); }
+.rg-cell .rg-f.loss { color:var(--red); }
+
+/* masthead for non-game screens */
 .masthead {
-  background: linear-gradient(180deg, rgba(26,19,10,0.95) 0%, rgba(14,10,5,0.98) 100%);
+  text-align:center;
+  padding:28px 24px 18px;
+  border-bottom:1px solid var(--gold-line);
+  background:linear-gradient(180deg,rgba(22,14,6,0.98) 0%,rgba(11,8,4,0.96) 100%);
+  flex-shrink:0;position:relative;
 }
-.masthead h1 {
-  text-shadow: 0 0 40px rgba(200,148,26,0.5), 0 2px 4px rgba(0,0,0,0.8);
+.masthead::before,.masthead::after{content:'✦';color:var(--gold-dk);font-size:0.8rem;position:absolute;top:50%;transform:translateY(-50%);}
+.masthead::before{left:20px;} .masthead::after{right:20px;}
+.masthead h1 { font-family:'Cinzel Decorative',serif;font-size:clamp(1.4rem,4.5vw,2.4rem);color:var(--gold-lt);text-shadow:0 0 40px rgba(200,148,26,0.5); }
+.masthead .msub { font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.38em;text-transform:uppercase;color:var(--gold-dk);margin-top:5px; }
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════════ */
+@media (max-width:480px) {
+  .hand { gap: 5px; }
+  :root { --cw: clamp(72px,18vw,120px); --ch: clamp(101px,25.2vw,168px); }
+  .btn { padding: 7px 14px; }
+}
+@media (max-height:640px) {
+  .score-panel { max-height: 28vh; }
+  .game-table { padding: 8px 12px 10px; gap: 8px; }
 }
 
-/* Card image rendering */
-.card img {
-  object-fit: contain;
-  object-position: center;
-  background: radial-gradient(ellipse at center, #1e1508 0%, #090604 100%);
-}
-.card { background: #090604; }
-
-/* Color-coded card borders */
-.card.black-card { border-color: rgba(200,148,26,0.45); }
-.card.red-card   { border-color: rgba(139,21,21,0.65); }
-.card.green-card { border-color: rgba(26,72,32,0.65); }
-
-/* Card hover lift + brightness */
-.card:hover:not(.selected):not(.no-hover) {
-  transform: translateY(-5px);
-  filter: brightness(1.08);
-  border-color: rgba(200,148,26,0.7);
-}
-.card.selected { filter: brightness(1.1); }
-
-/* Game ledger depth */
-#screen-game .game-ledger {
-  background: linear-gradient(168deg, rgba(42,34,24,0.92) 0%, rgba(22,18,12,0.96) 50%, rgba(14,11,8,0.98) 100%);
-  border: 1px solid rgba(200,148,26,0.28);
-  box-shadow: 0 1px 0 rgba(255,224,160,0.06) inset, 0 28px 64px rgba(0,0,0,0.6);
-}
-
-/* Scoring hint pulse */
-.play-scoring-hint {
-  animation: hint-pulse 2.2s ease-in-out infinite;
-}
-@keyframes hint-pulse {
-  0%,100% { box-shadow: 0 0 0 rgba(200,148,26,0); }
-  50%      { box-shadow: 0 0 20px rgba(200,148,26,0.22); }
-}
-
-/* Scorecard scoring-hot glow */
-.scorecard-wrap.scoring-hot {
-  border-color: rgba(232,192,96,0.5);
-  box-shadow: 0 0 32px rgba(200,148,26,0.15);
-}
-
-/* Status bar */
-.status-bar { background: rgba(18,13,7,0.85); }
-
-/* Phase banner */
-.phase-banner { background: rgba(14,10,5,0.92); }
-
-/* Title card explicit sizing fix for iframe */
-.title-art .card {
-  width: 90px !important;
-  height: 126px !important;
-  flex-shrink: 0;
-}
-
-/* Fated path card hover depth */
-.path-card:hover:not(.negative):not(.chosen) {
-  box-shadow: 0 8px 28px rgba(200,148,26,0.2);
-}
-
-/* Score table suggested row brightness */
-.sc-table tr.sc-pick.sc-suggest {
-  background: rgba(200,148,26,0.18);
-}
-.sc-table tr.sc-pick.sc-suggest td.sc-cat {
-  color: #ffe8b0;
-}
+/* scrollbar */
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--gold-dk);border-radius:2px;}
 
 </style>
 </head>
 <body>
 
-<!-- TITLE -->
-<div id="screen-title" class="screen active">
+<!-- ═══════════ TITLE ═══════════ -->
+<div id="scr-title" class="screen active">
   <div class="masthead">
     <h1>Aspects of Fate</h1>
-    <div class="sub">✦ The Great Game of Fate ✦</div>
+    <div class="msub">✦ The Great Game of Fate ✦</div>
   </div>
-  <div class="title-wrap">
-    <div class="title-art" id="titleCards"></div>
-    <div class="ornament">✦ ✦ ✦</div>
-    <div class="title-desc">Shape fate through cunning exchanges and careful scoring.<br>At the end of six games, your accumulated Fated Totals tell the story of your dance with destiny.</div>
-    <div class="title-rules">15 hands per game &nbsp;·&nbsp; 2 exchanges each &nbsp;·&nbsp; 15 categories to fill<br>Ascend: 350 − score &nbsp;·&nbsp; or &nbsp;·&nbsp; Descend: score − 100<br>Closest to zero wins &nbsp;·&nbsp; Negatives are a loss</div>
-    <button class="btn btn-primary" onclick="startGame()" style="padding:14px 48px;font-size:0.85rem;letter-spacing:0.3em;">✦ &nbsp; Deal the Fates &nbsp; ✦</button>
-    <div class="ornament" style="color:var(--gold-dim);font-style:italic;font-family:'IM Fell English',serif;font-size:0.8rem;letter-spacing:0.1em;">Fate favors the bold. Fortune favors the prepared.</div>
+  <div class="title-screen">
+    <div class="title-eyebrow">✦ &nbsp; A Dance with Destiny &nbsp; ✦</div>
+    <div class="title-cards-fan" id="titleCards"></div>
+    <div class="title-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+    <div class="title-desc">Shape fate through cunning exchanges and careful scoring.<br>Six games. One destiny. Closest to zero wins.</div>
+    <div class="title-rules">
+      15 hands per game &nbsp;·&nbsp; 2 exchanges each &nbsp;·&nbsp; 15 categories<br>
+      Ascend: 350 − score &nbsp;·&nbsp; Descend: score − 100<br>
+      Negatives are a loss
+    </div>
+    <button class="deal-btn" onclick="startGame()">✦ &nbsp; Deal the Fates &nbsp; ✦</button>
+    <div class="title-tagline">Fate favors the bold. Fortune favors the prepared.</div>
   </div>
 </div>
 
-<!-- GAME -->
-<div id="screen-game" class="screen">
-  <div class="masthead">
-    <h1>Aspects of Fate</h1>
-    <div class="sub">✦ The Great Game of Fate ✦</div>
-  </div>
-  <div class="status-bar">
-    <div class="stat">Game <span id="st-game">1</span> of 6</div>
-    <div class="stat">Hand <span id="st-hand">1</span> of 15</div>
-    <div class="stat">Deck <span id="st-deck">—</span></div>
-    <div class="stat">Running Fated <span id="st-fated">—</span></div>
-  </div>
-  <div class="phase-banner" id="phaseBanner" role="status" aria-live="polite">✦ INITIAL DEAL ✦</div>
-  <div class="game-body">
-    <div class="game-ledger">
-      <div class="history-full">
-        <div class="history-row" id="gameHistory"></div>
+<!-- ═══════════ GAME ═══════════ -->
+<div id="scr-game" class="screen">
+
+  <div class="game-chrome">
+    <div class="game-topbar">
+      <div class="game-title">Aspects of Fate</div>
+      <div class="game-stats">
+        <div class="gstat">Game <b id="st-game">1</b>/6</div>
+        <div class="gstat">Hand <b id="st-hand">1</b>/15</div>
+        <div class="gstat">Deck <b id="st-deck">—</b></div>
+        <div class="gstat">Fated <b id="st-fated">—</b></div>
       </div>
-      <div class="game-columns">
-        <aside class="game-col-scorecard">
-          <div class="scorecard-wrap" id="scorecardWrap">
-            <div class="sc-header">
-              ✦ Score Sheet — Game <span id="scGameNum">1</span> ✦
-              <span class="sc-header-sub" id="scHeaderSub"></span>
-            </div>
-            <div class="sc-table-panel">
-              <p class="sc-live-label" id="scLiveLabel">Live scores — this game</p>
-              <div class="sc-dual-grid" id="scTablesLive">
-                <div class="sc-col">
-                  <div class="sc-col-title">Basics of Fate</div>
-                  <table class="sc-table sc-table-live" id="scTableBasics"></table>
-                </div>
-                <div class="sc-col">
-                  <div class="sc-col-title">Manifest! Moments</div>
-                  <table class="sc-table sc-table-live" id="scTableManifest"></table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
-        <div class="game-col-play">
-          <div class="play-scoring-hint" id="playScoringHint" style="display:none;">
-            Your hand is below. <strong>Tap an open row</strong> on the score sheet above to record this hand.
-          </div>
-          <div class="hand-area" id="handArea">
-            <div class="hand-label" id="handLabel">Your Hand</div>
-            <div class="hand" id="playerHand"></div>
-            <div class="exchange-indicator" id="exchangeIndicator">
-              <div class="ex-dot active" id="ex1"></div>
-              <div class="ex-dot" id="ex2"></div>
-            </div>
-          </div>
-          <div class="exchange-controls" id="exchangeControls">
-            <div class="exchange-hint" id="exchangeHint">Tap cards to mark for exchange, then confirm.</div>
-            <div class="btn-row">
-              <button class="btn btn-primary" id="btnExchange" onclick="confirmExchange()">Exchange Selected</button>
-              <button class="btn btn-ghost" type="button" onclick="clearExchangeSelection()">Clear</button>
-              <button class="btn btn-ghost" onclick="holdAll()">Hold All</button>
-            </div>
-          </div>
-          <div class="discard-area" id="discardArea">
-            <div class="discard-label">Discard Pile</div>
-            <div class="discard-pile" id="discardPile"></div>
-          </div>
-          <div class="game-log" id="gameLog"></div>
-        </div>
+    </div>
+    <div class="phase-bar" id="phaseBar">✦ INITIAL DEAL ✦</div>
+  </div>
+
+  <!-- SCORE PANEL -->
+  <div class="score-panel" id="scorePanel">
+    <div class="sp-inner">
+      <div class="sp-col">
+        <div class="sp-col-head">Basics of Fate <span id="spHdrNote"></span></div>
+        <div id="spBasics"></div>
+      </div>
+      <div class="sp-col">
+        <div class="sp-col-head">Manifest! Moments</div>
+        <div id="spManifest"></div>
+      </div>
+    </div>
+    <div class="sp-footer">
+      <div class="sp-history" id="spHistory"></div>
+      <div class="sp-fated" id="spFated" style="display:none;">
+        <div class="sp-fated-title">✦ Fated Decision ✦</div>
+        <div class="sp-fated-row">ASCEND <b id="spFatedA">—</b></div>
+        <div class="sp-fated-row">DESCEND <b id="spFatedD">—</b></div>
       </div>
     </div>
   </div>
+
+  <!-- TABLE -->
+  <div class="game-table" id="gameTable">
+
+    <div class="score-hint" id="scoreHint" style="display:none;">
+      Hand locked. <strong>Tap a category above</strong> to record this hand's score.
+    </div>
+
+    <div class="hand-section">
+      <div class="hand-label" id="handLbl">Your Hand</div>
+      <div class="hand" id="playerHand"></div>
+    </div>
+
+    <div class="controls-section" id="exControls">
+      <div class="ex-progress">
+        <div class="ex-dot active" id="ex1"></div>
+        <div class="ex-label" id="exLbl">First Exchange</div>
+        <div class="ex-dot" id="ex2"></div>
+      </div>
+      <div class="ex-hint">Tap cards to select, then confirm your exchange.</div>
+      <div class="btn-row">
+        <button class="btn btn-gold" id="btnEx" onclick="confirmExchange()">Exchange Selected</button>
+        <button class="btn btn-ghost" onclick="clearSel()">Clear</button>
+        <button class="btn btn-ghost" onclick="holdAll()">Hold All</button>
+      </div>
+    </div>
+
+    <div class="discard-section">
+      <div class="discard-lbl">Discard Pile</div>
+      <div class="discard-row" id="discardRow"></div>
+    </div>
+
+    <div class="game-log" id="gameLog"></div>
+
+  </div><!-- /game-table -->
 </div>
 
-<!-- FATED DECISION -->
-<div id="screen-fated" class="screen">
-  <div class="masthead"><h1>Aspects of Fate</h1><div class="sub">✦ The Great Game of Fate ✦</div></div>
-  <div class="fated-wrap">
+<!-- ═══════════ FATED ═══════════ -->
+<div id="scr-fated" class="screen">
+  <div class="masthead"><h1>Aspects of Fate</h1><div class="msub">✦ The Great Game of Fate ✦</div></div>
+  <div class="fated-screen">
     <div class="fated-eye">👁</div>
-    <div class="fated-title">The Fated Decision</div>
-    <div class="fated-game-total">Game <span id="fd-gamenum">1</span> Total<strong id="fd-total">—</strong></div>
+    <div class="fated-h">The Fated Decision</div>
+    <div class="fated-total">Game <span id="fd-gnum">1</span> Total<strong id="fd-total">—</strong></div>
     <div class="fated-paths">
-      <div class="path-card" id="path-ascend" onclick="choosePath('ascend')">
-        <div class="path-label">Ascend</div>
-        <div class="path-formula">350 − Game Total</div>
-        <div class="path-result" id="ascend-result">—</div>
-        <div class="path-desc">Distance from perfection.<br>The higher you scored, the closer you fall.</div>
+      <div class="path-card" id="pc-ascend" onclick="choosePath('ascend')">
+        <div class="pc-lbl">Ascend</div>
+        <div class="pc-form">350 − Game Total</div>
+        <div class="pc-result" id="pc-a">—</div>
+        <div class="pc-desc">Distance from perfection.<br>Score high to fall close.</div>
       </div>
-      <div class="path-card" id="path-descend" onclick="choosePath('descend')">
-        <div class="path-label">Descend</div>
-        <div class="path-formula">Game Total − 100</div>
-        <div class="path-result" id="descend-result">—</div>
-        <div class="path-desc">Distance from honest failure.<br>The lower you scored, the closer you fall.</div>
+      <div class="path-card" id="pc-descend" onclick="choosePath('descend')">
+        <div class="pc-lbl">Descend</div>
+        <div class="pc-form">Game Total − 100</div>
+        <div class="pc-result" id="pc-d">—</div>
+        <div class="pc-desc">Distance from honest failure.<br>Score low to fall close.</div>
       </div>
     </div>
-    <div class="fated-tagline" id="fd-tagline">Choose your path. Closest to zero wins. A negative total is a loss.</div>
+    <div class="fated-hint" id="fd-hint">Choose your path. Closest to zero wins. A negative total is a loss.</div>
   </div>
 </div>
 
-<!-- RESULTS -->
-<div id="screen-results" class="screen">
-  <div class="masthead"><h1>Aspects of Fate</h1><div class="sub">✦ The Great Game of Fate ✦</div></div>
-  <div class="results-wrap">
-    <div class="ornament">✦ Fate Has Spoken ✦</div>
-    <div class="final-score-label">Your Accumulated Fated Total</div>
-    <div class="final-score-value" id="res-final">—</div>
-    <div class="final-verdict" id="res-verdict">—</div>
-    <div class="results-game-grid" id="resGameGrid"></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="location.reload()">✦ Play Again ✦</button>
-    </div>
-    <div class="ornament" style="color:var(--gold-dim);font-style:italic;font-family:'IM Fell English',serif;font-size:0.85rem;letter-spacing:0.1em;">Fate favors the bold. Fortune favors the prepared.</div>
+<!-- ═══════════ RESULTS ═══════════ -->
+<div id="scr-results" class="screen">
+  <div class="masthead"><h1>Aspects of Fate</h1><div class="msub">✦ The Great Game of Fate ✦</div></div>
+  <div class="results-screen">
+    <div class="res-ornament">✦ &nbsp; Fate Has Spoken &nbsp; ✦</div>
+    <div class="res-label">Accumulated Fated Total</div>
+    <div class="res-score" id="res-score">—</div>
+    <div class="res-verdict" id="res-verdict">—</div>
+    <div class="res-grid" id="res-grid"></div>
+    <button class="deal-btn" onclick="location.reload()" style="padding:12px 38px;font-size:0.76rem;">✦ Play Again ✦</button>
+    <div class="title-tagline">Fate favors the bold. Fortune favors the prepared.</div>
   </div>
 </div>
 
 <script>
-const CARD_DEFS = [
-  { num: 1, name: 'CHANCE',     color: 'black', img: 'thefatedchance.png',    suit: '♠' },
-  { num: 2, name: 'TIME',       color: 'red',   img: 'thefatedtime.png',      suit: '♥' },
-  { num: 3, name: 'CHOICE',     color: 'green', img: 'thefatedchoice.png',    suit: '♣' },
-  { num: 4, name: 'DESTINY',    color: 'green', img: 'thefatedDestiny.png',   suit: '♦' },
-  { num: 5, name: 'LOVE',       color: 'red',   img: 'thefatedlove.png',      suit: '♥' },
-  { num: 6, name: 'HERE & NOW', color: 'black', img: 'thefatedhereandnow.png',suit: '♠' },
+// ═══ CARDS ═══
+const CARDS=[
+  {num:1,name:'CHANCE',    color:'black',img:'thefatedchance.png'},
+  {num:2,name:'TIME',      color:'red',  img:'thefatedtime.png'},
+  {num:3,name:'CHOICE',    color:'green',img:'thefatedchoice.png'},
+  {num:4,name:'DESTINY',   color:'green',img:'thefatedDestiny.png'},
+  {num:5,name:'LOVE',      color:'red',  img:'thefatedlove.png'},
+  {num:6,name:'HERE & NOW',color:'black',img:'thefatedhereandnow.png'},
 ];
 
-let G = {};
-
-function initState() {
-  G = {
-    currentGame: 0, currentHand: 0, phase: 'exchange1',
-    hand: [], selected: [], deck: [], discardPile: [],
-    scorecard: emptyScorecard(), gameHistory: [], log: [],
-  };
+// ═══ STATE ═══
+let G={};
+function newG(){
+  G={game:0,hand:0,phase:'ex1',cards:[],sel:[],deck:[],disc:[],sc:blank(),history:[],_a:0,_d:0,_gt:0};
 }
-
-function emptyScorecard() {
-  return { aces:null,deuces:null,treys:null,fours:null,fives:null,sixes:null,
+function blank(){
+  return{aces:null,deuces:null,treys:null,fours:null,fives:null,sixes:null,
     two_pair:null,three_kind:null,straight:null,flush:null,
-    full_house:null,full_house_same:null,four_kind:null,yarborough:null,manifest:null };
+    full_house:null,full_house_same:null,four_kind:null,yarborough:null,manifest:null};
 }
 
-function buildDeck() {
-  const d = [];
-  for (let i = 0; i < 10; i++) for (const c of CARD_DEFS) d.push({ ...c, id: `${c.num}_${i}` });
-  return shuffle(d);
-}
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
-  return a;
-}
+// ═══ DECK ═══
+function buildDeck(){const d=[];for(let i=0;i<10;i++)for(const c of CARDS)d.push({...c});return shuffle(d);}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
 
-function analyzeHand(hand) {
-  const nums = hand.map(c=>c.num).sort((a,b)=>a-b);
-  const colors = hand.map(c=>c.color);
-  const total = nums.reduce((a,b)=>a+b,0);
-  const counts = {}; for (const n of nums) counts[n]=(counts[n]||0)+1;
-  const vals = Object.values(counts).sort((a,b)=>b-a);
-  const flush = colors.every(c=>c===colors[0]);
-  const straight = nums[4]-nums[0]===4 && new Set(nums).size===5;
-  return { total, flush, straight,
-    manifest: vals[0]===5, four_kind: vals[0]===4,
-    full_house_same: vals[0]===3&&vals[1]===2&&flush,
-    full_house: vals[0]===3&&vals[1]===2,
-    three_kind: vals[0]===3&&!(vals[1]===2),
-    two_pair: vals[0]===2&&vals[1]===2 };
+// ═══ ANALYSIS ═══
+function analyze(hand){
+  const n=hand.map(c=>c.num).sort((a,b)=>a-b);
+  const col=hand.map(c=>c.color);
+  const tot=n.reduce((a,b)=>a+b,0);
+  const cnt={};for(const x of n)cnt[x]=(cnt[x]||0)+1;
+  const v=Object.values(cnt).sort((a,b)=>b-a);
+  const fl=col.every(c=>c===col[0]);
+  const st=n[4]-n[0]===4&&new Set(n).size===5;
+  return{tot,fl,st,manifest:v[0]===5,four:v[0]===4,
+    fhs:v[0]===3&&v[1]===2&&fl,fh:v[0]===3&&v[1]===2,
+    three:v[0]===3&&!(v[1]===2),two:v[0]===2&&v[1]===2};
 }
-
-function scoringOptions(hand, sc) {
-  const h = analyzeHand(hand); const opts = [];
-  const basicMap = { aces:1,deuces:2,treys:3,fours:4,fives:5,sixes:6 };
-  for (const [key,num] of Object.entries(basicMap)) {
-    if (sc[key]===null) {
-      const score = hand.filter(c=>c.num===num).length*num;
-      opts.push({ key, label:key.toUpperCase(), score, hasMatch:score>0, section:'basics' });
-    }
+function opts(hand,sc){
+  const h=analyze(hand);const o=[];
+  const bm={aces:1,deuces:2,treys:3,fours:4,fives:5,sixes:6};
+  for(const[k,n]of Object.entries(bm)){
+    if(sc[k]===null){const s=hand.filter(c=>c.num===n).length*n;o.push({key:k,label:k.toUpperCase(),score:s,match:s>0,sect:'basics'});}
   }
-  const mList = [
-    { key:'manifest',        label:'MANIFEST! (5 of a Kind)', score:h.manifest?h.total+50:null,        hasMatch:h.manifest },
-    { key:'four_kind',       label:'4 OF A KIND',             score:h.four_kind?h.total+25:null,       hasMatch:h.four_kind },
-    { key:'full_house_same', label:'FULL HOUSE SAME COLOR',   score:h.full_house_same?h.total+20:null, hasMatch:h.full_house_same },
-    { key:'full_house',      label:'FULL HOUSE',              score:h.full_house?h.total+15:null,      hasMatch:h.full_house },
-    { key:'flush',           label:'FLUSH',                   score:h.flush?35:null,                   hasMatch:h.flush },
-    { key:'straight',        label:'STRAIGHT',                score:h.straight?30:null,                hasMatch:h.straight },
-    { key:'three_kind',      label:'3 OF A KIND',             score:h.three_kind?h.total:null,         hasMatch:h.three_kind },
-    { key:'two_pair',        label:'2 PAIR (SAME COLOR)',     score:h.two_pair?h.total:null,           hasMatch:h.two_pair },
-    { key:'yarborough',      label:'YARBOROUGH',              score:h.total,                           hasMatch:true },
+  const ml=[
+    {key:'manifest',       label:'MANIFEST! (5 of a Kind)',score:h.manifest?h.tot+50:null,match:h.manifest},
+    {key:'four_kind',      label:'4 OF A KIND',           score:h.four?h.tot+25:null,    match:h.four},
+    {key:'full_house_same',label:'FULL HOUSE SAME COLOR', score:h.fhs?h.tot+20:null,     match:h.fhs},
+    {key:'full_house',     label:'FULL HOUSE',            score:h.fh?h.tot+15:null,      match:h.fh},
+    {key:'flush',          label:'FLUSH',                 score:h.fl?35:null,            match:h.fl},
+    {key:'straight',       label:'STRAIGHT',              score:h.st?30:null,            match:h.st},
+    {key:'three_kind',     label:'3 OF A KIND',           score:h.three?h.tot:null,      match:h.three},
+    {key:'two_pair',       label:'2 PAIR (SAME COLOR)',   score:h.two?h.tot:null,        match:h.two},
+    {key:'yarborough',     label:'YARBOROUGH',            score:h.tot,                   match:true},
   ];
-  for (const m of mList) if (sc[m.key]===null) opts.push({...m,section:'manifest'});
-  return opts;
+  for(const m of ml)if(sc[m.key]===null)o.push({...m,sect:'manifest'});
+  return o;
+}
+function totals(sc){
+  const bk=['aces','deuces','treys','fours','fives','sixes'];
+  let b=bk.reduce((s,k)=>s+(sc[k]||0),0);
+  const fi=b>=78?75:b>=71?55:b>=63?35:0;
+  const mk=['two_pair','three_kind','straight','flush','full_house','full_house_same','four_kind','yarborough','manifest'];
+  const m=mk.reduce((s,k)=>s+(sc[k]||0),0);
+  return{b,fi,bt:b+fi,m,gt:b+fi+m};
 }
 
-function calcGameTotal(sc) {
-  const bKeys=['aces','deuces','treys','fours','fives','sixes'];
-  let basics=bKeys.reduce((s,k)=>s+(sc[k]||0),0);
-  let fi=basics>=78?75:basics>=71?55:basics>=63?35:0;
-  const mKeys=['two_pair','three_kind','straight','flush','full_house','full_house_same','four_kind','yarborough','manifest'];
-  let manif=mKeys.reduce((s,k)=>s+(sc[k]||0),0);
-  return { basics, fi, basics_total:basics+fi, manifest_total:manif, game_total:basics+fi+manif };
+// ═══ FLOW ═══
+function startGame(){newG();show('game');deal();}
+function deal(){
+  G.phase='ex1';G.sel=[];G.deck=buildDeck();G.disc=[];G.cards=G.deck.splice(0,5);
+  renderAll();log(`Hand ${G.hand+1} dealt.`);
 }
-
-function setHandAreaVisible(show) {
-  const el=document.getElementById('handArea'); if(el) el.style.display=show?'':'none';
+function toggleSel(i){
+  if(G.phase!=='ex1'&&G.phase!=='ex2')return;
+  const s=G.sel.indexOf(i);if(s===-1)G.sel.push(i);else G.sel.splice(s,1);
+  renderHand();updateExBtn();
 }
-
-function startGame() { initState(); showScreen('game'); dealHand(); }
-
-function dealHand() {
-  G.phase='exchange1'; G.selected=[];
-  G.deck=buildDeck(); G.discardPile=[];
-  G.hand=G.deck.splice(0,5);
-  setHandAreaVisible(true);
-  updateStatusBar(); updatePhase(); renderHand(); renderExchangeControls();
-  renderDiscardPile(); renderScorecard(); updateHistory();
-  document.getElementById('scorecardWrap').style.display='';
-  document.getElementById('playScoringHint').style.display='none';
-  document.getElementById('exchangeIndicator').style.display='';
-  log(`Hand ${G.currentHand+1} dealt.`);
+function clearSel(){if(G.phase!=='ex1'&&G.phase!=='ex2')return;G.sel=[];renderHand();updateExBtn();}
+function holdAll(){G.sel=[];log('Held all.');advance();}
+function confirmExchange(){
+  const td=[...G.sel].sort((a,b)=>b-a);
+  if(td.length>0){
+    const disc=td.map(i=>G.cards.splice(i,1)[0]);
+    G.disc.push(...disc);
+    for(const c of disc){if(G.deck.length===0)G.deck=buildDeck();G.cards.push(G.deck.pop());}
+    log(`Exchanged ${disc.length}: ${disc.map(c=>c.name).join(', ')}.`);
+  }else log('Held all.');
+  G.sel=[];advance();
 }
-
-function toggleSelect(idx) {
-  if(G.phase!=='exchange1'&&G.phase!=='exchange2') return;
-  const si=G.selected.indexOf(idx);
-  if(si===-1) G.selected.push(idx); else G.selected.splice(si,1);
-  renderHand(); updateExchangeBtn();
-}
-function clearExchangeSelection() {
-  if(G.phase!=='exchange1'&&G.phase!=='exchange2') return;
-  G.selected=[]; renderHand(); updateExchangeBtn();
-}
-function confirmExchange() {
-  const toDiscard=[...G.selected].sort((a,b)=>b-a);
-  if(toDiscard.length>0) {
-    const discarded=toDiscard.map(i=>G.hand.splice(i,1)[0]);
-    G.discardPile.push(...discarded);
-    for(const c of discarded){if(G.deck.length===0)G.deck=buildDeck();G.hand.push(G.deck.pop());}
-    log(`Exchanged ${discarded.length}: ${discarded.map(c=>c.name).join(', ')}.`);
-  } else log('Held all cards.');
-  G.selected=[]; advancePhase();
-}
-function holdAll() { G.selected=[]; log('Held all cards.'); advancePhase(); }
-
-function advancePhase() {
-  if(G.phase==='exchange1') {
-    G.phase='exchange2'; updatePhase(); renderHand(); renderExchangeControls(); renderDiscardPile();
-  } else if(G.phase==='exchange2') {
-    G.phase='scoring'; updatePhase(); setHandAreaVisible(true);
-    document.getElementById('exchangeControls').style.display='none';
-    document.getElementById('exchangeIndicator').style.display='none';
-    document.getElementById('playScoringHint').style.display='';
-    renderHand(); renderScorecard(); renderDiscardPile();
+function advance(){
+  if(G.phase==='ex1'){
+    G.phase='ex2';
+    document.getElementById('ex1').className='ex-dot done';
+    document.getElementById('ex2').className='ex-dot active';
+    document.getElementById('exLbl').textContent='Second Exchange';
+    document.getElementById('phaseBar').textContent='✦ SECOND EXCHANGE — SELECT CARDS TO SWAP ✦';
+    renderHand();renderDiscard();updateExBtn();
+  }else if(G.phase==='ex2'){
+    G.phase='scoring';
+    document.getElementById('exControls').style.display='none';
+    document.getElementById('scoreHint').style.display='';
+    document.getElementById('handLbl').textContent='Final Hand';
+    document.getElementById('phaseBar').textContent='✦ SCORING — TAP A CATEGORY ABOVE TO RECORD ✦';
+    renderHand();renderSP();renderDiscard();
+    // scroll score panel into view
+    document.getElementById('scorePanel').scrollTo({top:0,behavior:'smooth'});
   }
 }
-
-function recordScore(key, score) {
-  G.scorecard[key]=score;
-  log(`Recorded ${key.toUpperCase()}: ${score}`);
-  document.getElementById('playScoringHint').style.display='none';
-  document.getElementById('exchangeIndicator').style.display='';
-  G.currentHand++; updateStatusBar(); renderScorecard();
-  document.getElementById('scorecardWrap').style.display='';
-  if(G.currentHand>=15) endGame(); else dealHand();
+function pickScore(key,score){
+  G.sc[key]=score;
+  log(`${key.toUpperCase()}: ${score}`);
+  document.getElementById('scoreHint').style.display='none';
+  document.getElementById('exControls').style.display='';
+  G.hand++;updateTopBar();renderSP();
+  if(G.hand>=15)endHands();else deal();
 }
-
-function endGame() {
-  const totals=calcGameTotal(G.scorecard);
-  log(`Game ${G.currentGame+1} complete. Total: ${totals.game_total}`,true);
-  G.currentGame++;
-  const ascend=350-totals.game_total, descend=totals.game_total-100;
-  document.getElementById('fd-gamenum').textContent=G.currentGame;
-  document.getElementById('fd-total').textContent=totals.game_total;
-  const ar=document.getElementById('ascend-result'), dr=document.getElementById('descend-result');
-  ar.textContent=ascend; ar.className='path-result '+(ascend>=0?'positive':'negative');
-  dr.textContent=descend; dr.className='path-result '+(descend>=0?'positive':'negative');
-  document.getElementById('path-ascend').className='path-card'+(ascend<0?' negative':'');
-  document.getElementById('path-descend').className='path-card'+(descend<0?' negative':'');
-  G._pendingTotals=totals; G._pendingAscend=ascend; G._pendingDescend=descend;
-  document.getElementById('fd-tagline').textContent=
-    ascend<0&&descend<0?'⚠ Both paths are negative — this game is a loss regardless.':
-    ascend<0?'Ascend is negative. You must Descend — or accept a loss.':
-    descend<0?'Descend is negative. You must Ascend — or accept a loss.':
-    'Choose your path. Closest to zero wins. A negative total is a loss.';
-  document.getElementById('path-ascend').onclick=()=>choosePath('ascend');
-  document.getElementById('path-descend').onclick=()=>choosePath('descend');
-  showScreen('fated');
+function endHands(){
+  const t=totals(G.sc);
+  log(`Game ${G.game+1} done. Total: ${t.gt}`,true);
+  G.game++;
+  const a=350-t.gt,d=t.gt-100;
+  G._a=a;G._d=d;G._gt=t.gt;
+  document.getElementById('fd-gnum').textContent=G.game;
+  document.getElementById('fd-total').textContent=t.gt;
+  const ae=document.getElementById('pc-a'),de=document.getElementById('pc-d');
+  ae.textContent=a;ae.className='pc-result '+(a>=0?'pos':'neg');
+  de.textContent=d;de.className='pc-result '+(d>=0?'pos':'neg');
+  document.getElementById('pc-ascend').className='path-card'+(a<0?' neg':'');
+  document.getElementById('pc-descend').className='path-card'+(d<0?' neg':'');
+  document.getElementById('fd-hint').textContent=
+    a<0&&d<0?`⚠ Both paths negative — this game is a loss.`:
+    a<0?`Ascend is negative. Descend or accept a loss.`:
+    d<0?`Descend is negative. Ascend or accept a loss.`:
+    `Choose your path. Closest to zero wins. A negative total is a loss.`;
+  document.getElementById('pc-ascend').onclick=()=>choosePath('ascend');
+  document.getElementById('pc-descend').onclick=()=>choosePath('descend');
+  show('fated');
 }
-
-function choosePath(path) {
-  const card=document.getElementById(`path-${path}`);
-  if(card.classList.contains('negative')) return;
-  const fated=path==='ascend'?G._pendingAscend:G._pendingDescend;
-  card.classList.add('chosen');
-  document.getElementById('path-ascend').onclick=null;
-  document.getElementById('path-descend').onclick=null;
-  G.gameHistory.push({ game:G.currentGame, total:G._pendingTotals.game_total, path, fated,
-    basics:G._pendingTotals.basics, fi:G._pendingTotals.fi, manifest:G._pendingTotals.manifest_total });
+function choosePath(path){
+  const el=document.getElementById(`pc-${path}`);
+  if(el.classList.contains('neg'))return;
+  const fated=path==='ascend'?G._a:G._d;
+  el.classList.add('chosen');
+  document.getElementById('pc-ascend').onclick=null;
+  document.getElementById('pc-descend').onclick=null;
+  G.history.push({game:G.game,total:G._gt,path,fated});
   setTimeout(()=>{
-    if(G.currentGame>=6) showResults();
-    else { G.currentHand=0; G.scorecard=emptyScorecard(); showScreen('game'); dealHand(); }
-  }, 800);
+    if(G.game>=6)showResults();
+    else{G.hand=0;G.sc=blank();show('game');deal();}
+  },700);
 }
-
-function showResults() {
-  showScreen('results');
-  const hasLoss=G.gameHistory.some(g=>g.fated<0);
-  const fatedSum=G.gameHistory.reduce((s,g)=>s+g.fated,0);
-  const losses=G.gameHistory.filter(g=>g.fated<0).length;
-  document.getElementById('res-final').textContent=hasLoss?`${fatedSum} ⚠`:fatedSum;
-  document.getElementById('res-final').style.color=hasLoss?'var(--red-suit)':'var(--gold-light)';
+function showResults(){
+  show('results');
+  const sum=G.history.reduce((s,g)=>s+g.fated,0);
+  const hasLoss=G.history.some(g=>g.fated<0);
+  const el=document.getElementById('res-score');
+  el.textContent=sum+(hasLoss?' ⚠':'');
+  el.className='res-score'+(hasLoss?' loss':'');
   document.getElementById('res-verdict').textContent=
-    hasLoss?`You took ${losses} loss${losses>1?'es':''} across 6 games. Fate is unforgiving.`
-    :fatedSum<=100?`A masterful dance with destiny. You walked the razor's edge.`
-    :fatedSum<=200?`Well played. Your finesse shaped fate more than chance did.`
-    :fatedSum<=400?`A solid run. Fate yielded, but not without resistance.`
+    hasLoss?`${G.history.filter(g=>g.fated<0).length} negative game(s) — fate claimed those rounds entirely.`
+    :sum<=100?`A masterful dance with destiny. You walked the razor's edge.`
+    :sum<=200?`Well played. Your finesse shaped fate more than chance did.`
+    :sum<=350?`A solid run. Fate yielded, but not without resistance.`
     :`The dice were unkind, but you played on. Next time, fate may bend further.`;
-  const grid=document.getElementById('resGameGrid'); grid.innerHTML='';
-  for(const g of G.gameHistory) {
-    const cell=document.createElement('div'); cell.className='rg-cell';
-    cell.innerHTML=`<div class="rg-game">Game ${g.game}</div><div class="rg-total">Score: ${g.total}</div><div class="rg-path">${g.path.toUpperCase()}</div><div class="rg-fated ${g.fated<0?'loss':''}">${g.fated<0?'⚠ ':''} ${g.fated}</div>`;
-    grid.appendChild(cell);
+  const grid=document.getElementById('res-grid');grid.innerHTML='';
+  for(const g of G.history){
+    const c=document.createElement('div');c.className='rg-cell';
+    c.innerHTML=`<div class="rg-g">Game ${g.game}</div><div class="rg-t">${g.total}</div><div class="rg-p">${g.path.toUpperCase()}</div><div class="rg-f${g.fated<0?' loss':''}">${g.fated<0?'⚠ ':''}${g.fated}</div>`;
+    grid.appendChild(c);
   }
 }
 
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(`screen-${name}`).classList.add('active');
-}
+// ═══ RENDER ═══
+function show(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(`scr-${n}`).classList.add('active');}
 
-function makeCardEl(card, opts={}) {
+function mkCard(card,opts={}){
   const el=document.createElement('div');
-  el.className=`card ${card.color}-card${opts.selected?' selected':''}${opts.noHover?' no-hover':''}`;
-  if(opts.small) el.style.cssText='--card-w:58px;--card-h:81px;--card-radius:6px;';
-  const img=document.createElement('img'); img.src=card.img; img.alt=card.name; img.loading='lazy'; img.decoding='async';
-  img.onerror=()=>{ 
-    img.style.display='none'; 
-    const fb=document.createElement('div'); 
-    fb.className='card-fallback'; 
-    fb.style.cssText='width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;background:#0d0904;';
-    fb.innerHTML=`<div class="card-num ${card.color}" style="font-family:'Cinzel Decorative',serif;font-size:1.6rem;font-weight:700;">${card.num}</div><div class="card-name" style="font-family:'Cinzel',serif;font-size:0.45rem;letter-spacing:0.1em;text-transform:uppercase;color:#d9c99a;margin-top:5px;text-align:center;">${card.name}</div>`; 
-    el.appendChild(fb); 
-  };
+  el.className=`card ${card.color}-card${opts.sel?' selected':''}${opts.nohover?' nohover':''}`;
+  if(opts.style)el.style.cssText=opts.style;
+  const img=document.createElement('img');img.src=card.img;img.alt=card.name;img.loading='lazy';img.decoding='async';
+  img.onerror=()=>{img.style.display='none';const fb=document.createElement('div');fb.className='card-fb';fb.innerHTML=`<div class="cfn ${card.color}">${card.num}</div><div class="cfl">${card.name}</div>`;el.appendChild(fb);};
   el.appendChild(img);
-  const bar=document.createElement('div'); bar.className='card-color-bar'; el.appendChild(bar);
-  if(opts.onClick) el.onclick=opts.onClick;
+  const bar=document.createElement('div');bar.className='cbar';el.appendChild(bar);
+  if(opts.onClick)el.onclick=opts.onClick;
   return el;
 }
 
-function renderHand() {
-  const div=document.getElementById('playerHand'); div.innerHTML='';
-  const isEx=G.phase==='exchange1'||G.phase==='exchange2';
-  for(let i=0;i<G.hand.length;i++) {
-    div.appendChild(makeCardEl(G.hand[i],{ selected:G.selected.includes(i), onClick:isEx?()=>toggleSelect(i):null, noHover:!isEx }));
+function renderHand(){
+  const div=document.getElementById('playerHand');div.innerHTML='';
+  const isEx=G.phase==='ex1'||G.phase==='ex2';
+  for(let i=0;i<G.cards.length;i++){
+    div.appendChild(mkCard(G.cards[i],{sel:G.sel.includes(i),nohover:!isEx,onClick:isEx?()=>toggleSel(i):null}));
   }
 }
 
-function renderExchangeControls() {
-  document.getElementById('exchangeControls').style.display='';
-  document.getElementById('ex1').className='ex-dot'+(G.phase==='exchange1'?' active':' done');
-  document.getElementById('ex2').className='ex-dot'+(G.phase==='exchange2'?' active':'');
-  updateExchangeBtn();
-}
-function updateExchangeBtn() {
-  const btn=document.getElementById('btnExchange');
-  btn.textContent=G.selected.length>0?`Exchange ${G.selected.length} Card${G.selected.length>1?'s':''}`:`Exchange Selected`;
+function renderDiscard(){
+  const div=document.getElementById('discardRow');div.innerHTML='';
+  if(!G.disc||G.disc.length===0){div.innerHTML='<span style="font-style:italic;font-size:0.6rem;color:rgba(200,148,26,0.25);">empty</span>';return;}
+  for(const c of G.disc.slice(-6).reverse())div.appendChild(mkCard(c,{nohover:true}));
 }
 
-function renderDiscardPile() {
-  const div=document.getElementById('discardPile'); div.innerHTML='';
-  if(!G.discardPile||G.discardPile.length===0){div.innerHTML='<span style="font-style:italic;font-size:0.7rem;color:rgba(200,148,26,0.3);align-self:center;">empty</span>';return;}
-  for(const c of G.discardPile.slice(-6).reverse()) div.appendChild(makeCardEl(c,{small:true,noHover:true}));
-}
+function renderSP(){
+  const sc=G.sc;
+  const scoring=G.phase==='scoring';
+  const t=totals(sc);
 
-function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+  document.getElementById('spHdrNote').textContent=scoring?'← tap to score':'';
+  document.getElementById('scorePanel').classList.toggle('scoring-hot',scoring);
 
-function buildScoreTableRows(rows,sc,scoringMode,optsByKey,fi,basics_total,game_total) {
-  let html='';
-  for(const row of rows) {
-    if(row.computed) {
-      let v='';
-      if(row.label==="FATE'S INFLUENCE") v=fi>0?`${fi}`:`<span class="empty">—</span>`;
-      else if(row.label==='★ BASICS TOTAL') v=`${basics_total||'—'}`;
-      else if(row.label==='★ GAME TOTAL') v=`${game_total||'—'}`;
-      html+=`<tr${row.total?' class="total-row"':''}><td class="sc-cat">${row.label}</td><td class="sc-val">${v}</td></tr>`;
-      continue;
+  const oMap={};if(scoring)for(const o of opts(G.cards,sc))oMap[o.key]=o;
+
+  function row(label,key,desc){
+    const val=sc[key];
+    if(val===null&&scoring&&oMap[key]){
+      const op=oMap[key];
+      const will=op.score!==null?op.score:0;
+      // tier by score value
+      let tier='tier-zero';
+      if(will>=40) tier='tier-high';
+      else if(will>=15) tier='tier-mid';
+      else if(will>0) tier='best';
+      return `<div class="sp-row pickable ${tier}" data-key="${op.key}" data-val="${will}" title="${desc}">
+        <span class="sp-cat">${label}</span><span class="sp-val pick">${will||'—'}</span></div>`;
     }
-    const titleAttr=row.desc?` title="${escAttr(row.desc)}"`:'';;
-    const val=sc[row.key];
-    if(val===null&&scoringMode&&optsByKey[row.key]) {
-      const opt=optsByKey[row.key];
-      const willRecord=opt.score!==null?opt.score:0;
-      const suggest=opt.hasMatch&&opt.score!==null&&opt.score>0;
-      html+=`<tr class="sc-pick${suggest?' sc-suggest':''}" role="button" tabindex="0" data-pick-key="${opt.key}" data-pick-val="${willRecord}"><td class="sc-cat"${titleAttr}>${row.label}</td><td class="sc-val sc-pick-val"><span class="sc-will-record">${willRecord}</span></td></tr>`;
-      continue;
-    }
-    let v=val===null?'<span class="empty">—</span>':val===0?'<span class="zero">0</span>':`${val}`;
-    html+=`<tr><td class="sc-cat"${titleAttr}>${row.label}</td><td class="sc-val">${v}</td></tr>`;
+    const vcls=val===null?'empty':val===0?'zero':'';
+    return `<div class="sp-row" title="${desc}"><span class="sp-cat">${label}</span><span class="sp-val ${vcls}">${val===null?'—':val}</span></div>`;
   }
-  return html;
-}
 
-function renderScorecard() {
-  const sc=G.scorecard;
-  const scoringMode=G.phase==='scoring';
-  const wrap=document.getElementById('scorecardWrap');
-  const headerSub=document.getElementById('scHeaderSub');
-  document.getElementById('scGameNum').textContent=G.currentGame+1;
-  wrap.classList.toggle('scoring-hot',scoringMode);
-  if(headerSub) headerSub.textContent=scoringMode?'Gold-edge rows are tappable. Number shown is what gets recorded.':'Hover categories for scoring rules.';
-  const liveLbl=document.getElementById('scLiveLabel');
-  if(liveLbl) liveLbl.textContent=scoringMode?'Tap any open row to score this hand':'Live scores — this game';
-  const optsByKey={};
-  if(scoringMode) for(const o of scoringOptions(G.hand,G.scorecard)) optsByKey[o.key]=o;
-  const {fi,basics_total,game_total}=calcGameTotal(sc);
-  const basicsRows=[
-    {label:'♠ ACES',key:'aces',desc:'1 per Ace'},{label:'♦ DEUCES',key:'deuces',desc:'2 per Deuce'},
-    {label:'♣ TREYS',key:'treys',desc:'3 per Trey'},{label:'✦ FOURS',key:'fours',desc:'4 per Four'},
-    {label:'♥ FIVES',key:'fives',desc:'5 per Five'},{label:'☽ SIXES',key:'sixes',desc:'6 per Six'},
-    {label:"FATE'S INFLUENCE",key:null,computed:true},{label:'★ BASICS TOTAL',key:null,total:true,computed:true},
-  ];
-  const manifestRows=[
-    {label:'2 PAIR',key:'two_pair',desc:'Total all cards'},{label:'3 OF A KIND',key:'three_kind',desc:'Total all cards'},
-    {label:'STRAIGHT',key:'straight',desc:'30'},{label:'FLUSH',key:'flush',desc:'35'},
-    {label:'FULL HOUSE',key:'full_house',desc:'Total +15'},{label:'FULL HOUSE SAME',key:'full_house_same',desc:'Total +20'},
-    {label:'4 OF A KIND',key:'four_kind',desc:'Total +25'},{label:'YARBOROUGH',key:'yarborough',desc:'Total all cards'},
-    {label:'MANIFEST!',key:'manifest',desc:'Total +50'},{label:'★ GAME TOTAL',key:null,total:true,computed:true},
-  ];
-  document.getElementById('scTableBasics').innerHTML=buildScoreTableRows(basicsRows,sc,scoringMode,optsByKey,fi,basics_total,game_total);
-  document.getElementById('scTableManifest').innerHTML=buildScoreTableRows(manifestRows,sc,scoringMode,optsByKey,fi,basics_total,game_total);
-}
+  // Basics
+  let bHtml='';
+  bHtml+=row('♠ ACES','aces','1 per Ace');
+  bHtml+=row('♦ DEUCES','deuces','2 per Deuce');
+  bHtml+=row('♣ TREYS','treys','3 per Trey');
+  bHtml+=row('✦ FOURS','fours','4 per Four');
+  bHtml+=row('♥ FIVES','fives','5 per Five');
+  bHtml+=row('☽ SIXES','sixes','6 per Six');
+  bHtml+=`<div class="sp-row" title="Bonus: 63-70→35, 71-77→55, 78+→75"><span class="sp-cat">FATE'S INFLUENCE</span><span class="sp-val${t.fi>0?'':' empty'}">${t.fi>0?t.fi:'—'}</span></div>`;
+  bHtml+=`<div class="sp-row sub-total"><span class="sp-cat">★ BASICS TOTAL</span><span class="sp-val">${t.bt||'—'}</span></div>`;
+  document.getElementById('spBasics').innerHTML=bHtml;
 
-function updatePhase() {
-  const names={exchange1:'✦ FIRST EXCHANGE — Select cards to swap ✦',exchange2:'✦ SECOND EXCHANGE — Select cards to swap ✦',scoring:'✦ SCORING — Tap a row on the score sheet ✦'};
-  document.getElementById('phaseBanner').textContent=names[G.phase]||'';;
-  document.getElementById('handLabel').textContent=G.phase==='scoring'?'Final hand':'Your Hand';
-}
-function updateStatusBar() {
-  document.getElementById('st-game').textContent=G.currentGame+1;
-  document.getElementById('st-hand').textContent=G.currentHand+1;
-  document.getElementById('st-deck').textContent=G.deck.length;
-  const rf=G.gameHistory.reduce((s,g)=>s+g.fated,0);
-  document.getElementById('st-fated').textContent=G.gameHistory.length===0?'—':rf;
-}
-function updateHistory() {
-  const div=document.getElementById('gameHistory'); div.innerHTML='';
+  // Manifest
+  let mHtml='';
+  mHtml+=row('2 PAIR','two_pair','Total all cards');
+  mHtml+=row('3 OF A KIND','three_kind','Total all cards');
+  mHtml+=row('STRAIGHT','straight','30');
+  mHtml+=row('FLUSH','flush','35');
+  mHtml+=row('FULL HOUSE','full_house','Total +15');
+  mHtml+=row('FH SAME COLOR','full_house_same','Total +20');
+  mHtml+=row('4 OF A KIND','four_kind','Total +25');
+  mHtml+=row('YARBOROUGH','yarborough','Total all cards');
+  mHtml+=row('MANIFEST!','manifest','Total +50');
+  mHtml+=`<div class="sp-row sub-total"><span class="sp-cat">★ GAME TOTAL</span><span class="sp-val">${t.gt||'—'}</span></div>`;
+  document.getElementById('spManifest').innerHTML=mHtml;
+
+  // History
+  let hHtml='';
   for(let i=0;i<6;i++){
-    const pill=document.createElement('div');
-    const gh=G.gameHistory[i];
-    if(i<G.currentGame){pill.className='history-pill done';pill.textContent=gh?`G${i+1}: ${gh.path[0].toUpperCase()}${gh.fated}`:`G${i+1}: —`;}
-    else if(i===G.currentGame){pill.className='history-pill current';pill.textContent=`G${i+1}: ACTIVE`;}
-    else{pill.className='history-pill';pill.textContent=`G${i+1}`;}
-    div.appendChild(pill);
+    const gh=G.history[i];
+    const cls=i===G.game?'now':gh?'done':'';
+    const txt=gh?`G${i+1} ${gh.path[0].toUpperCase()}${gh.fated}`:(i===G.game?`G${i+1} ▶`:(`G${i+1}`));
+    hHtml+=`<div class="sp-pill${cls==='now'?' now':cls==='done'?' done':''}">${txt}</div>`;
   }
-}
-function log(msg,important=false) {
-  const d=document.createElement('div'); d.className='log-entry'+(important?' important':''); d.textContent=msg;
-  const l=document.getElementById('gameLog'); l.appendChild(d); l.scrollTop=l.scrollHeight;
-}
-function renderTitleCards() {
-  const container = document.getElementById('titleCards');
-  const show = [CARD_DEFS[0], CARD_DEFS[2], CARD_DEFS[4], CARD_DEFS[5]];
-  const delays = [0, 0.5, 1.0, 1.5];
-  const durs = [4, 3.5, 4.5, 3.8];
-  show.forEach((card, i) => {
-    const el = makeCardEl(card, { noHover: false });
-    el.style.setProperty('--delay', delays[i] + 's');
-    el.style.setProperty('--dur', durs[i] + 's');
-    el.classList.add('title-art');
-    el.style.width = '90px';
-    el.style.height = '126px';
-    el.style.animation = 'float ' + durs[i] + 's ease-in-out infinite';
-    el.style.animationDelay = delays[i] + 's';
-    el.style.flexShrink = '0';
-    container.appendChild(el);
+  document.getElementById('spHistory').innerHTML=hHtml;
+
+  // Fated preview
+  const fp=document.getElementById('spFated');
+  if(t.gt>0){
+    const a=350-t.gt,d=t.gt-100;
+    fp.style.display='';
+    document.getElementById('spFatedA').textContent=a;
+    document.getElementById('spFatedA').className=a<0?'neg':'';
+    document.getElementById('spFatedD').textContent=d;
+    document.getElementById('spFatedD').className=d<0?'neg':'';
+  }else fp.style.display='none';
+
+  // bind picks
+  document.querySelectorAll('#spBasics .sp-row.pickable, #spManifest .sp-row.pickable').forEach(r=>{
+    r.onclick=()=>pickScore(r.dataset.key,Number(r.dataset.val));
   });
 }
-document.addEventListener('keydown',(e)=>{
-  if(!document.getElementById('screen-game').classList.contains('active')) return;
-  if(G.phase!=='exchange1'&&G.phase!=='exchange2') return;
-  const t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable)) return;
-  if(e.key==='Escape'){e.preventDefault();clearExchangeSelection();}
-});
-(function bindScoreTable(){
-  const wrap=document.getElementById('scTablesLive');
-  if(!wrap||wrap.dataset.bound) return; wrap.dataset.bound='1';
-  wrap.addEventListener('click',(e)=>{ const tr=e.target.closest('tr.sc-pick'); if(!tr||G.phase!=='scoring') return; recordScore(tr.dataset.pickKey,Number(tr.dataset.pickVal)); });
-  wrap.addEventListener('keydown',(e)=>{ if(e.key!=='Enter'&&e.key!==' ') return; const tr=e.target.closest('tr.sc-pick'); if(!tr||G.phase!=='scoring') return; e.preventDefault(); recordScore(tr.dataset.pickKey,Number(tr.dataset.pickVal)); });
+
+function updateTopBar(){
+  document.getElementById('st-game').textContent=G.game+1;
+  document.getElementById('st-hand').textContent=G.hand+1;
+  document.getElementById('st-deck').textContent=G.deck.length;
+  const rf=G.history.reduce((s,g)=>s+g.fated,0);
+  document.getElementById('st-fated').textContent=G.history.length===0?'—':rf;
+}
+function updateExBtn(){
+  document.getElementById('btnEx').textContent=G.sel.length>0?`Exchange ${G.sel.length} Card${G.sel.length>1?'s':''}`:'Exchange Selected';
+}
+function renderAll(){
+  updateTopBar();
+  document.getElementById('phaseBar').textContent=
+    G.phase==='ex1'?'✦ FIRST EXCHANGE — SELECT CARDS TO SWAP ✦':
+    G.phase==='ex2'?'✦ SECOND EXCHANGE — SELECT CARDS TO SWAP ✦':
+    '✦ SCORING — TAP A CATEGORY ABOVE TO RECORD ✦';
+  document.getElementById('handLbl').textContent='Your Hand';
+  document.getElementById('ex1').className='ex-dot'+(G.phase==='ex1'?' active':' done');
+  document.getElementById('ex2').className='ex-dot'+(G.phase==='ex2'?' active':'');
+  document.getElementById('exLbl').textContent=G.phase==='ex2'?'Second Exchange':'First Exchange';
+  document.getElementById('exControls').style.display='';
+  document.getElementById('scoreHint').style.display='none';
+  renderHand();renderSP();renderDiscard();updateExBtn();
+}
+
+function log(msg,imp=false){
+  const l=document.getElementById('gameLog');
+  l.innerHTML=`<span class="${imp?'log-imp':''}">${msg}</span>`;
+}
+
+// ═══ TITLE CARDS ═══
+(function(){
+  const c=document.getElementById('titleCards');
+  [[0,0,4.2],[2,0.4,3.6],[4,0.9,4.8],[5,1.4,3.9]].forEach(([ci,delay,dur])=>{
+    const el=mkCard(CARDS[ci],{nohover:true});
+    el.style.width='var(--cw)';el.style.height='var(--ch)';el.style.flexShrink='0';
+    c.appendChild(el);
+  });
 })();
-renderTitleCards();
+
+// keyboard
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('scr-game').classList.contains('active'))return;
+  if(G.phase!=='ex1'&&G.phase!=='ex2')return;
+  if(e.key==='Escape'){e.preventDefault();clearSel();}
+});
 </script>
 </body>
 </html>
