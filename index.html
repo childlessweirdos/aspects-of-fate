@@ -160,17 +160,101 @@ body {
   position: sticky;
   top: 8px;
   align-self: start;
-  max-height: calc(100vh - 160px);
-  overflow-y: auto;
+  max-height: calc(100vh - 132px);
+  overflow: hidden;
   min-width: 0;
-  padding-right: 4px;
+  min-height: 0;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
 }
 
 .game-col-scorecard .scorecard-wrap {
   box-shadow: 0 6px 28px rgba(0,0,0,0.35);
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+/* Printable score sheet art — same file as https://github.com/childlessweirdos/aspects-of-fate */
+.scorecard-ref-fold {
+  flex-shrink: 0;
+  margin: 0;
+  border: 1px solid rgba(200,148,26,0.2);
+  border-radius: 8px;
+  background: rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.scorecard-ref-fold summary {
+  cursor: pointer;
+  list-style: none;
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #d4b870;
+  padding: 8px 12px;
+  background: rgba(200,148,26,0.08);
+  border-bottom: 1px solid rgba(200,148,26,0.12);
+  user-select: none;
+}
+.scorecard-ref-fold summary::-webkit-details-marker { display: none; }
+.scorecard-ref-fold summary::after {
+  content: ' ▾';
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+.scorecard-ref-fold[open] summary::after { content: ' ▴'; }
+
+.scorecard-ref-img {
+  width: 100%;
+  height: auto;
+  max-height: min(34vh, 260px);
+  object-fit: contain;
+  object-position: center top;
+  display: block;
+  background: linear-gradient(180deg, #3d3428 0%, #1e1812 100%);
+}
+
+.sc-table-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  border: 1px solid rgba(200,148,26,0.15);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,248,235,0.04);
+}
+
+.sc-live-label {
+  flex-shrink: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c9a85c;
+  padding: 8px 12px;
+  margin: 0;
+  background: rgba(200,148,26,0.07);
+  border-bottom: 1px solid rgba(200,148,26,0.1);
+}
+
+.sc-table-scroll {
+  flex: 1;
+  min-height: 88px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.sc-table-scroll::-webkit-scrollbar { width: 6px; }
+.sc-table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(200,148,26,0.35);
+  border-radius: 3px;
 }
 
 .game-col-play {
@@ -420,7 +504,7 @@ body {
 .discard-pile .card:hover { transform: none; }
 
 .scorecard-wrap {
-  background: rgba(6,5,4,0.45);
+  background: rgba(6,5,4,0.42);
   border: 1px solid rgba(200,148,26,0.22);
   border-radius: 10px;
   overflow: hidden;
@@ -459,23 +543,27 @@ body {
 .sc-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
+}
+
+.sc-table-live {
+  background: rgba(20,16,12,0.35);
 }
 
 .sc-table td {
-  padding: 12px 16px 12px 14px;
-  border-bottom: 1px solid rgba(200,148,26,0.11);
-  color: #e8dcc8;
-  line-height: 1.4;
+  padding: 11px 14px 11px 12px;
+  border-bottom: 1px solid rgba(90,75,50,0.25);
+  color: #f0e8d8;
+  line-height: 1.45;
   vertical-align: middle;
 }
 
 .sc-table td:first-child {
   font-family: 'Cinzel', serif;
   font-weight: 600;
-  font-size: 0.78rem;
-  letter-spacing: 0.07em;
-  color: #f5ebd4;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  color: #faf3e4;
 }
 
 .sc-table td:last-child {
@@ -488,8 +576,8 @@ body {
 }
 
 .sc-table td.sc-desc {
-  font-size: 0.74rem;
-  color: rgba(220, 205, 170, 0.72);
+  font-size: 0.72rem;
+  color: rgba(235, 220, 190, 0.78);
   font-family: 'IM Fell English', serif;
   font-style: italic;
 }
@@ -522,22 +610,11 @@ body {
 
 .sc-table tr.sc-pick .sc-will-record {
   font-family: 'Cinzel Decorative', serif;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   color: #ffe8a8;
 }
 
-.sc-table tr.sc-pick .sc-pick-hint {
-  display: block;
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #c9a85c;
-  margin-top: 5px;
-  font-family: 'Cinzel', serif;
-  font-style: normal;
-}
-
-.sc-table td.empty { color: rgba(200,148,26,0.4); }
+.sc-table td.empty { color: rgba(200,148,26,0.45); }
 .sc-table td.zero { color: #e07070; font-family: 'Cinzel', serif; }
 
 .sc-table tr.section-row td {
@@ -871,9 +948,13 @@ body {
   .game-col-scorecard {
     position: relative;
     top: auto;
-    max-height: none;
+    max-height: min(70vh, 520px);
+    overflow: hidden;
     order: 2;
     padding-right: 0;
+  }
+  .scorecard-ref-img {
+    max-height: min(28vh, 200px);
   }
   .game-col-play {
     order: 1;
@@ -948,7 +1029,16 @@ body {
             ✦ Score Sheet — Game <span id="scGameNum">1</span> ✦
             <span class="sc-header-sub" id="scHeaderSub"></span>
           </div>
-          <table class="sc-table" id="scTable"></table>
+          <details class="scorecard-ref-fold" open>
+            <summary>Official score sheet (reference art)</summary>
+            <img class="scorecard-ref-img" src="thefatedscorecard.png" alt="Official Aspects of Fate score sheet: Basics of Fate, Manifest, and Fate’s Influence." width="1800" height="1200" loading="lazy" decoding="async">
+          </details>
+          <div class="sc-table-panel">
+            <p class="sc-live-label" id="scLiveLabel">Live scores — this game</p>
+            <div class="sc-table-scroll">
+              <table class="sc-table sc-table-live" id="scTable"></table>
+            </div>
+          </div>
         </div>
       </aside>
       <div class="game-col-play">
@@ -1460,8 +1550,14 @@ function renderScorecard() {
   wrap.classList.toggle('scoring-hot', scoringMode);
   if (headerSub) {
     headerSub.textContent = scoringMode
-      ? 'Tap any open category row below — the value shown is what will be recorded.'
+      ? 'Use the live table below (scroll inside the panel). Rows with a gold left edge are tappable — the number at right is what will be recorded.'
       : '';
+  }
+  const liveLbl = document.getElementById('scLiveLabel');
+  if (liveLbl) {
+    liveLbl.textContent = scoringMode
+      ? 'This hand — tap a row to record'
+      : 'Live scores — this game';
   }
 
   const optsByKey = {};
@@ -1524,7 +1620,7 @@ function renderScorecard() {
       html += `<tr class="${cls}" role="button" tabindex="0" data-pick-key="${opt.key}" data-pick-val="${willRecord}">` +
         `<td>${row.label}</td>` +
         `<td class="sc-desc">${row.desc || ''}</td>` +
-        `<td class="sc-pick-val"><span class="sc-will-record">${willRecord}</span><span class="sc-pick-hint">tap row</span></td>` +
+        `<td class="sc-pick-val"><span class="sc-will-record">${willRecord}</span></td>` +
         `</tr>`;
       continue;
     }
