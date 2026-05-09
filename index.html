@@ -989,6 +989,7 @@ body {
         <div class="gstat">Deck <b id="st-deck">—</b></div>
         <div class="gstat">Fated <b id="st-fated">—</b></div>
         <button class="ref-btn" onclick="openRef()">📖 Rules</button>
+        <button class="ref-btn" id="muteBtn" onclick="SFX.toggleMute()" title="Mute/Unmute">🔊</button>
       </div>
     </div>
     <div class="phase-bar" id="phaseBar">✦ INITIAL DEAL ✦</div>
@@ -1629,7 +1630,47 @@ const SFX = (() => {
     } catch(e) {}
   }
 
-  return { cardSwish, cardClick, deal, score, exchange, fated, result };
+  // Prime on first user gesture — critical for iOS Safari
+  let primed = false;
+  function prime() {
+    if (primed) return;
+    primed = true;
+    try {
+      const ac = getCtx();
+      // play a silent buffer to unlock audio
+      const buf = ac.createBuffer(1, 1, 22050);
+      const src = ac.createBufferSource();
+      src.buffer = buf;
+      src.connect(ac.destination);
+      src.start(0);
+      src.stop(0.001);
+    } catch(e) {}
+  }
+  document.addEventListener('touchstart', prime, { once: true, passive: true });
+  document.addEventListener('click', prime, { once: true });
+
+  // Mute toggle
+  let muted = false;
+  function toggleMute() {
+    muted = !muted;
+    const btn = document.getElementById('muteBtn');
+    if (btn) btn.textContent = muted ? '🔇' : '🔊';
+  }
+
+  function wrap(fn) {
+    return (...args) => { if (!muted) fn(...args); };
+  }
+
+  return {
+    cardSwish: wrap(cardSwish),
+    cardClick: wrap(cardClick),
+    deal: wrap(deal),
+    score: wrap(score),
+    exchange: wrap(exchange),
+    fated: wrap(fated),
+    result: wrap(result),
+    toggleMute,
+  };
 })();
 
 // ═══ REFERENCE OVERLAY ═══
