@@ -952,6 +952,124 @@ body {
 }
 .ref-img-wrap.hidden { display: none; }
 
+
+/* ── CARD GALLERY ── */
+.ref-cards {
+  width: 100%; max-width: 860px;
+}
+.ref-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 4px;
+}
+@media (max-width: 600px) {
+  .ref-cards-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+}
+@media (max-width: 380px) {
+  .ref-cards-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+}
+
+.ref-card-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.ref-card-item:hover { transform: translateY(-4px); }
+.ref-card-item:hover img {
+  border-color: var(--gold);
+  box-shadow: 0 0 30px rgba(200,148,26,0.4), 0 8px 32px rgba(0,0,0,0.7);
+}
+
+.ref-card-item img {
+  width: 100%;
+  border: 1px solid rgba(200,148,26,0.3);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+  border-radius: 8px;
+  display: block;
+  transition: all 0.2s;
+}
+
+.ref-card-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(0.7rem, 2.2vw, 0.95rem);
+  color: var(--gold-lt);
+  text-align: center;
+  text-shadow: 0 0 12px rgba(200,148,26,0.4);
+  letter-spacing: 0.05em;
+}
+
+.ref-card-num {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.52rem, 1.5vw, 0.62rem);
+  letter-spacing: 0.2em;
+  color: var(--gold-dk);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.ref-card-keys {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: clamp(0.58rem, 1.6vw, 0.7rem);
+  color: var(--parch-dk);
+  text-align: center;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+/* lightbox when card is clicked */
+.ref-lightbox {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 1000;
+  background: rgba(4,2,1,0.95);
+  backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  cursor: pointer;
+}
+.ref-lightbox.open { display: flex; }
+.ref-lightbox img {
+  max-width: min(380px, 90vw);
+  max-height: 80vh;
+  object-fit: contain;
+  border: 1px solid rgba(200,148,26,0.4);
+  box-shadow: 0 0 60px rgba(200,148,26,0.2), 0 20px 60px rgba(0,0,0,0.8);
+  border-radius: 10px;
+  animation: lb-in 0.25s ease;
+}
+@keyframes lb-in {
+  from { transform: scale(0.88); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.ref-lightbox-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1rem, 3vw, 1.4rem);
+  color: var(--gold-lt);
+  text-shadow: 0 0 20px rgba(200,148,26,0.5);
+  text-align: center;
+}
+.ref-lightbox-keys {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: clamp(0.7rem, 2vw, 0.9rem);
+  color: var(--parch-dk);
+  text-align: center;
+  opacity: 0.8;
+}
+.ref-lightbox-close {
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  color: var(--gold-dk);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
 </style>
 </head>
 <body>
@@ -1684,10 +1802,24 @@ function closeRef() {
 }
 function showRefTab(tab) {
   document.querySelectorAll('.ref-tab').forEach((t,i) => {
-    t.classList.toggle('active', (i===0&&tab==='rules')||(i===1&&tab==='scorecard'));
+    t.classList.toggle('active',
+      (i===0&&tab==='rules')||(i===1&&tab==='scorecard')||(i===2&&tab==='cards'));
   });
   document.getElementById('ref-rules').classList.toggle('hidden', tab !== 'rules');
   document.getElementById('ref-scorecard').classList.toggle('hidden', tab !== 'scorecard');
+  document.getElementById('ref-cards').classList.toggle('hidden', tab !== 'cards');
+}
+
+// Lightbox
+function openLightbox(img, name, num, keys) {
+  const lb = document.getElementById('refLightbox');
+  lb.querySelector('img').src = img;
+  lb.querySelector('.ref-lightbox-name').textContent = name;
+  lb.querySelector('.ref-lightbox-keys').textContent = keys;
+  lb.classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('refLightbox').classList.remove('open');
 }
 // close on backdrop click
 document.getElementById('refOverlay').addEventListener('click', function(e) {
@@ -1711,6 +1843,7 @@ document.addEventListener('keydown', function(e) {
   <div class="ref-tabs">
     <div class="ref-tab active" onclick="showRefTab('rules')">Rules Sheet</div>
     <div class="ref-tab" onclick="showRefTab('scorecard')">Score Sheet</div>
+    <div class="ref-tab" onclick="showRefTab('cards')">The Cards</div>
   </div>
   <div class="ref-img-wrap" id="ref-rules">
     <img src="thefatedrules.png" alt="Aspects of Fate — Rules">
@@ -1718,6 +1851,55 @@ document.addEventListener('keydown', function(e) {
   <div class="ref-img-wrap hidden" id="ref-scorecard">
     <img src="thefatedscorecard.png" alt="Aspects of Fate — Scorecard">
   </div>
+  <div class="ref-cards hidden" id="ref-cards">
+    <div class="ref-cards-grid">
+      <div class="ref-card-item" onclick="openLightbox('thefatedchance.png','Chance','1 · BLACK','Clever · Mischievous · Unpredictable')">
+        <img src="thefatedchance.png" alt="Chance">
+        <div class="ref-card-name">Chance</div>
+        <div class="ref-card-num">1 · BLACK</div>
+        <div class="ref-card-keys">Clever · Mischievous · Unpredictable</div>
+      </div>
+      <div class="ref-card-item" onclick="openLightbox('thefatedtime.png','Time','2 · RED','All Movement · Never Ceasing · Never Looks Back')">
+        <img src="thefatedtime.png" alt="Time">
+        <div class="ref-card-name">Time</div>
+        <div class="ref-card-num">2 · RED</div>
+        <div class="ref-card-keys">All Movement · Never Ceasing · Never Looks Back</div>
+      </div>
+      <div class="ref-card-item" onclick="openLightbox('thefatedchoice.png','Choice','3 · GREEN','Confidence · Optimism · Changer of Fate')">
+        <img src="thefatedchoice.png" alt="Choice">
+        <div class="ref-card-name">Choice</div>
+        <div class="ref-card-num">3 · GREEN</div>
+        <div class="ref-card-keys">Confidence · Optimism · Changer of Fate</div>
+      </div>
+      <div class="ref-card-item" onclick="openLightbox('thefatedDestiny.png','Destiny','4 · GREEN','Acceptance · Non-Effort · Melancholic Purpose')">
+        <img src="thefatedDestiny.png" alt="Destiny">
+        <div class="ref-card-name">Destiny</div>
+        <div class="ref-card-num">4 · GREEN</div>
+        <div class="ref-card-keys">Acceptance · Non-Effort · Melancholic Purpose</div>
+      </div>
+      <div class="ref-card-item" onclick="openLightbox('thefatedlove.png','Love','5 · RED','Joyful Blindness · Hearts Armor · Mystery')">
+        <img src="thefatedlove.png" alt="Love">
+        <div class="ref-card-name">Love</div>
+        <div class="ref-card-num">5 · RED</div>
+        <div class="ref-card-keys">Joyful Blindness · Hearts Armor · Mystery</div>
+      </div>
+      <div class="ref-card-item" onclick="openLightbox('thefatedhereandnow.png','Here & Now','6 · BLACK','Constant · Only · Sole Keeper of Reality')">
+        <img src="thefatedhereandnow.png" alt="Here &amp; Now">
+        <div class="ref-card-name">Here &amp; Now</div>
+        <div class="ref-card-num">6 · BLACK</div>
+        <div class="ref-card-keys">Constant · Only · Sole Keeper of Reality</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- LIGHTBOX -->
+<div class="ref-lightbox" id="refLightbox" onclick="closeLightbox()">
+  <img src="" alt="">
+  <div class="ref-lightbox-name"></div>
+  <div class="ref-lightbox-keys"></div>
+  <div class="ref-lightbox-close">✦ tap anywhere to close ✦</div>
 </div>
 
 </body>
