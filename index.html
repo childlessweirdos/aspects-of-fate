@@ -1328,17 +1328,23 @@ function analyze(hand){
   const v=Object.values(cnt).sort((a,b)=>b-a);
   const fl=col.every(c=>c===col[0]);
   const st=n[4]-n[0]===4&&new Set(n).size===5;
-  const hasTwoPair=v[0]===2&&v[1]===2;
-  // 2 PAIR SAME COLOR: both pairs must share a color group
-  let twoSameColor=false;
+  // Find all nums that appear 2+ times (pairs within any hand)
+  const pairNums = Object.entries(cnt).filter(([,count])=>count>=2).map(([k])=>Number(k));
+  const hasTwoPair = pairNums.length >= 2;
+  // 2 PAIR SAME COLOR: at least two pairs, both pairs same color group
+  let twoSameColor = false;
   if(hasTwoPair){
-    const pairs=Object.entries(cnt).filter(([,v])=>v>=2).map(([k])=>Number(k));
-    // get color of each pair's cards
-    const pairColors=pairs.map(num=>hand.filter(c=>c.num===num).map(c=>c.color));
-    // each pair must be same color, and both pairs same color group
-    const allSameWithinPair=pairColors.every(cols=>cols.every(c=>c===cols[0]));
-    const bothSameGroup=allSameWithinPair&&pairColors[0][0]===pairColors[1][0];
-    twoSameColor=bothSameGroup;
+    // Check every combination of 2 pairs for same-color match
+    for(let i=0;i<pairNums.length-1;i++){
+      for(let j=i+1;j<pairNums.length;j++){
+        const colA = hand.filter(c=>c.num===pairNums[i]).map(c=>c.color);
+        const colB = hand.filter(c=>c.num===pairNums[j]).map(c=>c.color);
+        // Both pairs must be internally same color AND same as each other
+        if(colA.every(x=>x===colA[0]) && colB.every(x=>x===colB[0]) && colA[0]===colB[0]){
+          twoSameColor = true;
+        }
+      }
+    }
   }
   return{tot,fl,st,
     manifest:v[0]===5,
