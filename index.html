@@ -391,12 +391,7 @@ body {
   border-left-color: #e8a820;
 }
 
-.sp-row.pickable.tier-high {
-  opacity: 1 !important;
-  background: #fff4c0;
-  border-left: 4px solid #c8600a;
-  animation: tier-pulse 2.5s ease-in-out infinite;
-}
+
 @keyframes tier-pulse {
   0%,100% { background: #fff4c0; border-left-color: #c8600a; }
   50%      { background: #ffeca0; border-left-color: #e87010; }
@@ -405,26 +400,9 @@ body {
   0%,100% { box-shadow: inset 0 0 0 1px rgba(255,220,80,0.3), 0 0 16px rgba(200,148,26,0.18); }
   50%      { box-shadow: inset 0 0 0 1px rgba(255,220,80,0.6), 0 0 32px rgba(200,148,26,0.4); }
 }
-.sp-row.pickable.tier-high:hover {
-  background: linear-gradient(90deg,
-    rgba(200,148,26,0.65) 0%,
-    rgba(200,148,26,0.35) 55%,
-    rgba(200,148,26,0.12) 100%);
-  animation: none;
-}
-.sp-row.pickable.tier-high .sp-cat {
-  color: #fff8d8 !important;
-  font-size: clamp(0.6rem,1.7vw,0.72rem);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-shadow: 0 0 10px rgba(255,220,120,0.4), 0 1px 2px rgba(0,0,0,0.8);
-}
-.sp-row.pickable.tier-high .sp-val {
-  color: #ffe060 !important;
-  font-size: clamp(0.92rem,2.4vw,1.12rem);
-  text-shadow: 0 0 18px rgba(255,224,80,1), 0 0 8px rgba(255,200,0,0.6);
-  font-weight: 700;
-}
+
+
+
 
 .sp-row.pickable.tier-mid {
   opacity: 1 !important;
@@ -1153,6 +1131,44 @@ body {
   margin-top: 4px;
 }
 
+
+/* ── TIER HIGH: best scoring option — deep purple, unmissable ── */
+.sp-row.pickable.tier-high {
+  opacity: 1 !important;
+  background: #1a0f3a !important;
+  border-left: 5px solid #c8a0ff !important;
+  animation: tier-pulse 2.8s ease-in-out infinite;
+  min-height: 34px !important;
+}
+@keyframes tier-pulse {
+  0%,100% { background: #1a0f3a; box-shadow: inset 4px 0 12px rgba(160,100,255,0.15); }
+  50%      { background: #221550; box-shadow: inset 4px 0 20px rgba(160,100,255,0.3); }
+}
+.sp-row.pickable.tier-high:hover { background: #2a1a60 !important; animation: none; }
+.sp-row.pickable.tier-high .sp-cat {
+  font-family: 'Raleway', sans-serif !important;
+  color: #e8d8ff !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+  text-shadow: 0 0 8px rgba(160,100,255,0.4) !important;
+  text-decoration: none !important;
+}
+.sp-row.pickable.tier-high .sp-val {
+  color: #1a0f3a !important;
+  font-size: 12px !important;
+  font-family: 'Raleway', sans-serif !important;
+  font-weight: 800 !important;
+  background: #c8a0ff !important;
+  padding: 3px 9px;
+  border-radius: 3px;
+  min-width: 32px;
+  text-align: center;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+}
 </style>
 </head>
 <body>
@@ -1402,13 +1418,19 @@ function toggleSel(i){
 function clearSel(){if(G.phase!=='ex1'&&G.phase!=='ex2')return;G.sel=[];renderHand();updateExBtn();}
 function holdAll(){G.sel=[];log('Held all.');advance();}
 function confirmExchange(){
-  const td=[...G.sel].sort((a,b)=>b-a);
+  // Sort ascending so indices stay valid as we replace in-place
+  const td=[...G.sel].sort((a,b)=>a-b);
   if(td.length>0){
-    const disc=td.map(i=>G.cards.splice(i,1)[0]);
+    // Capture what we're discarding BEFORE replacing
+    const disc=td.map(i=>G.cards[i]);
     G.disc.push(...disc);
-    for(const c of disc){if(G.deck.length===0)G.deck=buildDeck();G.cards.push(G.deck.pop());}
+    // Replace each selected slot in-place — card positions stay fixed
+    for(const i of td){
+      if(G.deck.length===0)G.deck=buildDeck();
+      G.cards[i]=G.deck.pop();
+    }
     log(`Exchanged ${disc.length}: ${disc.map(c=>c.name).join(', ')}.`);
-  SFX.exchange();
+    SFX.exchange();
   }else log('Held all.');
   G.sel=[];advance();
 }
@@ -1615,15 +1637,17 @@ function renderSP(){
     if(val===null&&scoring&&oMap[key]){
       const op=oMap[key];
       const will=op.score!==null?op.score:0;
-      // tier by score — null means no match this hand but slot still open
-      let tier='tier-avail'; // default: open but no current match
+      let tier='tier-avail';
       if(will>=40) tier='tier-high';
       else if(will>=15) tier='tier-mid';
       else if(will>0) tier='best';
-      // else will===0: no match, show as available-zero
       const scoreLabel = will>0 ? will : '✦';
-      return `<div class="sp-row pickable ${tier}" data-key="${op.key}" data-val="${will}" title="${desc}" style="${suitStyle}">
-        <span class="sp-cat" style="${suitCat}">${label}</span>
+      // Only apply suit colors on avail/best tiers — high/mid use their own dramatic colors
+      const useSuit = (tier==='tier-avail'||tier==='best');
+      const rowStyle = useSuit ? suitStyle : '';
+      const catStyle = useSuit ? suitCat : '';
+      return `<div class="sp-row pickable ${tier}" data-key="${op.key}" data-val="${will}" title="${desc}" style="${rowStyle}">
+        <span class="sp-cat" style="${catStyle}">${label}</span>
         <span class="sp-val pick">${scoreLabel}</span></div>`;
     }
     const vcls=val===null?'empty':val===0?'zero':'';
