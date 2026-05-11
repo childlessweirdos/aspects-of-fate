@@ -247,6 +247,10 @@ body {
   align-items: center;
   padding: 8px 12px 10px;
   position: relative;
+  /* crisp text rendering throughout */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 .score-panel::before {
   content: '';
@@ -301,9 +305,10 @@ body {
 .sp-row .sp-cat {
   font-family: 'Cinzel', serif;
   color: #6a4828;
-  font-size: clamp(0.6rem, 1.5vw, 0.72rem);
+  font-size: 12px;
   letter-spacing: 0.04em;
   font-weight: 600;
+  -webkit-font-smoothing: antialiased;
 }
 .sp-row .sp-val:not(.empty):not(.zero):not(.pick) {
   font-family: 'Cinzel', serif;
@@ -323,10 +328,11 @@ body {
 .sp-row.pickable .sp-cat {
   font-family: 'Cinzel', serif !important;
   color: #120a00 !important;
-  font-size: clamp(0.64rem, 1.6vw, 0.76rem) !important;
+  font-size: 12px !important;
   font-weight: 700 !important;
   letter-spacing: 0.05em !important;
   text-shadow: none !important;
+  -webkit-font-smoothing: antialiased !important;
 }
 .sp-row.pickable .sp-val.empty {
   color: #a08040; font-style: italic; font-family: 'Cinzel', serif;
@@ -353,10 +359,11 @@ body {
 .sp-row.pickable .sp-cat {
   font-family: 'Cinzel', serif !important;
   color: #120a00 !important;
-  font-size: clamp(0.64rem, 1.6vw, 0.76rem) !important;
+  font-size: 12px !important;
   font-weight: 700 !important;
   letter-spacing: 0.05em !important;
   text-shadow: none !important;
+  -webkit-font-smoothing: antialiased !important;
 }
 .sp-row.pickable .sp-val.empty {
   color: #a08040; font-style: italic; font-family: 'Cinzel', serif;
@@ -408,13 +415,41 @@ body {
   border-left: 3px solid #c8941a;
 }
 .sp-row.pickable.tier-mid:hover { background: #f0e4b0; }
-.sp-row.pickable.tier-mid .sp-cat { color: #1a1006 !important; font-weight: 700 !important; }
-.sp-row.pickable.tier-mid .sp-val { color: #5a2800 !important; font-weight: 700 !important; }
+.sp-row.pickable.tier-mid .sp-cat { color: #1a1006 !important; font-weight: 700 !important; font-size: 12px !important; }
+.sp-row.pickable.tier-mid .sp-val {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  font-family: 'Cinzel', serif !important;
+  background: #7a5000;
+  padding: 3px 8px;
+  border-radius: 3px;
+  min-width: 28px;
+  text-align: center;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+}
 
 .sp-row.pickable.best {
   opacity: 1 !important;
   background: #f0e8c8;
   border-left: 3px solid #b08020;
+}
+.sp-row.pickable.best .sp-val {
+  color: #fff !important;
+  font-size: 10px !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: 700 !important;
+  background: #906818;
+  padding: 2px 7px;
+  border-radius: 3px;
+  min-width: 24px;
+  text-align: center;
+  line-height: 15px;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
 }
 
 .sp-row.pickable.tier-zero {
@@ -468,10 +503,12 @@ body {
 .sp-val.zero { color: #a03838; font-family:'Cinzel',serif; font-size:0.58rem; }
 .sp-val.pick  { color: #fff4b8; font-size: clamp(0.74rem,2vw,0.92rem); }
 .sp-row.sub-total .sp-val {
-  font-family: 'Cinzel Decorative', serif !important;
+  font-family: 'Cinzel', serif !important;
   color: #e8c060 !important;
-  font-size: clamp(0.76rem,1.9vw,0.9rem) !important;
-  text-shadow: 0 0 8px rgba(200,148,26,0.4);
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* score panel footer: history + fated preview */
@@ -705,16 +742,19 @@ body {
 .score-hint {
   width:100%;
   text-align:center;
-  font-size:clamp(0.72rem,2vw,0.82rem);
-  font-style:italic;
-  color:#c8b070;
-  padding:8px 16px;
-  border:1px solid rgba(200,148,26,0.22);
-  background: rgba(200,148,26,0.07);
+  font-family: 'Cinzel', serif;
+  font-size:clamp(0.62rem,1.8vw,0.74rem);
+  font-style:normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:#c8a050;
+  padding:7px 16px;
+  border:1px solid rgba(200,148,26,0.3);
+  border-top: 2px solid rgba(200,148,26,0.4);
+  background: rgba(200,148,26,0.08);
   animation: hint-glow 2.5s ease-in-out infinite;
-  line-height:1.5;
 }
-.score-hint strong { color:var(--gold-lt);font-style:normal; }
+.score-hint strong { color:var(--gold-lt); }
 @keyframes hint-glow {
   0%,100%{box-shadow:0 0 0 rgba(200,148,26,0);border-color:rgba(200,148,26,0.22);}
   50%{box-shadow:0 0 22px rgba(200,148,26,0.18);border-color:rgba(200,148,26,0.5);}
