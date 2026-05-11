@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Aspects of Fate</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 
 /* ════════════════════════════════════════════════
    DESIGN TOKENS
 ════════════════════════════════════════════════ */
 :root {
+  --ui: 'Raleway', sans-serif;
   /* Palette — aged tarot table */
   --black:      #07050300;
   --felt:       #0b0804;
@@ -40,6 +41,9 @@
 html, body { height: 100%; }
 
 body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   background: var(--felt);
   /* subtle cloth texture */
   background-image:
@@ -107,7 +111,18 @@ body {
 .title-cards-fan .card:nth-child(2) { transform: rotate(-4deg) translateY(2px); z-index: 2; }
 .title-cards-fan .card:nth-child(3) { transform: rotate(4deg) translateY(2px); z-index: 3; }
 .title-cards-fan .card:nth-child(4) { transform: rotate(12deg) translateY(8px); z-index: 4; }
-.title-cards-fan .card { margin: 0 -8px; animation: float var(--dur,4s) ease-in-out infinite; animation-delay: var(--delay,0s); }
+.title-cards-fan .card {
+  margin: 0 -8px;
+  animation: float var(--dur,4s) ease-in-out infinite;
+  animation-delay: var(--delay,0s);
+  /* brighter, vivid at rest */
+  border-color: rgba(200,148,26,0.65) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7), 0 0 16px rgba(200,148,26,0.12);
+  filter: brightness(1.08) contrast(1.05);
+}
+.title-cards-fan .card img {
+  background: radial-gradient(ellipse at center, #2a1c0c 0%, #0a0604 100%);
+}
 @keyframes float { 0%,100%{transform-origin:bottom center; margin-bottom:0} 50%{margin-bottom:6px} }
 /* override float for fanned cards to preserve rotation */
 .title-cards-fan .card:nth-child(1) { animation: fan-float1 4s ease-in-out infinite; }
@@ -239,6 +254,7 @@ body {
 .score-panel {
   overflow-y: auto; overflow-x: hidden;
   background: #e8dbb8;
+  transform: translateZ(0); /* force GPU layer for crisp text */
   border-bottom: 3px solid #2a1c08;
   scrollbar-width: thin;
   scrollbar-color: #8a6010 #d4c490;
@@ -303,18 +319,19 @@ body {
   opacity: 0.55;
 }
 .sp-row .sp-cat {
-  font-family: 'Cinzel', serif;
-  color: #6a4828;
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  font-family: 'Raleway', sans-serif;
+  color: #5a3818;
+  font-size: 13px;
+  letter-spacing: 0.01em;
   font-weight: 600;
   -webkit-font-smoothing: antialiased;
 }
 .sp-row .sp-val:not(.empty):not(.zero):not(.pick) {
-  font-family: 'Cinzel', serif;
+  font-family: 'Raleway', sans-serif;
   color: #3a2810;
-  font-size: clamp(0.66rem, 1.6vw, 0.78rem);
+  font-size: 13px;
   font-weight: 700;
+  -webkit-font-smoothing: antialiased;
 }
 .sp-row.pickable {
   cursor: pointer;
@@ -326,17 +343,17 @@ body {
   box-shadow: inset 0 0 0 0 transparent;
 }
 .sp-row.pickable .sp-cat {
-  font-family: 'Cinzel', serif !important;
+  font-family: 'Raleway', sans-serif !important;
   color: #120a00 !important;
-  font-size: 12px !important;
+  font-size: 13px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.05em !important;
+  letter-spacing: 0.01em !important;
   text-shadow: none !important;
   -webkit-font-smoothing: antialiased !important;
 }
 .sp-row.pickable .sp-val.empty {
-  color: #a08040; font-style: italic; font-family: 'Cinzel', serif;
-  font-size: 0.52rem;
+  font-family: 'Raleway', sans-serif;
+  color: #9a7840; font-size: 12px; font-weight: 600;
 }
 .sp-row.pickable:hover {
   background: #fff8e8;
@@ -357,17 +374,17 @@ body {
   box-shadow: inset 0 0 0 0 transparent;
 }
 .sp-row.pickable .sp-cat {
-  font-family: 'Cinzel', serif !important;
+  font-family: 'Raleway', sans-serif !important;
   color: #120a00 !important;
-  font-size: 12px !important;
+  font-size: 13px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.05em !important;
+  letter-spacing: 0.01em !important;
   text-shadow: none !important;
   -webkit-font-smoothing: antialiased !important;
 }
 .sp-row.pickable .sp-val.empty {
-  color: #a08040; font-style: italic; font-family: 'Cinzel', serif;
-  font-size: 0.52rem;
+  font-family: 'Raleway', sans-serif;
+  color: #9a7840; font-size: 12px; font-weight: 600;
 }
 .sp-row.pickable:hover {
   background: #fff8e8;
@@ -415,34 +432,39 @@ body {
   border-left: 3px solid #c8941a;
 }
 .sp-row.pickable.tier-mid:hover { background: #f0e4b0; }
-.sp-row.pickable.tier-mid .sp-cat { color: #1a1006 !important; font-weight: 700 !important; font-size: 12px !important; }
+.sp-row.pickable.tier-mid .sp-cat { font-family: 'Raleway', sans-serif !important; color: #1a0800 !important; font-weight: 700 !important; font-size: 13px !important; }
 .sp-row.pickable.tier-mid .sp-val {
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  font-size: 11px !important;
-  font-family: 'Cinzel', serif !important;
-  background: #7a5000;
+  color: #1a2e10 !important;
+  font-weight: 800 !important;
+  font-size: 12px !important;
+  font-family: 'Raleway', sans-serif !important;
+  background: #6ab030;
   padding: 3px 8px;
   border-radius: 3px;
   min-width: 28px;
   text-align: center;
   line-height: 16px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
 }
 
 .sp-row.pickable.best {
   opacity: 1 !important;
-  background: #f0e8c8;
-  border-left: 3px solid #b08020;
+  background: #1a2030;
+  border-left: 3px solid #5888c8;
+}
+.sp-row.pickable.best .sp-cat {
+  font-family: 'Raleway', sans-serif !important;
+  color: #b8cce8 !important;
+  font-weight: 700 !important;
 }
 .sp-row.pickable.best .sp-val {
-  color: #fff !important;
-  font-size: 10px !important;
-  font-family: 'Cinzel', serif !important;
-  font-weight: 700 !important;
-  background: #906818;
+  color: #1a2030 !important;
+  font-size: 11px !important;
+  font-family: 'Raleway', sans-serif !important;
+  font-weight: 800 !important;
+  background: #5888c8;
   padding: 2px 7px;
   border-radius: 3px;
   min-width: 24px;
@@ -459,7 +481,7 @@ body {
 }
 .sp-row.pickable.tier-zero .sp-cat { color: #5a4020 !important; }
 .sp-row.pickable.tier-zero .sp-val {
-  color: #906830; font-size: 0.54rem; font-family: 'Cinzel', serif;
+  color: #906830; font-size: 12px; font-family: 'Raleway', sans-serif;
 }
 .sp-row.sub-total {
   opacity: 1 !important;
@@ -470,7 +492,7 @@ body {
 }
 
 .sp-cat {
-  font-family: 'Cinzel', serif;
+  font-family: 'Raleway', sans-serif;
   font-size: clamp(0.58rem, 1.6vw, 0.7rem);
   letter-spacing: 0.06em;
   color: #ede0b0;
@@ -479,7 +501,7 @@ body {
   text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 .sp-row.sub-total .sp-cat {
-  font-family: 'Cinzel', serif !important;
+  font-family: 'Raleway', sans-serif !important;
   color: #e8c060 !important;
   font-weight: 700;
   font-size: clamp(0.54rem,1.4vw,0.64rem) !important;
@@ -503,7 +525,7 @@ body {
 .sp-val.zero { color: #a03838; font-family:'Cinzel',serif; font-size:0.58rem; }
 .sp-val.pick  { color: #fff4b8; font-size: clamp(0.74rem,2vw,0.92rem); }
 .sp-row.sub-total .sp-val {
-  font-family: 'Cinzel', serif !important;
+  font-family: 'Raleway', sans-serif !important;
   color: #e8c060 !important;
   font-size: 14px !important;
   font-weight: 700 !important;
@@ -551,10 +573,10 @@ body {
 }
 .sp-fated-row {
   display: flex; justify-content: space-between; align-items: baseline;
-  font-family: 'Cinzel', serif; font-size: clamp(0.5rem,1.4vw,0.58rem);
-  color: #d4c490;
+  font-family: 'Raleway', sans-serif; font-size: 11px;
+  color: #d4c490; font-weight: 500;
 }
-.sp-fated-row b { color: #e8c060; font-size: clamp(0.58rem,1.6vw,0.68rem); }
+.sp-fated-row b { font-family: 'Raleway', sans-serif; color: #e8c060; font-size: 13px; font-weight: 700; }
 .sp-fated-row b.neg { color: #e06060; }
 
 /* TABLE — cards live here */
@@ -1324,7 +1346,7 @@ function analyze(hand){
     fhs:v[0]===3&&v[1]===2&&fl,
     fh:v[0]===3&&v[1]===2,
     // three_kind: exactly 3 of a kind (not full house, not 4oak, not manifest)
-    three:v[0]===3&&v[1]!==2,
+    three:v[0]===3,  // available for full house hands too
     two:twoSameColor,
     hasTwoPair, // raw two pair (any color) — for display
   };
@@ -1587,13 +1609,16 @@ function renderSP(){
     if(val===null&&scoring&&oMap[key]){
       const op=oMap[key];
       const will=op.score!==null?op.score:0;
-      let tier='tier-zero';
+      // tier by score — null means no match this hand but slot still open
+      let tier='tier-avail'; // default: open but no current match
       if(will>=40) tier='tier-high';
       else if(will>=15) tier='tier-mid';
       else if(will>0) tier='best';
+      // else will===0: no match, show as available-zero
+      const scoreLabel = will>0 ? will : '✦';
       return `<div class="sp-row pickable ${tier}" data-key="${op.key}" data-val="${will}" title="${desc}" style="${suitStyle}">
         <span class="sp-cat" style="${suitCat}">${label}</span>
-        <span class="sp-val pick">${will||'—'}</span></div>`;
+        <span class="sp-val pick">${scoreLabel}</span></div>`;
     }
     const vcls=val===null?'empty':val===0?'zero':'';
     return `<div class="sp-row" title="${desc}"><span class="sp-cat">${label}</span><span class="sp-val ${vcls}">${val===null?'—':val}</span></div>`;
