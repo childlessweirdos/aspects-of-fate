@@ -238,108 +238,103 @@ body {
 /* SCORE PANEL */
 .score-panel {
   overflow-y: auto; overflow-x: hidden;
-  background:
-    linear-gradient(180deg, rgba(28,18,8,0.98) 0%, rgba(10,7,3,0.99) 100%);
-  border-bottom: 1px solid rgba(200,148,26,0.5);
+  background: #e8dbb8;
+  border-bottom: 3px solid #2a1c08;
   scrollbar-width: thin;
-  scrollbar-color: var(--gold-dk) transparent;
+  scrollbar-color: #8a6010 #d4c490;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px 14px 12px;
+  padding: 8px 12px 10px;
   position: relative;
 }
-/* top ornamental line */
 .score-panel::before {
   content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold-lt) 50%, var(--gold) 70%, transparent 100%);
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: #2a1c08;
 }
 
 .sp-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0 1px;
-  background: rgba(200,148,26,0.25);
+  background: #b0965a;
   max-width: 700px;
   margin: 0 auto;
   width: 100%;
-  border: 1px solid rgba(200,148,26,0.45);
+  border: 1px solid #6a4a18;
   border-bottom: none;
-  box-shadow:
-    0 0 0 1px rgba(0,0,0,0.8),
-    0 4px 32px rgba(0,0,0,0.6),
-    inset 0 1px 0 rgba(255,220,120,0.12);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
 }
 
-.sp-col {
-  background: linear-gradient(160deg, rgba(24,17,8,0.97) 0%, rgba(10,7,3,0.99) 100%);
-  padding: 0;
-  position: relative;
-}
+.sp-col { background: #ede0b8; padding: 0; }
 
 .sp-col-head {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.62rem; letter-spacing: 0.1em;
-  color: var(--gold-lt);
-  padding: 7px 12px 5px;
-  background: linear-gradient(180deg,
-    rgba(200,148,26,0.28) 0%,
-    rgba(200,148,26,0.1) 60%,
-    rgba(200,148,26,0.04) 100%);
-  border-bottom: 1px solid rgba(200,148,26,0.45);
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.5rem,1.4vw,0.62rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ede0b8;
+  padding: 6px 10px 5px;
+  background: #2a1c08;
+  border-bottom: 2px solid #6a4a18;
   display: flex; align-items: center; justify-content: space-between;
-  text-shadow: 0 0 16px rgba(200,148,26,0.5), 0 1px 2px rgba(0,0,0,0.8);
 }
-.sp-col-head::after {
-  content: '✦';
-  color: rgba(200,148,26,0.4);
-  font-family: serif;
-  font-size: 0.6rem;
-}
+.sp-col-head::after { content: '✦'; color: #c8941a; font-size: 0.5rem; }
 .sp-col-head span {
   font-family: 'Cinzel', serif;
-  color: rgba(200,148,26,0.6);
-  font-size: 0.44rem;
-  font-style: italic;
-  letter-spacing: 0.05em;
+  color: #c8941a; font-size: 0.44rem; font-style: italic;
 }
 
 .sp-row {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 4px 12px;
-  border-bottom: 1px solid rgba(200,148,26,0.06);
+  padding: 3px 10px;
+  border-bottom: 1px solid rgba(100,74,24,0.2);
   min-height: 26px;
   cursor: default;
-  transition: all 0.14s;
+  transition: all 0.12s;
   position: relative;
-  /* FILLED rows: dark and clearly done */
-  background: rgba(0,0,0,0.25);
+  /* FILLED: strikethrough feel — dimmed on parchment */
+  background: #e8dbb8;
   opacity: 0.55;
 }
-/* filled score value — subdued */
-.sp-row .sp-val:not(.empty):not(.zero):not(.pick) {
-  color: #a08840;
-  font-size: clamp(0.65rem,1.7vw,0.78rem);
-  text-shadow: none;
-}
-/* filled category text — dim */
 .sp-row .sp-cat {
-  color: #907860;
+  font-family: 'Cinzel', serif;
+  color: #6a4828;
+  font-size: clamp(0.6rem, 1.5vw, 0.72rem);
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.sp-row .sp-val:not(.empty):not(.zero):not(.pick) {
+  font-family: 'Cinzel', serif;
+  color: #3a2810;
+  font-size: clamp(0.66rem, 1.6vw, 0.78rem);
+  font-weight: 700;
 }
 .sp-row.pickable {
   cursor: pointer;
   opacity: 1 !important;
-  background: rgba(14,10,4,0.9);
-  border-left: 3px solid rgba(200,148,26,0.5);
+  min-height: 30px;
+  background: #faf4e0;
+  border-left: 4px solid #c8941a;
+  padding: 4px 10px 4px 8px;
+  box-shadow: inset 0 0 0 0 transparent;
 }
 .sp-row.pickable .sp-cat {
-  color: #e8d8a8 !important;
-  font-weight: 600;
+  font-family: 'Cinzel', serif !important;
+  color: #120a00 !important;
+  font-size: clamp(0.64rem, 1.6vw, 0.76rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-shadow: none !important;
+}
+.sp-row.pickable .sp-val.empty {
+  color: #a08040; font-style: italic; font-family: 'Cinzel', serif;
+  font-size: 0.52rem;
 }
 .sp-row.pickable:hover {
-  background: rgba(200,148,26,0.18);
-  border-left-color: var(--gold-lt);
+  background: #fff8e8;
+  border-left-color: #e8a820;
 }
 .sp-row.pickable.best {
   background: rgba(200,148,26,0.18);
@@ -349,29 +344,38 @@ body {
 .sp-row.pickable {
   cursor: pointer;
   opacity: 1 !important;
-  background: rgba(14,10,4,0.9);
-  border-left: 3px solid rgba(200,148,26,0.5);
+  min-height: 30px;
+  background: #faf4e0;
+  border-left: 4px solid #c8941a;
+  padding: 4px 10px 4px 8px;
+  box-shadow: inset 0 0 0 0 transparent;
 }
 .sp-row.pickable .sp-cat {
-  color: #e8d8a8 !important;
-  font-weight: 600;
+  font-family: 'Cinzel', serif !important;
+  color: #120a00 !important;
+  font-size: clamp(0.64rem, 1.6vw, 0.76rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-shadow: none !important;
+}
+.sp-row.pickable .sp-val.empty {
+  color: #a08040; font-style: italic; font-family: 'Cinzel', serif;
+  font-size: 0.52rem;
 }
 .sp-row.pickable:hover {
-  background: rgba(200,148,26,0.18);
-  border-left-color: var(--gold-lt);
+  background: #fff8e8;
+  border-left-color: #e8a820;
 }
 
 .sp-row.pickable.tier-high {
   opacity: 1 !important;
-  background: linear-gradient(90deg,
-    rgba(200,148,26,0.5) 0%,
-    rgba(200,148,26,0.25) 55%,
-    rgba(200,148,26,0.08) 100%);
-  border-left: 4px solid #ffe060;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,220,80,0.35),
-    0 0 24px rgba(200,148,26,0.25);
+  background: #fff4c0;
+  border-left: 4px solid #c8600a;
   animation: tier-pulse 2.5s ease-in-out infinite;
+}
+@keyframes tier-pulse {
+  0%,100% { background: #fff4c0; border-left-color: #c8600a; }
+  50%      { background: #ffeca0; border-left-color: #e87010; }
 }
 @keyframes tier-pulse {
   0%,100% { box-shadow: inset 0 0 0 1px rgba(255,220,80,0.3), 0 0 16px rgba(200,148,26,0.18); }
@@ -400,43 +404,34 @@ body {
 
 .sp-row.pickable.tier-mid {
   opacity: 1 !important;
-  background: linear-gradient(90deg, rgba(200,148,26,0.26) 0%, rgba(200,148,26,0.08) 100%);
-  border-left: 3px solid rgba(200,148,26,0.9);
+  background: #f5ecc8;
+  border-left: 3px solid #c8941a;
 }
-.sp-row.pickable.tier-mid:hover {
-  background: linear-gradient(90deg, rgba(200,148,26,0.4) 0%, rgba(200,148,26,0.18) 100%);
-}
-.sp-row.pickable.tier-mid .sp-cat { color: #f8e8b0 !important; font-weight: 600; }
-.sp-row.pickable.tier-mid .sp-val { color: #f0d860 !important; font-size: clamp(0.82rem,2.1vw,0.98rem); }
+.sp-row.pickable.tier-mid:hover { background: #f0e4b0; }
+.sp-row.pickable.tier-mid .sp-cat { color: #1a1006 !important; font-weight: 700 !important; }
+.sp-row.pickable.tier-mid .sp-val { color: #5a2800 !important; font-weight: 700 !important; }
 
 .sp-row.pickable.best {
   opacity: 1 !important;
-  background: rgba(200,148,26,0.12);
-  border-left: 3px solid rgba(200,148,26,0.65);
+  background: #f0e8c8;
+  border-left: 3px solid #b08020;
 }
 
 .sp-row.pickable.tier-zero {
-  opacity: 0.7 !important;
-  background: rgba(200,148,26,0.05);
-  border-left: 3px solid rgba(200,148,26,0.22);
+  opacity: 0.75 !important;
+  background: #e8dbb8;
+  border-left: 3px solid #b0905a;
 }
-.sp-row.pickable.tier-zero .sp-cat { color: #c0a860 !important; }
+.sp-row.pickable.tier-zero .sp-cat { color: #5a4020 !important; }
 .sp-row.pickable.tier-zero .sp-val {
-  color: rgba(200,148,26,0.45);
-  font-size: 0.56rem;
-  font-family: 'Cinzel', serif;
+  color: #906830; font-size: 0.54rem; font-family: 'Cinzel', serif;
 }
 .sp-row.sub-total {
   opacity: 1 !important;
-  background: linear-gradient(90deg,
-    rgba(200,148,26,0.28) 0%,
-    rgba(200,148,26,0.16) 50%,
-    rgba(200,148,26,0.08) 100%);
-  border-top: 1px solid rgba(200,148,26,0.55);
-  border-bottom: 1px solid rgba(200,148,26,0.55);
-  box-shadow:
-    inset 0 1px 0 rgba(255,220,100,0.12),
-    inset 0 -1px 0 rgba(255,220,100,0.07);
+  min-height: 26px !important;
+  background: #2a1c08;
+  border-top: 1px solid #6a4a18;
+  border-bottom: 1px solid #6a4a18;
 }
 
 .sp-cat {
@@ -449,11 +444,11 @@ body {
   text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 .sp-row.sub-total .sp-cat {
-  color: var(--gold-lt);
+  font-family: 'Cinzel', serif !important;
+  color: #e8c060 !important;
   font-weight: 700;
-  font-size: clamp(0.58rem,1.6vw,0.68rem);
-  letter-spacing: 0.12em;
-  text-shadow: 0 0 14px rgba(200,148,26,0.6), 0 1px 2px rgba(0,0,0,0.8);
+  font-size: clamp(0.54rem,1.4vw,0.64rem) !important;
+  letter-spacing: 0.1em;
 }
 
 .sp-val {
@@ -473,62 +468,57 @@ body {
 .sp-val.zero { color: #a03838; font-family:'Cinzel',serif; font-size:0.58rem; }
 .sp-val.pick  { color: #fff4b8; font-size: clamp(0.74rem,2vw,0.92rem); }
 .sp-row.sub-total .sp-val {
-  font-size: clamp(0.82rem,2.2vw,1rem);
-  text-shadow: 0 0 18px rgba(200,148,26,0.7), 0 0 6px rgba(200,148,26,0.4);
+  font-family: 'Cinzel Decorative', serif !important;
+  color: #e8c060 !important;
+  font-size: clamp(0.76rem,1.9vw,0.9rem) !important;
+  text-shadow: 0 0 8px rgba(200,148,26,0.4);
 }
 
 /* score panel footer: history + fated preview */
 .sp-footer {
   display: flex; gap: 1px;
-  background: rgba(200,148,26,0.25);
+  background: #6a4a18;
   max-width: 700px;
   margin: 0 auto;
   width: 100%;
-  border: 1px solid rgba(200,148,26,0.45);
+  border: 1px solid #6a4a18;
   border-top: none;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
 }
 .sp-history {
   flex: 1;
-  background: linear-gradient(90deg, rgba(16,11,5,0.95) 0%, rgba(10,7,3,0.98) 100%);
-  padding: 5px 10px;
+  background: #2a1c08;
+  padding: 4px 8px;
   display: flex; gap: 4px; flex-wrap: wrap; align-items: center;
 }
 .sp-pill {
-  padding: 2px 7px;
-  border: 1px solid rgba(200,148,26,0.18);
+  padding: 2px 6px;
+  border: 1px solid rgba(200,148,26,0.3);
   font-family: 'Cinzel', serif;
-  font-size: clamp(0.44rem,1.2vw,0.54rem);
-  letter-spacing: 0.06em;
-  color: #70601a;
-  background: rgba(0,0,0,0.2);
+  font-size: clamp(0.42rem,1.1vw,0.52rem);
+  letter-spacing: 0.05em;
+  color: #a08040;
 }
-.sp-pill.now {
-  border-color: var(--gold);
-  color: var(--gold-lt);
-  background: rgba(200,148,26,0.15);
-  box-shadow: 0 0 6px rgba(200,148,26,0.2);
-}
-.sp-pill.done { color: #483810; border-color: rgba(200,148,26,0.1); }
+.sp-pill.now { border-color: #e8c060; color: #e8c060; font-weight:700; }
+.sp-pill.done { color: #606030; border-color: rgba(200,148,26,0.15); }
 
 .sp-fated {
-  background: linear-gradient(90deg, rgba(10,7,3,0.98) 0%, rgba(22,15,6,0.95) 100%);
-  padding: 5px 12px;
+  background: #2a1c08;
+  padding: 4px 10px;
   display: flex; flex-direction: column; justify-content: center; gap: 2px;
   min-width: 130px;
 }
 .sp-fated-title {
   font-family: 'Cinzel', serif;
-  font-size: 0.44rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--gold-dk); text-align: center; margin-bottom: 2px;
+  font-size: 0.44rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #c8941a; text-align: center; margin-bottom: 2px;
 }
 .sp-fated-row {
   display: flex; justify-content: space-between; align-items: baseline;
-  font-family: 'Cinzel', serif; font-size: clamp(0.5rem,1.4vw,0.6rem);
-  color: #a09060;
+  font-family: 'Cinzel', serif; font-size: clamp(0.5rem,1.4vw,0.58rem);
+  color: #d4c490;
 }
-.sp-fated-row b { color: var(--gold-lt); font-size: clamp(0.58rem,1.6vw,0.7rem); }
-.sp-fated-row b.neg { color: var(--red); }
+.sp-fated-row b { color: #e8c060; font-size: clamp(0.58rem,1.6vw,0.68rem); }
+.sp-fated-row b.neg { color: #e06060; }
 
 /* TABLE — cards live here */
 .game-table {
@@ -1276,9 +1266,28 @@ function analyze(hand){
   const v=Object.values(cnt).sort((a,b)=>b-a);
   const fl=col.every(c=>c===col[0]);
   const st=n[4]-n[0]===4&&new Set(n).size===5;
-  return{tot,fl,st,manifest:v[0]===5,four:v[0]===4,
-    fhs:v[0]===3&&v[1]===2&&fl,fh:v[0]===3&&v[1]===2,
-    three:v[0]===3&&!(v[1]===2),two:v[0]===2&&v[1]===2};
+  const hasTwoPair=v[0]===2&&v[1]===2;
+  // 2 PAIR SAME COLOR: both pairs must share a color group
+  let twoSameColor=false;
+  if(hasTwoPair){
+    const pairs=Object.entries(cnt).filter(([,v])=>v>=2).map(([k])=>Number(k));
+    // get color of each pair's cards
+    const pairColors=pairs.map(num=>hand.filter(c=>c.num===num).map(c=>c.color));
+    // each pair must be same color, and both pairs same color group
+    const allSameWithinPair=pairColors.every(cols=>cols.every(c=>c===cols[0]));
+    const bothSameGroup=allSameWithinPair&&pairColors[0][0]===pairColors[1][0];
+    twoSameColor=bothSameGroup;
+  }
+  return{tot,fl,st,
+    manifest:v[0]===5,
+    four:v[0]===4,
+    fhs:v[0]===3&&v[1]===2&&fl,
+    fh:v[0]===3&&v[1]===2,
+    // three_kind: exactly 3 of a kind (not full house, not 4oak, not manifest)
+    three:v[0]===3&&v[1]!==2,
+    two:twoSameColor,
+    hasTwoPair, // raw two pair (any color) — for display
+  };
 }
 function opts(hand,sc){
   const h=analyze(hand);const o=[];
@@ -1355,6 +1364,68 @@ function advance(){
   }
 }
 function pickScore(key,score){
+  // Confirm before recording a zero to prevent mis-taps
+  if(score===0){
+    showZeroConfirm(key);
+    return;
+  }
+  commitScore(key,score);
+}
+
+function showZeroConfirm(key){
+  const label=key.replace(/_/g,' ').toUpperCase();
+  const existing=document.getElementById('zeroConfirm');
+  if(existing) existing.remove();
+
+  const div=document.createElement('div');
+  div.id='zeroConfirm';
+  div.style.cssText=`
+    position:fixed;inset:0;z-index:800;
+    background:rgba(4,2,1,0.88);backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+  `;
+  div.innerHTML=`
+    <div style="
+      background:linear-gradient(160deg,rgba(24,16,8,0.98) 0%,rgba(10,7,3,0.99) 100%);
+      border:1px solid rgba(200,148,26,0.45);
+      box-shadow:0 0 60px rgba(0,0,0,0.8),0 0 24px rgba(200,148,26,0.1);
+      padding:28px 32px;max-width:360px;width:100%;text-align:center;
+    ">
+      <div style="font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold-lt);margin-bottom:10px;text-shadow:0 0 16px rgba(200,148,26,0.5);">
+        Record a Zero?
+      </div>
+      <div style="font-family:'IM Fell English',serif;font-style:italic;font-size:0.82rem;color:var(--parch-dk);line-height:1.65;margin-bottom:20px;">
+        No matching hand for <strong style="color:var(--gold-lt);font-style:normal;">${label}</strong>.<br>
+        This will record a <strong style="color:#c05050;font-style:normal;">0</strong> and lock this category for the game.
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;">
+        <button onclick="document.getElementById('zeroConfirm').remove()" style="
+          padding:8px 22px;font-family:'Cinzel',serif;font-size:0.65rem;
+          letter-spacing:0.16em;text-transform:uppercase;
+          background:transparent;border:1px solid rgba(200,148,26,0.35);
+          color:var(--parch-dk);cursor:pointer;transition:all 0.14s;
+        " onmouseover="this.style.borderColor='rgba(200,148,26,0.7)';this.style.color='var(--gold-lt)'"
+           onmouseout="this.style.borderColor='rgba(200,148,26,0.35)';this.style.color='var(--parch-dk)'">
+          ← Go Back
+        </button>
+        <button onclick="document.getElementById('zeroConfirm').remove();commitScore('${key}',0)" style="
+          padding:8px 22px;font-family:'Cinzel',serif;font-size:0.65rem;
+          letter-spacing:0.16em;text-transform:uppercase;
+          background:rgba(139,21,21,0.3);border:1px solid rgba(139,21,21,0.6);
+          color:#e08080;cursor:pointer;transition:all 0.14s;
+        " onmouseover="this.style.background='rgba(139,21,21,0.5)';this.style.color='#ffb0b0'"
+           onmouseout="this.style.background='rgba(139,21,21,0.3)';this.style.color='#e08080'">
+          Record Zero
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(div);
+  // tap outside = cancel
+  div.addEventListener('click', e=>{ if(e.target===div) div.remove(); });
+}
+
+function commitScore(key,score){
   G.sc[key]=score;
   SFX.score(score);
   log(`${key.toUpperCase()}: ${score}`);
@@ -1460,46 +1531,63 @@ function renderSP(){
 
   const oMap={};if(scoring)for(const o of opts(G.cards,sc))oMap[o.key]=o;
 
-  function row(label,key,desc){
+  function row(label,key,desc,suit=''){
     const val=sc[key];
+    // Suit accent colors for pickable rows
+    const suitStyle={
+      'black-suit':'border-left-color:#2a2a2a;',
+      'red-suit':'border-left-color:#8c1a1a;',
+      'green-suit':'border-left-color:#1a5020;',
+    }[suit]||'';
+    const suitCat={
+      'black-suit':'color:#1a1006;',
+      'red-suit':'color:#5a0808;',
+      'green-suit':'color:#0a2c10;',
+    }[suit]||'';
     if(val===null&&scoring&&oMap[key]){
       const op=oMap[key];
       const will=op.score!==null?op.score:0;
-      // tier by score value
       let tier='tier-zero';
       if(will>=40) tier='tier-high';
       else if(will>=15) tier='tier-mid';
       else if(will>0) tier='best';
-      return `<div class="sp-row pickable ${tier}" data-key="${op.key}" data-val="${will}" title="${desc}">
-        <span class="sp-cat">${label}</span><span class="sp-val pick">${will||'—'}</span></div>`;
+      return `<div class="sp-row pickable ${tier}" data-key="${op.key}" data-val="${will}" title="${desc}" style="${suitStyle}">
+        <span class="sp-cat" style="${suitCat}">${label}</span>
+        <span class="sp-val pick">${will||'—'}</span></div>`;
     }
     const vcls=val===null?'empty':val===0?'zero':'';
     return `<div class="sp-row" title="${desc}"><span class="sp-cat">${label}</span><span class="sp-val ${vcls}">${val===null?'—':val}</span></div>`;
   }
 
-  // Basics
+  // Two-column layout
   let bHtml='';
-  bHtml+=row('♠ ACES','aces','1 per Ace');
-  bHtml+=row('♦ DEUCES','deuces','2 per Deuce');
-  bHtml+=row('♣ TREYS','treys','3 per Trey');
-  bHtml+=row('✦ FOURS','fours','4 per Four');
-  bHtml+=row('♥ FIVES','fives','5 per Five');
-  bHtml+=row('☽ SIXES','sixes','6 per Six');
-  bHtml+=`<div class="sp-row" title="Bonus: 63-70→35, 71-77→55, 78+→75"><span class="sp-cat">FATE'S INFLUENCE</span><span class="sp-val${t.fi>0?'':' empty'}">${t.fi>0?t.fi:'—'}</span></div>`;
-  bHtml+=`<div class="sp-row sub-total"><span class="sp-cat">★ BASICS TOTAL</span><span class="sp-val">${t.bt||'—'}</span></div>`;
+  bHtml+=row('♠ ACES','aces','1 per Ace','black-suit');
+  bHtml+=row('♦ DEUCES','deuces','2 per Deuce','red-suit');
+  bHtml+=row('♣ TREYS','treys','3 per Trey','green-suit');
+  bHtml+=row('✦ FOURS','fours','4 per Four','green-suit');
+  bHtml+=row('♥ FIVES','fives','5 per Five','red-suit');
+  bHtml+=row('☽ SIXES','sixes','6 per Six','black-suit');
+  // Basics running total + bonus tier indicator
+  const bBonus=t.b>=78?'+75':t.b>=71?'+55':t.b>=63?'+35':'';
+  const bNext=t.b<63?`${63-t.b} to bonus`:t.b<71?`${71-t.b} to +55`:t.b<78?`${78-t.b} to +75`:'Max bonus!';
+  const bColor=t.fi>0?'color:#8a3000;font-weight:700;':'color:#906830;font-style:italic;';
+  bHtml+=`<div class="sp-row" style="background:#f0e8c0;" title="63-70→+35 · 71-77→+55 · 78+→+75">
+    <span class="sp-cat" style="color:#5a3010;font-style:italic;">FATE'S INFLUENCE <span style="font-size:0.5rem;opacity:0.7;">(${bNext})</span></span>
+    <span class="sp-val" style="${bColor}">${t.fi>0?'+'+t.fi:'—'}</span>
+  </div>`;
+  bHtml+=`<div class="sp-row sub-total"><span class="sp-cat">★ BASICS ${t.b>0?'<span style=\"font-size:0.75em;opacity:0.8;\">('+t.b+')</span> ':'' }TOTAL</span><span class="sp-val">${t.bt||'—'}</span></div>`;
   document.getElementById('spBasics').innerHTML=bHtml;
 
-  // Manifest
   let mHtml='';
-  mHtml+=row('2 PAIR','two_pair','Total all cards');
+  mHtml+=row('2 PAIR · SAME CLR','two_pair','Both pairs must share a color group');
   mHtml+=row('3 OF A KIND','three_kind','Total all cards');
-  mHtml+=row('STRAIGHT','straight','30');
-  mHtml+=row('FLUSH','flush','35');
+  mHtml+=row('STRAIGHT','straight','30 pts flat');
+  mHtml+=row('FLUSH · SAME CLR','flush','35 pts flat');
   mHtml+=row('FULL HOUSE','full_house','Total +15');
-  mHtml+=row('FH SAME COLOR','full_house_same','Total +20');
+  mHtml+=row('FH · SAME COLOR','full_house_same','Total +20');
   mHtml+=row('4 OF A KIND','four_kind','Total +25');
   mHtml+=row('YARBOROUGH','yarborough','Total all cards');
-  mHtml+=row('MANIFEST!','manifest','Total +50');
+  mHtml+=row('MANIFEST! · 5OAK','manifest','Total +50');
   mHtml+=`<div class="sp-row sub-total"><span class="sp-cat">★ GAME TOTAL</span><span class="sp-val">${t.gt||'—'}</span></div>`;
   document.getElementById('spManifest').innerHTML=mHtml;
 
